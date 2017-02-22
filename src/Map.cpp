@@ -31,7 +31,10 @@ using namespace std;
 //  constant variables
 //******************************************************************************
 //give the size of the greater side of the mesh
-const float FACTOR = 300.f;
+const float SIDE_FACTOR = 300.f;
+
+//Multiply the height by this value
+const float HEIGHT_FACTOR = 50.f;
 
 //------------------------------------------------------------------------------
 Map::Map(string const& fileName) :
@@ -55,7 +58,6 @@ Map::Map(string const& fileName) :
 	for (int i = 0; i < m_n; i++) {
 		for (int j = 0; j < m_m; j++) {
 			input >> map[i][j];
-			map[i][j] *= 50;
 		}
 	}
 
@@ -75,14 +77,14 @@ Map::~Map()
 float Map::getLength() const
 //------------------------------------------------------------------------------
 {
-    return FACTOR * m_n / max(m_n,m_m);
+    return SIDE_FACTOR * m_n / max(m_n,m_m);
 }
 
 //------------------------------------------------------------------------------
 float Map::getWidth() const
 //------------------------------------------------------------------------------
 {
-    return FACTOR * m_m / max(m_n,m_m);
+    return SIDE_FACTOR * m_m / max(m_n,m_m);
 }
 
 //------------------------------------------------------------------------------
@@ -233,9 +235,11 @@ void Map::create(vector<vector<float>> const& map)
 //------------------------------------------------------------------------------
 {
     m_verticesMap.reserve(m_n*m_m*6);
+    m_colourMap.reserve(m_n*m_m*6);
 
-    float size(FACTOR/(float(max(m_n, m_m))));
-    //size = 1.f;
+    //multiply the x and y position of each vertex by this value
+    float size(SIDE_FACTOR/(float(max(m_n, m_m))));
+
     for (int i = 0; i < m_n - 1; i++) {
 		for (int j = 0; j < m_m - 1; j++) {
 
@@ -245,20 +249,34 @@ void Map::create(vector<vector<float>> const& map)
             float dy = 1 * size;
 
 			//extract three vertices
-            QVector3D v1(x, y, map[i][j]);
-            QVector3D v2(x + dx, y, map[i + 1][j]);
-            QVector3D v3(x + dx, y + dy, map[i + 1][j + 1]);
-            QVector3D v4(x, y + dy, map[i][j + 1]);
+            QVector3D v1(x, y, map[i][j] * HEIGHT_FACTOR);
+            QVector3D v2(x + dx, y, map[i + 1][j] * HEIGHT_FACTOR);
+            QVector3D v3(x + dx, y + dy, map[i + 1][j + 1] * HEIGHT_FACTOR);
+            QVector3D v4(x, y + dy, map[i][j + 1] * HEIGHT_FACTOR);
+
+            //Generate the color depending on the height
+            QVector3D c1(map[i][j], 0, 1 - map[i][j]);
+            QVector3D c2(map[i + 1][j], 0, 1 - map[i + 1][j]);
+            QVector3D c3(map[i + 1][j + 1], 0, 1 - map[i + 1][j + 1]);
+            QVector3D c4(map[i][j + 1], 0, 1 - map[i][j + 1]);
 
 			//the first triangle
 			m_verticesMap.push_back(v1);
 			m_verticesMap.push_back(v2);
 			m_verticesMap.push_back(v3);
 
+            m_colourMap.push_back(c1);
+            m_colourMap.push_back(c2);
+            m_colourMap.push_back(c3);
+
 			//the second triangle
 			m_verticesMap.push_back(v1);
 			m_verticesMap.push_back(v3);
 			m_verticesMap.push_back(v4);
+
+            m_colourMap.push_back(c1);
+            m_colourMap.push_back(c3);
+            m_colourMap.push_back(c4);
 
 			//the order of the vertices is important to calculate the right normal vector
 		}
@@ -280,5 +298,6 @@ void Map::create(vector<vector<float>> const& map)
 		}
 	}
 
+    //change from one normal per face to one normal per vertex
     shareNormalVectors();
 }

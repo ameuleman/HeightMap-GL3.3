@@ -38,12 +38,6 @@ HEADERS  += renderwindow.h \
 
 DISTFILES += \
     heightMapQt.pro.user \
-    ../build-heightMapQt-Desktop_Qt_5_6_2_MSVC2015_64bit-Debug/shader/displayShader.frag \
-    ../build-heightMapQt-Desktop_Qt_5_6_2_MSVC2015_64bit-Debug/shader/lvlShader.frag \
-    ../build-heightMapQt-Desktop_Qt_5_6_2_MSVC2015_64bit-Debug/shader/mapShader.frag \
-    ../build-heightMapQt-Desktop_Qt_5_6_2_MSVC2015_64bit-Debug/shader/displayShader.vert \
-    ../build-heightMapQt-Desktop_Qt_5_6_2_MSVC2015_64bit-Debug/shader/lvlShader.vert \
-    ../build-heightMapQt-Desktop_Qt_5_6_2_MSVC2015_64bit-Debug/shader/mapShader.vert \
     ../data.txt \
     ../shader/displayShader.frag \
     ../shader/lvlShader.frag \

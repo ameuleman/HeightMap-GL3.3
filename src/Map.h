@@ -74,7 +74,7 @@ private:
     void create(vector<vector<float>> const& map);
 
     //--------------------------------------------------------------------------
-    /// shareNormalVectors
+    /// change from one normal per face to one normal per vertex
     //--------------------------------------------------------------------------
     void shareNormalVectors();
 

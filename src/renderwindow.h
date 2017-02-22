@@ -89,14 +89,24 @@ private:
 	//No default constructor
 	RenderWindow();
 
+    //--------------------------------------------------------------------------
+    ///Zoom in or zoom out
+    //--------------------------------------------------------------------------
+    void wheelEvent(QWheelEvent *wheelEvent);
+
 	//--------------------------------------------------------------------------
 	///event to control the display 
-	///rotation of the camera thanks to A and D, 
+    ///rotation of the camera thanks to Z, Q, S, D,
 	///Enable/disable lvl plan display: spacebarre
-	///change the height of the lvl plan: W and S
+    ///change the height of the lvl plan: R and F
 	///Rotation of the light source: arrows
 	//--------------------------------------------------------------------------
 	void keyPressEvent(QKeyEvent *event);
+
+    //--------------------------------------------------------------------------
+    ///Rotate the camera
+    //--------------------------------------------------------------------------
+    void rotateCamera(float angle, float x, float y, float z);
 
 	//--------------------------------------------------------------------------
 	///Rotate the light source and rebuild the shadow
@@ -138,7 +148,8 @@ private:
 		m_colourData, //the colours 
 		m_normalData; //the normal vectors of the triangles associated to the vertices
 
-	QVector3D m_lightDir;//the direction of the light (from the vertex to the light)
+    QVector3D m_lightDir;//the direction of the light (from the vertex to the light)
+    QVector3D m_eyePos;//the position of the camera
 
 	QMatrix4x4 m_shadowMapMatrix,	//the  matrix from the light's point of view to create the shadow map  
 		m_pMatrix, //the projection matrix for the camera to display on the window
@@ -148,7 +159,8 @@ private:
 	float m_lvlPlanHeight, //Height of the lvl Plan
         m_length, //length of the model
         m_width, //width of the model
-		m_shadowMatrixSide; //size of the cube that the shadow map take into account
+        m_shadowMatrixSide, //size of the cube that the shadow map take into account
+        m_zoomAngle;
 
 	bool m_LvlPlanVisibility; //to chose if the lvl plan has to be displayed
 };
