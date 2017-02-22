@@ -36,9 +36,7 @@ HEADERS  += renderwindow.h \
     Map.h \
     OpenGLWindow.h
 
-DISTFILES += \
-    heightMapQt.pro.user \
-    ../data.txt \
+DISTFILES += ../data.txt \
     ../shader/displayShader.frag \
     ../shader/lvlShader.frag \
     ../shader/mapShader.frag \
