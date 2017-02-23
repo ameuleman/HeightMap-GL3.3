@@ -25,6 +25,7 @@
 #include <QtGui/QOpenGLShaderProgram>
 #include <QVector3D>
 
+#include "Mesh.h"
 
 //******************************************************************************
 //  namespace
@@ -37,7 +38,7 @@ using namespace std;
 *  @brief  Map is a class to load a height map file.
 */
 //==============================================================================
-class Map{
+class Map: public Mesh{
 public:
 
 	//--------------------------------------------------------------------------
@@ -54,12 +55,6 @@ public:
     float getLength() const;
     float getWidth() const;
 
-	//getters
-	vector<QVector3D > getVerticeMap() const;
-	vector<QVector3D > getColourMap() const;
-	vector<QVector3D > getNormalMap() const;
-
-	int getVerticeCount() const;
 	int getN() const;
 	int getM() const;
 
@@ -73,18 +68,8 @@ private:
     //--------------------------------------------------------------------------
     void create(vector<vector<float>> const& map);
 
-    //--------------------------------------------------------------------------
-    /// change from one normal per face to one normal per vertex
-    //--------------------------------------------------------------------------
-    void shareNormalVectors();
-
-	vector<QVector3D > m_verticesMap, //Position of the vertices
-		m_colourMap, 
-		m_normalMap; //normal vector
-	
 	int m_n, //number of rows 
-		m_m, //number of columns
-		m_verticesCount; //number of vertices
+        m_m; //number of columns
 };
 
 #endif //MAP_H

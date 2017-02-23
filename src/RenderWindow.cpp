@@ -69,7 +69,6 @@ RenderWindow::~RenderWindow()
 void RenderWindow::initializeOpenGL()
 //------------------------------------------------------------------------------
 {
-
     const string SHADER_FOLDER = "../shader/";
 
     //Load the display shader for the ground
@@ -143,6 +142,8 @@ void RenderWindow::initializeOpenGL()
 void RenderWindow::render()
 //------------------------------------------------------------------------------
 {
+
+
     //get the ratio of the size of one physical pixel to the size of one device independent pixels to set glViewport later
     const 	qreal PIXEL_RATIO = devicePixelRatio();
 
@@ -179,14 +180,73 @@ void RenderWindow::render()
     //direction of the light, for the shadows, the difuse and the specular component
     m_displayProgram->setUniformValue(m_lightDirID, m_lightDir);
 
-    //three attributes: position, colour and normal vector
-    glVertexAttribPointer(m_verticesDisplayPositionID, 3, GL_FLOAT, GL_FALSE, 0, &m_verticesData[0]);
-    glVertexAttribPointer(m_verticesColourID, 3, GL_FLOAT, GL_FALSE, 0, &m_colourData[0]);
-    glVertexAttribPointer(m_verticesNormalID, 3, GL_FLOAT, GL_FALSE, 0, &m_normalData[0]);
 
+    /*GLuint vertexbuffer;
+    glGenBuffers(1, &vertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glBufferData(GL_ARRAY_BUFFER, m_dataCount * 3 * sizeof(float), &m_verticesData[0], GL_STATIC_DRAW);
+
+    GLuint normalbuffer;
+    glGenBuffers(1, &normalbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+    glBufferData(GL_ARRAY_BUFFER, m_normalData.size() * 3 * sizeof(float), &m_normalData[0], GL_STATIC_DRAW);
+
+    GLuint colorbuffer;
+    glGenBuffers(1, &colorbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+    glBufferData(GL_ARRAY_BUFFER, m_colourData.size() * 3 * sizeof(float), &m_colourData[0], GL_STATIC_DRAW);
+
+    // 1rst attribute buffer : vertices
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glVertexAttribPointer(
+        0,                  // attribute
+        3,                  // size
+        GL_FLOAT,           // type
+        GL_FALSE,           // normalized?
+        0,                  // stride
+        (void*)0            // array buffer offset
+    );
+
+    // 2nd attribute buffer : UVs
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+    glVertexAttribPointer(
+        1,                                // attribute
+        3,                                // size
+        GL_FLOAT,                         // type
+        GL_FALSE,                         // normalized?
+        0,                                // stride
+        (void*)0                          // array buffer offset
+    );
+
+    // 3rd attribute buffer : normals
+    glEnableVertexAttribArray(2);
+    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+    glVertexAttribPointer(
+        2,                                // attribute
+        3,                                // size
+        GL_FLOAT,                         // type
+        GL_FALSE,                         // normalized?
+        0,                                // stride
+        (void*)0                          // array buffer offset
+    );
+
+    //draws the triangle on the window
+    glDrawArrays(GL_TRIANGLES, 0, m_dataCount);
+
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);*/
+
+    //three attributes: position, colour and normal vector
     glEnableVertexAttribArray(m_verticesDisplayPositionID);
     glEnableVertexAttribArray(m_verticesColourID);
     glEnableVertexAttribArray(m_verticesNormalID);
+
+    glVertexAttribPointer(m_verticesDisplayPositionID, 3, GL_FLOAT, GL_FALSE, 0, &m_verticesData[0]);
+    glVertexAttribPointer(m_verticesColourID, 3, GL_FLOAT, GL_FALSE, 0, &m_colourData[0]);
+    glVertexAttribPointer(m_verticesNormalID, 3, GL_FLOAT, GL_FALSE, 0, &m_normalData[0]);
 
     //draws the triangle on the window
     glDrawArrays(GL_TRIANGLES, 0, m_dataCount);

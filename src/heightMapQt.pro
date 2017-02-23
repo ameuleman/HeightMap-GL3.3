@@ -29,12 +29,14 @@ SOURCES += main.cpp \
     DepthMap.cpp \
     Map.cpp \
     OpenGLWindow.cpp \
-    renderwindow.cpp
+    RenderWindow.cpp \
+    Mesh.cpp
 
-HEADERS  += renderwindow.h \
+HEADERS  += RenderWindow.h \
     DepthMap.h \
     Map.h \
-    OpenGLWindow.h
+    OpenGLWindow.h \
+    Mesh.h
 
 DISTFILES += ../data.txt \
     ../shader/displayShader.frag \
