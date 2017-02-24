@@ -21,6 +21,8 @@
 //******************************************************************************
 #include <QVector3D>
 #include <vector>
+#include <QOpenGLFunctions>
+
 
 //******************************************************************************
 //  namespace
@@ -33,10 +35,27 @@ using namespace std;
 *  @brief  Mesh is a class to handel a mesh to displpay it thanks to OpenGL
 */
 //==============================================================================
-class Mesh
+class Mesh: protected QOpenGLFunctions
 {
 public:
     Mesh();
+
+    virtual ~Mesh();
+
+    //--------------------------------------------------------------------------
+    ///Initialize VBO
+    //--------------------------------------------------------------------------
+    void initialize();
+
+    //--------------------------------------------------------------------------
+    /// VBO needs update when data change
+    //--------------------------------------------------------------------------
+    void updateVBO();
+
+    //--------------------------------------------------------------------------
+    /// Render the mesh in the current OpenGL context
+    //--------------------------------------------------------------------------
+    void render();
 
     //getters
     vector<QVector3D > getVerticesPosition() const;
@@ -57,7 +76,11 @@ protected:
 
     unsigned int m_verticesCount; //number of vertices
 
+    GLuint m_positionBuffer,
+        m_normalBuffer,
+        m_colourBuffer;
 
+    bool m_isInitialized;//to know if initialize() has been called
 };
 
 #endif // MESH_H

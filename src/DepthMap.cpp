@@ -75,11 +75,9 @@ void DepthMap::initialize()
 }
 
 //------------------------------------------------------------------------
-void DepthMap::render(std::vector<QVector3D> const& verticesData,
-	int dataCount, QMatrix4x4 const& matrix, QOpenGLShaderProgram * program)
+void DepthMap::render(Mesh &mesh, QMatrix4x4 const& matrix, QOpenGLShaderProgram * program)
 //------------------------------------------------------------------------
 {
-
 	//Initialize if necessary
 	if (!m_isInitialized) {
 		initialize();
@@ -102,14 +100,7 @@ void DepthMap::render(std::vector<QVector3D> const& verticesData,
 	//send the matrix to the program
 	program->setUniformValue(m_matrixID, matrix);
 
-	//the first atribute: the position of the vertices 
-	glVertexAttribPointer(m_verticesMapPositionID, 3, GL_FLOAT, GL_FALSE, 0, &verticesData[0]);
-	glEnableVertexAttribArray(m_verticesMapPositionID);
-
-	//draw the triangles in the buffer
-	glDrawArrays(GL_TRIANGLES, 0, dataCount);
-
-	glDisableVertexAttribArray(m_verticesMapPositionID);
+    mesh.render();
 
 	program->release();
 }

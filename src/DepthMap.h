@@ -24,6 +24,8 @@
 #include <QOpenGLTexture>
 #include <vector>
 
+#include "Mesh.h"
+
 //==============================================================================
 /**
 *  @class  DepthMap
@@ -51,7 +53,7 @@ public:
 	*  @param matrix: the projection matrix
 	*/
 	//--------------------------------------------------------------------------
-	void render(std::vector<QVector3D> const& verticesData, int dataCount, QMatrix4x4 const& matrix, QOpenGLShaderProgram * program);
+    void render(Mesh &mesh, QMatrix4x4 const& matrix, QOpenGLShaderProgram * program);
 
 	//--------------------------------------------------------------------------
 	///Get the texture

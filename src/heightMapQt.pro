@@ -27,16 +27,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp \
     DepthMap.cpp \
-    Map.cpp \
+    HeightMapMesh.cpp \
     OpenGLWindow.cpp \
     RenderWindow.cpp \
-    Mesh.cpp
+    Mesh.cpp \
+    LvlPlan.cpp
 
 HEADERS  += RenderWindow.h \
     DepthMap.h \
-    Map.h \
+    HeightMapMesh.h \
     OpenGLWindow.h \
-    Mesh.h
+    Mesh.h \
+    LvlPlan.h
 
 DISTFILES += ../data.txt \
     ../shader/displayShader.frag \

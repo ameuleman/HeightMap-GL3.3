@@ -30,25 +30,21 @@
 using namespace std;
 
 //------------------------------------------------------------------------------
-RenderWindow::RenderWindow(vector<QVector3D> const& vertexData,
-    vector<QVector3D> const& colourData, vector<QVector3D> const& normalData, int count, float length, float width) :
+RenderWindow::RenderWindow(const string &fileName) :
     //------------------------------------------------------------------------------
+    m_heightMapMesh(fileName),
+    m_lvlPlan(0, m_heightMapMesh.getLength(), m_heightMapMesh.getWidth()),
     m_displayProgram(0),
     m_lvlProgram(0),
     m_mapProgram(0),
     m_shadowMap(),
-    m_dataCount(count),
-    m_verticesData(vertexData),
-    m_colourData(colourData),
-    m_normalData(normalData),
     m_shadowMapMatrix(),
     m_pMatrix(),
     m_vMatrix(),
     m_mMatrix(),
-    m_lvlPlanHeight(0),
-    m_length(length),
-    m_width(width),
-    m_shadowMatrixSide(max(width, length)*1.4),
+    m_length(m_heightMapMesh.getLength()),
+    m_width(m_heightMapMesh.getWidth()),
+    m_shadowMatrixSide(max(m_width, m_length)*1.4),
     m_zoomAngle(70),
     m_LvlPlanVisibility(false)
 //------------------------------------------------------------------------------
@@ -78,9 +74,6 @@ void RenderWindow::initializeOpenGL()
     m_displayProgram->link();
 
     //link the atribute in the shader program to their IDs
-    m_verticesDisplayPositionID = m_displayProgram->attributeLocation("position");
-    m_verticesColourID = m_displayProgram->attributeLocation("colour");
-    m_verticesNormalID = m_displayProgram->attributeLocation("normal");
     m_lightDirID = m_displayProgram->uniformLocation("lightDir");
     m_mvpMatrixID = m_displayProgram->uniformLocation("mvpMatrix");
     m_cameraPosID = m_displayProgram->uniformLocation("cameraPos");
@@ -120,7 +113,7 @@ void RenderWindow::initializeOpenGL()
         );
 
     //render the shadow map to the buffers of m_shadowMap
-    m_shadowMap.render(m_verticesData, m_dataCount, m_shadowMapMatrix, m_mapProgram);
+    m_shadowMap.render(m_heightMapMesh, m_shadowMapMatrix, m_mapProgram);
 
     //set the projection matrix for the camera to display on the window
     m_pMatrix.perspective(m_zoomAngle, 4.f / 3.f, 0.1f, m_width+m_length);
@@ -142,10 +135,8 @@ void RenderWindow::initializeOpenGL()
 void RenderWindow::render()
 //------------------------------------------------------------------------------
 {
-
-
     //get the ratio of the size of one physical pixel to the size of one device independent pixels to set glViewport later
-    const 	qreal PIXEL_RATIO = devicePixelRatio();
+    const qreal PIXEL_RATIO = devicePixelRatio();
 
     //the model view matrix to calculate the projection matrix and the camera position
     QMatrix4x4 mvMatrix(m_pMatrix* m_vMatrix);
@@ -180,80 +171,8 @@ void RenderWindow::render()
     //direction of the light, for the shadows, the difuse and the specular component
     m_displayProgram->setUniformValue(m_lightDirID, m_lightDir);
 
-
-    /*GLuint vertexbuffer;
-    glGenBuffers(1, &vertexbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glBufferData(GL_ARRAY_BUFFER, m_dataCount * 3 * sizeof(float), &m_verticesData[0], GL_STATIC_DRAW);
-
-    GLuint normalbuffer;
-    glGenBuffers(1, &normalbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-    glBufferData(GL_ARRAY_BUFFER, m_normalData.size() * 3 * sizeof(float), &m_normalData[0], GL_STATIC_DRAW);
-
-    GLuint colorbuffer;
-    glGenBuffers(1, &colorbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-    glBufferData(GL_ARRAY_BUFFER, m_colourData.size() * 3 * sizeof(float), &m_colourData[0], GL_STATIC_DRAW);
-
-    // 1rst attribute buffer : vertices
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glVertexAttribPointer(
-        0,                  // attribute
-        3,                  // size
-        GL_FLOAT,           // type
-        GL_FALSE,           // normalized?
-        0,                  // stride
-        (void*)0            // array buffer offset
-    );
-
-    // 2nd attribute buffer : UVs
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-    glVertexAttribPointer(
-        1,                                // attribute
-        3,                                // size
-        GL_FLOAT,                         // type
-        GL_FALSE,                         // normalized?
-        0,                                // stride
-        (void*)0                          // array buffer offset
-    );
-
-    // 3rd attribute buffer : normals
-    glEnableVertexAttribArray(2);
-    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-    glVertexAttribPointer(
-        2,                                // attribute
-        3,                                // size
-        GL_FLOAT,                         // type
-        GL_FALSE,                         // normalized?
-        0,                                // stride
-        (void*)0                          // array buffer offset
-    );
-
-    //draws the triangle on the window
-    glDrawArrays(GL_TRIANGLES, 0, m_dataCount);
-
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(2);*/
-
-    //three attributes: position, colour and normal vector
-    glEnableVertexAttribArray(m_verticesDisplayPositionID);
-    glEnableVertexAttribArray(m_verticesColourID);
-    glEnableVertexAttribArray(m_verticesNormalID);
-
-    glVertexAttribPointer(m_verticesDisplayPositionID, 3, GL_FLOAT, GL_FALSE, 0, &m_verticesData[0]);
-    glVertexAttribPointer(m_verticesColourID, 3, GL_FLOAT, GL_FALSE, 0, &m_colourData[0]);
-    glVertexAttribPointer(m_verticesNormalID, 3, GL_FLOAT, GL_FALSE, 0, &m_normalData[0]);
-
-    //draws the triangle on the window
-    glDrawArrays(GL_TRIANGLES, 0, m_dataCount);
-
-    glDisableVertexAttribArray(m_verticesDisplayPositionID);
-    glDisableVertexAttribArray(m_verticesColourID);
-    glDisableVertexAttribArray(m_verticesNormalID);
+    //Render the height map
+    m_heightMapMesh.render();
 
     m_displayProgram->release();
 
@@ -262,29 +181,14 @@ void RenderWindow::render()
 
     //Draw the lvl plan only if it has to be displayed
     if (m_LvlPlanVisibility) {
-        //set the data for the lvl plan
-        GLfloat lvlPlanData[] = {
-            0.f, 0.f, m_lvlPlanHeight,
-            0.f, m_width, m_lvlPlanHeight,
-            m_length, 0.f, m_lvlPlanHeight,
-            m_length, m_width, m_lvlPlanHeight,
-        };
-
         //bind the program for the lvl Plan
         m_lvlProgram->bind();
 
         //send the matrix to the lvl plan display shader
         m_displayProgram->setUniformValue(m_mvpLvlPlanMatrixID, mvpMatrix);
 
-        //attibute: position of the vertices of the lvl plan
-        glVertexAttribPointer(m_verticesLvlPlanPositionID, 3, GL_FLOAT, GL_FALSE, 0, &lvlPlanData[0]);
-
-        glEnableVertexAttribArray(m_verticesLvlPlanPositionID);
-
-        //draws the triangles of the lvl plan
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-        glDisableVertexAttribArray(m_verticesLvlPlanPositionID);
+        //Render the lvl plan
+        m_lvlPlan.render();
 
         m_lvlProgram->release();
     }
@@ -326,12 +230,12 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     switch(event->key()) {
     // the key F lowers the lvl plan
     case Qt::Key_F:
-        m_lvlPlanHeight -= 1.f;
+        m_lvlPlan.changeHeight(-1.f);
     break;
 
     //R raises it
     case Qt::Key_R:
-        m_lvlPlanHeight += 1.f;
+        m_lvlPlan.changeHeight(1.f);
     break;
 
     //spacebarre makes it appear or disappear
@@ -433,7 +337,7 @@ void RenderWindow::rotateLightSource(float angle, float x, float y, float z)
     );
 
     //render the shadow map to the buffers of m_shadowMap
-    m_shadowMap.render(m_verticesData, m_dataCount, m_shadowMapMatrix, m_mapProgram);
+    m_shadowMap.render(m_heightMapMesh, m_shadowMapMatrix, m_mapProgram);
 }
 
 //------------------------------------------------------------------------------

@@ -16,6 +16,8 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <QtGui/QOpenGLShaderProgram>
+
 #include "Mesh.h"
 
 //******************************************************************************
@@ -26,10 +28,118 @@ using namespace std;
 //------------------------------------------------------------------------------
 Mesh::Mesh():
 //------------------------------------------------------------------------------
-m_verticesCount(0)
+m_verticesCount(0),
+m_positionBuffer(0),
+m_normalBuffer(0),
+m_colourBuffer(0),
+m_isInitialized(false)
 //------------------------------------------------------------------------------
 {
 
+}
+
+//------------------------------------------------------------------------------
+Mesh::~Mesh()
+//------------------------------------------------------------------------------
+{
+    // Cleanup VBO
+    if(m_isInitialized)
+    {
+        glDeleteBuffers(1, &m_positionBuffer);
+        glDeleteBuffers(1, &m_normalBuffer);
+        glDeleteBuffers(1, &m_colourBuffer);
+    }
+}
+
+
+//------------------------------------------------------------------------------
+void Mesh::initialize()
+//------------------------------------------------------------------------------
+{
+    initializeOpenGLFunctions();
+    updateVBO();
+    m_isInitialized = true;
+}
+
+//------------------------------------------------------------------------------
+void Mesh::updateVBO()
+//------------------------------------------------------------------------------
+{
+    if(m_isInitialized)
+    {
+        // Cleanup VBO if needed
+        glDeleteBuffers(1, &m_positionBuffer);
+        glDeleteBuffers(1, &m_normalBuffer);
+        glDeleteBuffers(1, &m_colourBuffer);
+    }
+
+    if(m_verticesPosition.size())
+    {
+        glGenBuffers(1, &m_positionBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, m_positionBuffer);
+        glBufferData(GL_ARRAY_BUFFER, m_verticesPosition.size() * 3 * sizeof(float),
+                     &m_verticesPosition[0], GL_STATIC_DRAW);
+    }
+
+    if(m_verticesNormal.size())
+    {
+        glGenBuffers(1, &m_normalBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffer);
+        glBufferData(GL_ARRAY_BUFFER, m_verticesNormal.size() * 3 * sizeof(float),
+                     &m_verticesNormal[0], GL_STATIC_DRAW);
+    }
+
+    if(m_verticesColour.size())
+    {
+        glGenBuffers(1, &m_colourBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, m_colourBuffer);
+        glBufferData(GL_ARRAY_BUFFER, m_verticesColour.size() * 3 * sizeof(float),
+                     &m_verticesColour[0], GL_STATIC_DRAW);
+    }
+}
+
+//------------------------------------------------------------------------------
+void Mesh::render()
+//------------------------------------------------------------------------------
+{
+    //initialize if necessary
+    if(!m_isInitialized)
+    {
+        initialize();
+    }
+
+    if(m_verticesPosition.size())
+    {
+        // 1rst attribute buffer : vertices
+        glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, m_positionBuffer);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    }
+
+    if(m_verticesNormal.size())
+    {
+
+    }
+
+    // 2nd attribute buffer : UVs
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, m_colourBuffer);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    if(m_verticesColour.size())
+    {
+        // 3rd attribute buffer : normals
+        glEnableVertexAttribArray(2);
+        glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffer);
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    }
+
+    //draws the triangle on the window
+    glDrawArrays(GL_TRIANGLES, 0, m_verticesCount);
+
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
 }
 
 //------------------------------------------------------------------------------

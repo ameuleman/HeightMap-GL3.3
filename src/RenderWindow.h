@@ -31,7 +31,9 @@
 #include <QKeyEvent>
 
 #include "OpenGLWindow.h"
+#include "HeightMapMesh.h"
 #include "DepthMap.h"
+#include "LvlPlan.h"
 
 //******************************************************************************
 //  namespace
@@ -47,23 +49,14 @@ using namespace std;
 class RenderWindow : public OpenGLWindow {
 
 public:
-	
-	//--------------------------------------------------------------------------
-	///Overloaded constructor with the position, the colours and the normal vector of each vertex, 
-	///the number of vertices, the width and the lenght of the model to display
-	/**
-	*  @param vertexData: the position of the vertices
-	*  @param colourData: the color of the vertices
-	*  @param normalData: the normal vectors of the vertices
-	*  @param count: the number of vertices
-	*  @param width: the width of the object to render
-	*  @param length: the length
-	*/
-	//--------------------------------------------------------------------------
-	RenderWindow(vector<QVector3D> const& vertexData,
-		vector<QVector3D> const& colourData, vector<QVector3D> const& normalData, 
-        int count, float length, float width);
-	
+    //--------------------------------------------------------------------------
+    ///Overloaded constructor with height map to display
+    /**
+    *  @param heightMapMesh
+    */
+    //--------------------------------------------------------------------------
+    RenderWindow(string const& fileName);
+
 	virtual ~RenderWindow();
 
 	//--------------------------------------------------------------------------
@@ -121,11 +114,14 @@ private:
 	//--------------------------------------------------------------------------
 	static string readShaderFile(string const& shaderFileName);
 
+    //Height map to display
+    HeightMapMesh m_heightMapMesh;
+
+    //lvl plan to display if needed
+    LvlPlan m_lvlPlan;
+
 	//IDs for inputs in the ground display program
-	GLuint m_verticesDisplayPositionID, //ID of the position of the vertex
-		m_verticesColourID, //ID of the colour of the vertex
-		m_verticesNormalID, //ID of the normal vector
-		m_lightDirID, //ID of the light direction vector (from the vertex to the light)
+    GLuint m_lightDirID, //ID of the light direction vector (from the vertex to the light)
 		m_mvpMatrixID, //ID of the Model view position matrix
 		m_cameraPosID, //ID of the position of the camera
 		m_shadowMapDisplayMatrixID, //ID of the projection matrix of the shadow map 
@@ -144,10 +140,6 @@ private:
 
 	int m_dataCount; //number of vertices
 
-	vector<QVector3D> m_verticesData, //The position of the vertices
-		m_colourData, //the colours 
-		m_normalData; //the normal vectors of the triangles associated to the vertices
-
     QVector3D m_lightDir;//the direction of the light (from the vertex to the light)
     QVector3D m_eyePos;//the position of the camera
 
@@ -156,8 +148,7 @@ private:
 		m_vMatrix, //the view matrix
 		m_mMatrix; //the model matrix
 
-	float m_lvlPlanHeight, //Height of the lvl Plan
-        m_length, //length of the model
+    float m_length, //length of the model
         m_width, //width of the model
         m_shadowMatrixSide, //size of the cube that the shadow map take into account
         m_zoomAngle;
