@@ -31,9 +31,11 @@ LvlPlan::LvlPlan(float height, float length, float width):
         QVector3D(0.f, 0.f, m_height),
         QVector3D(0.f, m_width, m_height),
         QVector3D(m_length, 0.f, m_height),
-        QVector3D(m_length, m_width, m_height)
+        QVector3D(0.f, m_width, m_height),
+        QVector3D(m_length, m_width, m_height),
+        QVector3D(m_length, 0.f, m_height)
     };
-
+    m_verticesCount = 6;
 }
 
 //------------------------------------------------------------------------------
@@ -41,4 +43,13 @@ void LvlPlan::changeHeight(float delta)
 //------------------------------------------------------------------------------
 {
     m_height += delta;
+    m_verticesPosition = {
+        QVector3D(0.f, 0.f, m_height),
+        QVector3D(0.f, m_width, m_height),
+        QVector3D(m_length, 0.f, m_height),
+        QVector3D(0.f, m_width, m_height),
+        QVector3D(m_length, m_width, m_height),
+        QVector3D(m_length, 0.f, m_height)
+    };
+    updateVBO();
 }

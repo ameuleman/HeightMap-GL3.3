@@ -70,8 +70,7 @@ private:
 	bool m_isInitialized;//to know if initialize() has been called
 
 	//IDs for inputs in the map program
-	GLuint m_matrixID, //ID of the MVP matrix
-		m_verticesMapPositionID; //ID of the position of the vertices
+    GLuint m_matrixID; //ID of the MVP matrix
 
 	//To create a buffer for the scene map
 	GLuint	m_mapFrameBuffer,

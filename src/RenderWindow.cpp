@@ -99,6 +99,8 @@ void RenderWindow::initializeOpenGL()
     //initialize the buffers
     m_shadowMap.initialize();
 
+    m_heightMapMesh.initialize();
+
     //set the direction of the light (from the vertex to the light)
     m_lightDir=QVector3D(3.f, -3.f, 5.f);
     m_lightDir.normalize();
@@ -176,16 +178,18 @@ void RenderWindow::render()
 
     m_displayProgram->release();
 
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_BLEND);
-
     //Draw the lvl plan only if it has to be displayed
     if (m_LvlPlanVisibility) {
+
+        //Enable transparency
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_BLEND);
+
         //bind the program for the lvl Plan
         m_lvlProgram->bind();
 
         //send the matrix to the lvl plan display shader
-        m_displayProgram->setUniformValue(m_mvpLvlPlanMatrixID, mvpMatrix);
+        m_lvlProgram->setUniformValue(m_mvpLvlPlanMatrixID, mvpMatrix);
 
         //Render the lvl plan
         m_lvlPlan.render();

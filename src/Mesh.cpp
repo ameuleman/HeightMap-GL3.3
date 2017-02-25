@@ -42,15 +42,7 @@ m_isInitialized(false)
 Mesh::~Mesh()
 //------------------------------------------------------------------------------
 {
-    // Cleanup VBO
-    if(m_isInitialized)
-    {
-        glDeleteBuffers(1, &m_positionBuffer);
-        glDeleteBuffers(1, &m_normalBuffer);
-        glDeleteBuffers(1, &m_colourBuffer);
-    }
 }
-
 
 //------------------------------------------------------------------------------
 void Mesh::initialize()
@@ -68,9 +60,14 @@ void Mesh::updateVBO()
     if(m_isInitialized)
     {
         // Cleanup VBO if needed
-        glDeleteBuffers(1, &m_positionBuffer);
-        glDeleteBuffers(1, &m_normalBuffer);
-        glDeleteBuffers(1, &m_colourBuffer);
+        if(m_verticesPosition.size())
+            glDeleteBuffers(1, &m_positionBuffer);
+
+        if(m_verticesNormal.size())
+            glDeleteBuffers(1, &m_normalBuffer);
+
+        if(m_verticesNormal.size())
+            glDeleteBuffers(1, &m_colourBuffer);
     }
 
     if(m_verticesPosition.size())
@@ -110,7 +107,6 @@ void Mesh::render()
 
     if(m_verticesPosition.size())
     {
-        // 1rst attribute buffer : vertices
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, m_positionBuffer);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
@@ -118,20 +114,16 @@ void Mesh::render()
 
     if(m_verticesNormal.size())
     {
-
-    }
-
-    // 2nd attribute buffer : UVs
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, m_colourBuffer);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-    if(m_verticesColour.size())
-    {
-        // 3rd attribute buffer : normals
         glEnableVertexAttribArray(2);
         glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffer);
         glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    }
+
+    if(m_verticesColour.size())
+    {
+        glEnableVertexAttribArray(1);
+        glBindBuffer(GL_ARRAY_BUFFER, m_colourBuffer);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
     }
 
     //draws the triangle on the window

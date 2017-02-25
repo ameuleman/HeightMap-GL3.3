@@ -84,7 +84,6 @@ void DepthMap::render(Mesh &mesh, QMatrix4x4 const& matrix, QOpenGLShaderProgram
 	}
 
 	//link the atribute to their IDs
-	m_verticesMapPositionID = program->attributeLocation("position");
 	m_matrixID = program->uniformLocation("matrix");
 
 	//render to the map buffer
@@ -94,7 +93,7 @@ void DepthMap::render(Mesh &mesh, QMatrix4x4 const& matrix, QOpenGLShaderProgram
 	// Clear
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//use the map shader program
+    //use the depth map shader program
 	program->bind();
 
 	//send the matrix to the program
