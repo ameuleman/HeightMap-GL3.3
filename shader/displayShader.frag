@@ -26,7 +26,7 @@ void main() {
         float visibility = texture(shadowMap, vec3(shadowChangedCoord.xy, shadowChangedCoord.z-BIAS));
         visibility = visibility * clamp(cosLightNormal - 0.1, 0., 1.) * 0.7 + 0.3;
 
-        vec3 specular = 0.5 * vec3(1., 1., 1.) * pow(clamp( dot( eyeDir, reflect(lightDir, nor)), 0., 1.) ,7.);
+        vec3 specular = 0.5 * vec3(1., 1., 1.) * pow(clamp( dot( eyeDir, reflect(lightDir, nor)), 0., 1.), 7.);
 
         if (visibility <= 0.3)
         {
@@ -34,7 +34,7 @@ void main() {
         }
 
         //output colour
-        colour=vec4(visibility*( //shadow
+        colour = vec4(visibility * ( //shadow
         col * (cosLightNormal + 0.2) + //ambiant and difuse
         specular),
         1.); //no transparency

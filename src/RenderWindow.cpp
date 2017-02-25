@@ -36,7 +36,7 @@ RenderWindow::RenderWindow(const string &fileName) :
     m_lvlPlan(0, m_heightMapMesh.getLength(), m_heightMapMesh.getWidth()),
     m_displayProgram(0),
     m_lvlProgram(0),
-    m_mapProgram(0),
+    m_depthMapProgram(0),
     m_shadowMap(),
     m_shadowMapMatrix(),
     m_pMatrix(),
@@ -58,7 +58,7 @@ RenderWindow::~RenderWindow()
     //cleanup programs
     delete m_displayProgram;
     delete m_lvlProgram;
-    delete m_mapProgram;
+    delete m_depthMapProgram;
 }
 
 //------------------------------------------------------------------------------
@@ -91,10 +91,10 @@ void RenderWindow::initializeOpenGL()
     m_mvpLvlPlanMatrixID = m_lvlProgram->uniformLocation("mvpMatrix");
 
     //Load the shadow shader
-    m_mapProgram = new QOpenGLShaderProgram(this);
-    m_mapProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, readShaderFile(SHADER_FOLDER + "mapShader.vert").c_str());
-    m_mapProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, readShaderFile(SHADER_FOLDER + "mapShader.frag").c_str());
-    m_mapProgram->link();
+    m_depthMapProgram = new QOpenGLShaderProgram(this);
+    m_depthMapProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, readShaderFile(SHADER_FOLDER + "mapShader.vert").c_str());
+    m_depthMapProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, readShaderFile(SHADER_FOLDER + "mapShader.frag").c_str());
+    m_depthMapProgram->link();
 
     //initialize the buffers
     m_shadowMap.initialize();
@@ -115,7 +115,7 @@ void RenderWindow::initializeOpenGL()
         );
 
     //render the shadow map to the buffers of m_shadowMap
-    m_shadowMap.render(m_heightMapMesh, m_shadowMapMatrix, m_mapProgram);
+    m_shadowMap.render(m_heightMapMesh, m_shadowMapMatrix, m_depthMapProgram);
 
     //set the projection matrix for the camera to display on the window
     m_pMatrix.perspective(m_zoomAngle, 4.f / 3.f, 0.1f, m_width+m_length);
@@ -258,15 +258,22 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
 
     case Qt::Key_Z:
     {
-        QVector3D axis(QVector3D::crossProduct(m_eyePos, QVector3D(0, 0, 1)));
-        rotateCamera(-2, axis.x(), axis.y(), axis.z());
+        QVector3D vertical(QVector3D(0, 0, 1));
+
+        //axis of rotation
+        QVector3D axis(QVector3D::crossProduct(m_eyePos.normalized(), vertical));
+        //rotate only if the camera position is not vertical
+        if((axis.length() > 0.1) || (QVector3D::dotProduct(m_eyePos, vertical) > 0))
+            rotateCamera(-2, axis.x(), axis.y(), axis.z());
     }
     break;
 
     case Qt::Key_S:
     {
-        QVector3D axis(QVector3D::crossProduct(m_eyePos, QVector3D(0, 0, 1)));
-        rotateCamera(2, axis.x(), axis.y(), axis.z());
+        QVector3D vertical(QVector3D(0, 0, 1));
+        QVector3D axis(QVector3D::crossProduct(m_eyePos.normalized(), vertical));
+        if((axis.length() > 0.1) || (QVector3D::dotProduct(m_eyePos, vertical) < 0))
+            rotateCamera(2, axis.x(), axis.y(), axis.z());
     }
     break;
 
@@ -341,7 +348,7 @@ void RenderWindow::rotateLightSource(float angle, float x, float y, float z)
     );
 
     //render the shadow map to the buffers of m_shadowMap
-    m_shadowMap.render(m_heightMapMesh, m_shadowMapMatrix, m_mapProgram);
+    m_shadowMap.render(m_heightMapMesh, m_shadowMapMatrix, m_depthMapProgram);
 }
 
 //------------------------------------------------------------------------------

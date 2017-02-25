@@ -57,6 +57,13 @@ public:
     //--------------------------------------------------------------------------
     void render();
 
+    //--------------------------------------------------------------------------
+    /// change from one normal per face to one normal per vertex
+    /// and set the index to improve performance.
+    /// Do nothing if an index has already been set.
+    //--------------------------------------------------------------------------
+    void setIndex();
+
     //getters
     vector<QVector3D > getVerticesPosition() const;
     vector<QVector3D > getVerticesColour() const;
@@ -65,22 +72,24 @@ public:
     unsigned int getVerticeCount() const;
 
 protected:
-    //--------------------------------------------------------------------------
-    /// change from one normal per face to one normal per vertex
-    //--------------------------------------------------------------------------
-    void shareNormalVectors();
-
     vector<QVector3D > m_verticesPosition, //Position of the vertices
         m_verticesColour,
         m_verticesNormal; //normal vector
 
+    vector<unsigned int> m_verticesIndex; //normal vector
+
     unsigned int m_verticesCount; //number of vertices
 
+    //IDs of array buffers
     GLuint m_positionBuffer,
         m_normalBuffer,
-        m_colourBuffer;
+        m_colourBuffer,
+        m_indexBuffer;
 
-    bool m_isInitialized;//to know if initialize() has been called
+    bool m_isInitialized,//to know if initialize() has been called
+        m_hasNormalData,
+        m_hasColourData,
+        m_usesIndex;
 };
 
 #endif // MESH_H

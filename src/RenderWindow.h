@@ -133,9 +133,9 @@ private:
 
 
 	QOpenGLShaderProgram *m_displayProgram, // The render program displaying on the screen
-		*m_lvlProgram, //Program to display the lvl plan
-		*m_mapProgram;//the program to create the shadow map and the ambiant occlusion map
-	
+        *m_lvlProgram, //Program to display the lvl plan
+        *m_depthMapProgram;//the program to create the shadow map
+
 	DepthMap m_shadowMap; //object containing buffers and program to create the shadow map
 
 	int m_dataCount; //number of vertices

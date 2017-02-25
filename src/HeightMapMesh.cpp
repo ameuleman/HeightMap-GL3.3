@@ -159,18 +159,14 @@ void HeightMapMesh::create(vector<vector<float>> const& map)
 
     m_verticesNormal.reserve(m_verticesCount);
 
-	//all the vertices are grey
-    m_verticesColour.resize(m_verticesCount, 0.8f*QVector3D(1.f, 1.f, 1.f));
-
 	//create the normal vector for each triangle
     for (unsigned int i(0); i < m_verticesCount; i += 3) {
-        QVector3D normal(QVector3D::crossProduct((m_verticesPosition[i + 1] - m_verticesPosition[i]), (m_verticesPosition[i + 2] - m_verticesPosition[i])));
+        QVector3D normal(QVector3D::crossProduct(
+            (m_verticesPosition[i + 1] - m_verticesPosition[i]),
+            (m_verticesPosition[i + 2] - m_verticesPosition[i])));
 		normal.normalize();
 		for (int l = 0; l < 3; l++) {
             m_verticesNormal.push_back(normal);
 		}
 	}
-
-    //change from one normal per face to one normal per vertex
-    shareNormalVectors();
 }

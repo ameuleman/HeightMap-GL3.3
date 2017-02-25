@@ -1,8 +1,8 @@
 #version 330 core
 
 in vec4 position;
-in vec3 colour;
 in vec3 normal;
+in vec3 colour;
 
 out  float hight;
 out  vec3 col;
