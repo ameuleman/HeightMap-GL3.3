@@ -2,7 +2,7 @@
 // Include
 //******************************************************************************
 #include "RenderWindow.h"
-#include "HeightMapMesh.h"
+#include "ImageProcessor.h"
 
 #include <QtGui/QGuiApplication>
 #include <QtGui/QScreen>
@@ -14,17 +14,21 @@
 int main(int argc, char **argv)
 //------------------------------------------------------------------------------
 {
+    ImageProcessor imageProcessor("../data.png");
+
     QGuiApplication app(argc, argv);
 
-    RenderWindow window("../data.txt");
+    RenderWindow rawWindow(imageProcessor.getRawData(),
+                           imageProcessor.getN(), imageProcessor.getM());
 
-	//set the format to get a better rendering
-    QSurfaceFormat format;
-    format.setSamples(16);
-    window.setFormat(format);
+    rawWindow.resize(1000, 700);
+    rawWindow.show();
 
-	window.resize(1000, 700);
-    window.show();
+    RenderWindow processedWindow(imageProcessor.getProcessedData(),
+                           imageProcessor.getN(), imageProcessor.getM());
+
+    processedWindow.resize(1000, 700);
+    processedWindow.show();
 
     return app.exec();
 }

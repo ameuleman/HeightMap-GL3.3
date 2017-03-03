@@ -42,12 +42,23 @@ class HeightMapMesh: public Mesh{
 public:
 
 	//--------------------------------------------------------------------------
-	///Overloaded constructor with the name of the file
+    /// Overloaded constructor with the name of the file. The file has to contain
+    /// the width, the height and then the data in the [0,1] range
 	/**
 	*  @param fileName: the name of the height map file
 	*/
 	//--------------------------------------------------------------------------
     HeightMapMesh(string const& fileName);
+
+    //--------------------------------------------------------------------------
+    /// Overloaded constructor with the image size and data
+    /**
+    *  @param imageData: the data of the image as floats in the [0,1] range
+    *  @param n: height of the image
+    *  @param m: width of the image
+    */
+    //--------------------------------------------------------------------------
+    HeightMapMesh(vector<vector<float>> const& imageData, unsigned int n, unsigned int m);
 
     virtual ~HeightMapMesh();
 
@@ -55,9 +66,10 @@ public:
     float getLength() const;
     float getWidth() const;
 
-    int getN() const;
-	int getM() const;
+    unsigned int getN() const;
+    unsigned int getM() const;
 
+//******************************************************************************
 private:
 	//No default constructor
     HeightMapMesh();
@@ -66,9 +78,9 @@ private:
     ///translate the vector read into three vector<QVector3D>
     ///that can be exploited by the rendering window (position, colour and normal vector)
     //--------------------------------------------------------------------------
-    void create(vector<vector<float>> const& map);
+    void create(vector<vector<float>> const& imageData);
 
-	int m_n, //number of rows 
+    unsigned int m_n, //number of rows
         m_m; //number of columns
 };
 

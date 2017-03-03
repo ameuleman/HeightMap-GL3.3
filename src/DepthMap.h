@@ -1,5 +1,5 @@
-#ifndef DepthMap_H
-#define DepthMap_H
+#ifndef DEPTHMAP_H
+#define DEPTHMAP_H
 
 /**
 *******************************************************************************
@@ -35,7 +35,6 @@
 class DepthMap: protected QOpenGLFunctions {
 
 public:
-
 	DepthMap();
 
 	~DepthMap();
@@ -60,12 +59,10 @@ public:
 	//--------------------------------------------------------------------------
 	GLuint getMapTexture() const;
 
-	//******************************************************************************
+//******************************************************************************
 private:
 	//No copy constructor
 	DepthMap(DepthMap const&);
-
-    static const int MAP_SIZE = 4096; //size of the side of the buffer
 
 	bool m_isInitialized;//to know if initialize() has been called
 
@@ -78,4 +75,4 @@ private:
 
 };
 
-#endif //DepthMap_H
+#endif //DEPTHMAP_H

@@ -19,6 +19,8 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <QtGui/QOpenGLWindow>
+#include <QtGui/QOpenGLFunctions>
 #include <QtGui/QGuiApplication>
 #include <QtGui/QMatrix4x4>
 #include <QtGui/QOpenGLShaderProgram>
@@ -30,7 +32,6 @@
 #include <vector>
 #include <QKeyEvent>
 
-#include "OpenGLWindow.h"
 #include "HeightMapMesh.h"
 #include "DepthMap.h"
 #include "LvlPlan.h"
@@ -46,35 +47,47 @@ using namespace std;
 *  @brief  RenderWindow is a class to render to the screen
 */
 //==============================================================================
-class RenderWindow : public OpenGLWindow {
+class RenderWindow : public QOpenGLWindow, protected QOpenGLFunctions {
 
 public:
     //--------------------------------------------------------------------------
-    ///Overloaded constructor with height map to display
+    /// Overloaded constructor with the name of the file. The file has to contain
+    /// the width, the height and then the data in the [0,1] range
     /**
-    *  @param heightMapMesh
+    *  @param fileName: the name of the height map file
     */
     //--------------------------------------------------------------------------
     RenderWindow(string const& fileName);
+
+    //--------------------------------------------------------------------------
+    /// Overloaded constructor with the image size and data
+    /**
+    *  @param imageData: the data of the image as floats in the [0,1] range
+    *  @param n: height of the image
+    *  @param m: width of the image
+    */
+    //--------------------------------------------------------------------------
+    RenderWindow(vector<vector<float>> const& imageData,
+                 unsigned int n, unsigned int m);
 
 	virtual ~RenderWindow();
 
 	//--------------------------------------------------------------------------
 	/// Initialize the programs and the buffers
 	//--------------------------------------------------------------------------
-	virtual void initializeOpenGL();
+    virtual void initializeGL();
 
 	//--------------------------------------------------------------------------
 	/// display on the window
 	//--------------------------------------------------------------------------
-	virtual void render();
+    virtual void paintGL();
 	
 	//--------------------------------------------------------------------------
 	/// set the visibility of the lvl plan to false if it was true and vice versa
 	//--------------------------------------------------------------------------	
 	void changeLvlPlanVisibility();
 
-	//******************************************************************************
+//******************************************************************************
 private:
 	//No copy constructor
 	RenderWindow(RenderWindow const&);
@@ -138,7 +151,7 @@ private:
 
 	DepthMap m_shadowMap; //object containing buffers and program to create the shadow map
 
-	int m_dataCount; //number of vertices
+    unsigned int m_dataCount; //number of vertices
 
     QVector3D m_lightDir;//the direction of the light (from the vertex to the light)
     QVector3D m_eyePos;//the position of the camera

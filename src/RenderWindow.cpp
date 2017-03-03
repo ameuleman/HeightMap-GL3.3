@@ -29,9 +29,15 @@
 //******************************************************************************
 using namespace std;
 
+//******************************************************************************
+//  constant variables
+//******************************************************************************
+//the folder where the shaders are stored
+const string SHADER_FOLDER = "../shader/";
+
 //------------------------------------------------------------------------------
-RenderWindow::RenderWindow(const string &fileName) :
-    //------------------------------------------------------------------------------
+RenderWindow::RenderWindow(const string &fileName):
+//------------------------------------------------------------------------------
     m_heightMapMesh(fileName),
     m_lvlPlan(0, m_heightMapMesh.getLength(), m_heightMapMesh.getWidth()),
     m_displayProgram(0),
@@ -44,7 +50,30 @@ RenderWindow::RenderWindow(const string &fileName) :
     m_mMatrix(),
     m_length(m_heightMapMesh.getLength()),
     m_width(m_heightMapMesh.getWidth()),
-    m_shadowMatrixSide(max(m_width, m_length)*1.4),
+    m_shadowMatrixSide(max(m_width, m_length)*0.8),
+    m_zoomAngle(70),
+    m_LvlPlanVisibility(false)
+//------------------------------------------------------------------------------
+{
+}
+
+//------------------------------------------------------------------------------
+RenderWindow::RenderWindow(vector<vector<float>> const& imageData,
+                           unsigned int n, unsigned int m):
+//------------------------------------------------------------------------------
+    m_heightMapMesh(imageData, n, m),
+    m_lvlPlan(0, m_heightMapMesh.getLength(), m_heightMapMesh.getWidth()),
+    m_displayProgram(0),
+    m_lvlProgram(0),
+    m_depthMapProgram(0),
+    m_shadowMap(),
+    m_shadowMapMatrix(),
+    m_pMatrix(),
+    m_vMatrix(),
+    m_mMatrix(),
+    m_length(m_heightMapMesh.getLength()),
+    m_width(m_heightMapMesh.getWidth()),
+    m_shadowMatrixSide(max(m_width, m_length)*0.8),
     m_zoomAngle(70),
     m_LvlPlanVisibility(false)
 //------------------------------------------------------------------------------
@@ -62,10 +91,12 @@ RenderWindow::~RenderWindow()
 }
 
 //------------------------------------------------------------------------------
-void RenderWindow::initializeOpenGL()
+void RenderWindow::initializeGL()
 //------------------------------------------------------------------------------
 {
-    const string SHADER_FOLDER = "../shader/";
+    makeCurrent();
+
+    initializeOpenGLFunctions();
 
     //Load the display shader for the ground
     m_displayProgram = new QOpenGLShaderProgram(this);
@@ -98,8 +129,8 @@ void RenderWindow::initializeOpenGL()
 
     //initialize the buffers
     m_shadowMap.initialize();
-
     m_heightMapMesh.initialize();
+    m_lvlPlan.initialize();
 
     //set the direction of the light (from the vertex to the light)
     m_lightDir=QVector3D(3.f, -3.f, 5.f);
@@ -113,6 +144,7 @@ void RenderWindow::initializeOpenGL()
         QVector3D(0.f, 0.f, 0.f),
         QVector3D(0.f, 0.f, 1.f)
         );
+    m_shadowMapMatrix.translate(-m_length/2, -m_width/2, 0.f);
 
     //render the shadow map to the buffers of m_shadowMap
     m_shadowMap.render(m_heightMapMesh, m_shadowMapMatrix, m_depthMapProgram);
@@ -134,14 +166,14 @@ void RenderWindow::initializeOpenGL()
 }
 
 //------------------------------------------------------------------------------
-void RenderWindow::render()
+void RenderWindow::paintGL()
 //------------------------------------------------------------------------------
 {
     //get the ratio of the size of one physical pixel to the size of one device independent pixels to set glViewport later
     const qreal PIXEL_RATIO = devicePixelRatio();
 
     //the model view matrix to calculate the projection matrix and the camera position
-    QMatrix4x4 mvMatrix(m_pMatrix* m_vMatrix);
+    QMatrix4x4 mvMatrix(m_pMatrix * m_vMatrix);
 
     //set the matrix used in the displaying programs
     QMatrix4x4 mvpMatrix(mvMatrix * m_mMatrix);
@@ -215,16 +247,18 @@ void RenderWindow::changeLvlPlanVisibility()
 void RenderWindow::wheelEvent(QWheelEvent *wheelEvent)
 //------------------------------------------------------------------------------
 {
-    //change the zoom value (always positive)
+    //change the zoom value (always in range [0, 180])
     float delta(0.05 * wheelEvent->delta());
-    if(m_zoomAngle - delta>0)
+    if((m_zoomAngle - delta > 0) && (m_zoomAngle - delta < 180))
     {
         m_zoomAngle -=  delta;
-    }
 
-    //Update the projection matrix
-    m_pMatrix.setToIdentity();
-    m_pMatrix.perspective(m_zoomAngle, 4.f / 3.f, 0.1f, m_width+m_length);
+        //Update the projection matrix
+        m_pMatrix.setToIdentity();
+        m_pMatrix.perspective(m_zoomAngle, 4.f / 3.f, 0.1f, m_width+m_length);
+
+        QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -234,17 +268,28 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     switch(event->key()) {
     // the key F lowers the lvl plan
     case Qt::Key_F:
+    {
+        makeCurrent();
         m_lvlPlan.changeHeight(-1.f);
+        QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
+    }
     break;
 
     //R raises it
     case Qt::Key_R:
+    {
+        makeCurrent();
         m_lvlPlan.changeHeight(1.f);
+        QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
+    }
     break;
 
     //spacebarre makes it appear or disappear
     case Qt::Key_Space:
+    {
         changeLvlPlanVisibility();
+        QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
+    }
     break;
 
     //Z, S, Q, D rotate the camera
@@ -288,15 +333,19 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
 
     case Qt::Key_Up:
     {
-        QVector3D axis(QVector3D::crossProduct(m_lightDir, QVector3D(0, 0, 1)));
-        rotateLightSource(2, axis.x(), axis.y(), axis.z());
+        QVector3D vertical(QVector3D(0, 0, 1));
+        QVector3D axis(QVector3D::crossProduct(m_lightDir, vertical));
+        if((axis.length() > 0.1) || (QVector3D::dotProduct(m_lightDir, vertical) < 0))
+            rotateLightSource(2, axis.x(), axis.y(), axis.z());
     }
     break;
 
     case Qt::Key_Down:
     {
-        QVector3D axis(QVector3D::crossProduct(m_lightDir, QVector3D(0, 0, 1)));
-        rotateLightSource(-2, axis.x(), axis.y(), axis.z());
+        QVector3D vertical(QVector3D(0, 0, 1));
+        QVector3D axis(QVector3D::crossProduct(m_lightDir, vertical));
+        if((axis.length() > 0.1) || (QVector3D::dotProduct(m_lightDir, vertical) > 0))
+            rotateLightSource(-2, axis.x(), axis.y(), axis.z());
     }
     break;
 
@@ -324,6 +373,7 @@ void RenderWindow::rotateCamera(float angle, float x, float y, float z)
         QVector3D(0.f, 0.f, 1.f)
         );
 
+    QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
 }
 
 //------------------------------------------------------------------------------
@@ -346,9 +396,13 @@ void RenderWindow::rotateLightSource(float angle, float x, float y, float z)
         QVector3D(0.f, 0.f, 0.f),
         QVector3D(0.f, 0.f, 1.f)
     );
+    m_shadowMapMatrix.translate(-m_length/2, -m_width/2, 0.f);
 
     //render the shadow map to the buffers of m_shadowMap
+    makeCurrent();
     m_shadowMap.render(m_heightMapMesh, m_shadowMapMatrix, m_depthMapProgram);
+
+    QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
 }
 
 //------------------------------------------------------------------------------

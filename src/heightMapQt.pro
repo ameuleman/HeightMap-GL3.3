@@ -31,14 +31,16 @@ SOURCES += main.cpp \
     OpenGLWindow.cpp \
     RenderWindow.cpp \
     Mesh.cpp \
-    LvlPlan.cpp
+    LvlPlan.cpp \
+    ImageProcessor.cpp
 
 HEADERS  += RenderWindow.h \
     DepthMap.h \
     HeightMapMesh.h \
     OpenGLWindow.h \
     Mesh.h \
-    LvlPlan.h
+    LvlPlan.h \
+    ImageProcessor.h
 
 DISTFILES += ../data.txt \
     ../shader/displayShader.frag \

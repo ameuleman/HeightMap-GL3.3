@@ -3,7 +3,7 @@
 *
 *  @file       HeightMapMesh.cpp
 *
-*  @brief      Class to load a height map file to displpay it later thanks to OpenGL
+*  @brief      Class to load a height imageData file to displpay it later thanks to OpenGL
 *
 *  @version    1.0
 *
@@ -40,7 +40,6 @@ const float HEIGHT_FACTOR = 50.f;
 HeightMapMesh::HeightMapMesh(string const& fileName)
 //------------------------------------------------------------------------------
 {
-
 	// Open the file
 	ifstream input(fileName, ios::in);
 
@@ -50,20 +49,33 @@ HeightMapMesh::HeightMapMesh(string const& fileName)
 	input >> m_m >> m_n;
 
 	//allocate the vector
-	vector<vector<float>> map(m_n, vector<float>(m_m));
+    vector<vector<float>> imageData(m_n, vector<float>(m_m));
 
-	//read the map itself
-	for (int i = 0; i < m_n; i++) {
-		for (int j = 0; j < m_m; j++) {
-			input >> map[i][j];
+    //read the imageData itself
+    for (unsigned int i(0); i < m_n; i++) {
+        for (unsigned int j(0); j < m_m; j++) {
+            input >> imageData[i][j];
 		}
 	}
 
     input.close();
 
     //create m_verticesPosition, m_verticesColour, m_verticesNormal
-    //and m_verticesCount thanks to the read data
-	create(map);
+    //and m_verticesCount thanks to the data
+    create(imageData);
+}
+
+//------------------------------------------------------------------------------
+HeightMapMesh::HeightMapMesh(vector<vector<float>> const& imageData,
+                             unsigned int n, unsigned int m):
+//------------------------------------------------------------------------------
+    m_n(n),
+    m_m(m)
+//------------------------------------------------------------------------------
+{
+    //create m_verticesPosition, m_verticesColour, m_verticesNormal
+    //and m_verticesCount thanks to the data
+    create(imageData);
 }
 
 //------------------------------------------------------------------------------
@@ -88,14 +100,14 @@ float HeightMapMesh::getWidth() const
 
 
 //------------------------------------------------------------------------------
-int HeightMapMesh::getN() const
+unsigned int HeightMapMesh::getN() const
 //------------------------------------------------------------------------------
 {
 	return m_n;
 }
 
 //------------------------------------------------------------------------------
-int HeightMapMesh::getM() const
+unsigned int HeightMapMesh::getM() const
 //------------------------------------------------------------------------------
 {
 	return m_m;
@@ -104,7 +116,7 @@ int HeightMapMesh::getM() const
 
 
 //------------------------------------------------------------------------------
-void HeightMapMesh::create(vector<vector<float>> const& map)
+void HeightMapMesh::create(vector<vector<float>> const& imageData)
 //------------------------------------------------------------------------------
 {
     m_verticesPosition.reserve(m_n*m_m*6);
@@ -113,8 +125,8 @@ void HeightMapMesh::create(vector<vector<float>> const& map)
     //multiply the x and y position of each vertex by this value
     float size(SIDE_FACTOR/(float(max(m_n, m_m))));
 
-    for (int i = 0; i < m_n - 1; i++) {
-		for (int j = 0; j < m_m - 1; j++) {
+    for (unsigned int i(0); i < m_n - 1; i++) {
+        for (unsigned int j(0); j < m_m - 1; j++) {
 
             float x = i * size;
             float dx = 1 * size;
@@ -122,16 +134,16 @@ void HeightMapMesh::create(vector<vector<float>> const& map)
             float dy = 1 * size;
 
 			//extract three vertices
-            QVector3D v1(x, y, map[i][j] * HEIGHT_FACTOR);
-            QVector3D v2(x + dx, y, map[i + 1][j] * HEIGHT_FACTOR);
-            QVector3D v3(x + dx, y + dy, map[i + 1][j + 1] * HEIGHT_FACTOR);
-            QVector3D v4(x, y + dy, map[i][j + 1] * HEIGHT_FACTOR);
+            QVector3D v1(x, y, imageData[i][j] * HEIGHT_FACTOR);
+            QVector3D v2(x + dx, y, imageData[i + 1][j] * HEIGHT_FACTOR);
+            QVector3D v3(x + dx, y + dy, imageData[i + 1][j + 1] * HEIGHT_FACTOR);
+            QVector3D v4(x, y + dy, imageData[i][j + 1] * HEIGHT_FACTOR);
 
             //Generate the color depending on the height
-            QVector3D c1(map[i][j], 0, 1 - map[i][j]);
-            QVector3D c2(map[i + 1][j], 0, 1 - map[i + 1][j]);
-            QVector3D c3(map[i + 1][j + 1], 0, 1 - map[i + 1][j + 1]);
-            QVector3D c4(map[i][j + 1], 0, 1 - map[i][j + 1]);
+            QVector3D c1(imageData[i][j], 0, 1 - imageData[i][j]);
+            QVector3D c2(imageData[i + 1][j], 0, 1 - imageData[i + 1][j]);
+            QVector3D c3(imageData[i + 1][j + 1], 0, 1 - imageData[i + 1][j + 1]);
+            QVector3D c4(imageData[i][j + 1], 0, 1 - imageData[i][j + 1]);
 
 			//the first triangle
             m_verticesPosition.push_back(v1);
@@ -155,7 +167,7 @@ void HeightMapMesh::create(vector<vector<float>> const& map)
 		}
 	}
 
-    m_verticesCount = int(m_verticesPosition.size());
+    m_verticesCount = unsigned int(m_verticesPosition.size());
 
     m_verticesNormal.reserve(m_verticesCount);
 
@@ -165,7 +177,7 @@ void HeightMapMesh::create(vector<vector<float>> const& map)
             (m_verticesPosition[i + 1] - m_verticesPosition[i]),
             (m_verticesPosition[i + 2] - m_verticesPosition[i])));
 		normal.normalize();
-		for (int l = 0; l < 3; l++) {
+        for (unsigned int l(0); l < 3; l++) {
             m_verticesNormal.push_back(normal);
 		}
 	}
