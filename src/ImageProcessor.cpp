@@ -16,6 +16,8 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <QVector2D>
+
 #include "ImageProcessor.h"
 
 //------------------------------------------------------------------------------
@@ -87,7 +89,31 @@ void ImageProcessor::processImage()
 //------------------------------------------------------------------------------
 {
     m_processedData.resize(m_n, vector<float>(m_m));
+    QVector2D gradient;
 
+    for(unsigned int i(0); i < m_n; i++)
+    {
+        for(unsigned int j(0); j < m_m; j++)
+        {
+            //gradient for the x axis
+            if(i > 0)
+                if(i < m_n - 1)
+                    gradient.setX(m_rawData[i + 1][j] - m_rawData[i - 1][j]);
+                else
+                    gradient.setX(m_rawData[i][j] - m_rawData[i - 1][j]);
+            else
+                gradient.setX(m_rawData[i + 1][j] - m_rawData[i][j]);
+
+            //gradient for the y axis
+            if(j > 0)
+                if(j < m_m - 1)
+                    gradient.setY(m_rawData[i][j + 1] - m_rawData[i][j - 1]);
+                else
+                    gradient.setY(m_rawData[i][j] - m_rawData[i][j - 1]);
+            else
+                gradient.setY(m_rawData[i][j + 1] - m_rawData[i][j]);
+
+            m_processedData[i][j] = gradient.length();
+        }
+    }
 }
-
-

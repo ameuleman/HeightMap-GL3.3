@@ -28,7 +28,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp \
     DepthMap.cpp \
     HeightMapMesh.cpp \
-    OpenGLWindow.cpp \
     RenderWindow.cpp \
     Mesh.cpp \
     LvlPlan.cpp \
@@ -37,7 +36,6 @@ SOURCES += main.cpp \
 HEADERS  += RenderWindow.h \
     DepthMap.h \
     HeightMapMesh.h \
-    OpenGLWindow.h \
     Mesh.h \
     LvlPlan.h \
     ImageProcessor.h

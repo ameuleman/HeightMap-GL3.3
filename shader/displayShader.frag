@@ -26,7 +26,7 @@ void main() {
         float visibility = texture(shadowMap, vec3(shadowChangedCoord.xy, shadowChangedCoord.z-BIAS));
         visibility = visibility * clamp(cosLightNormal - 0.1, 0., 1.) * 0.7 + 0.3;
 
-        vec3 specular = 0.5 * vec3(1., 1., 1.) * pow(clamp( dot( eyeDir, reflect(lightDir, nor)), 0., 1.), 7.);
+        vec3 specular = 0.5 * vec3(1., 1., 1.) * pow(clamp( dot( eyeDir, reflect(lightDir, nor)), 0., 1.), 4.);
 
         if (visibility <= 0.3)
         {

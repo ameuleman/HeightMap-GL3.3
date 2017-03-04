@@ -14,7 +14,7 @@
 int main(int argc, char **argv)
 //------------------------------------------------------------------------------
 {
-    ImageProcessor imageProcessor("../data.png");
+    ImageProcessor imageProcessor("../data.jpg");
 
     QGuiApplication app(argc, argv);
 
