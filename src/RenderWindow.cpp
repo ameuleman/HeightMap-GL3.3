@@ -161,6 +161,8 @@ void RenderWindow::initializeGL()
         QVector3D(0.f, 0.f, 1.f)
         );
 
+    m_vMatrix.rotate(180.f, QVector3D(0.f, 0.f, 1.f));
+
     //set the model matrix, place it in the center
     m_mMatrix.translate(-m_length/2, -m_width/2, 0.f);
 }
@@ -372,6 +374,8 @@ void RenderWindow::rotateCamera(float angle, float x, float y, float z)
         QVector3D(0.f, 0.f, -40.f),
         QVector3D(0.f, 0.f, 1.f)
         );
+
+    m_vMatrix.rotate(180.f, QVector3D(0.f, 0.f, 1.f));
 
     QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
 }

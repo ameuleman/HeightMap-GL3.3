@@ -19,8 +19,8 @@ int main(int argc, char **argv)
     QGuiApplication app(argc, argv);
 
     QSurfaceFormat format;
-    format.setVersion(3, 3);
-    //format.setProfile(QSurfaceFormat::CoreProfile);
+    format.setMinorVersion(3);
+    format.setProfile(QSurfaceFormat::CoreProfile);
     QSurfaceFormat::setDefaultFormat(format);
 
     RenderWindow rawWindow(imageProcessor.getRawData(),
@@ -29,11 +29,11 @@ int main(int argc, char **argv)
     rawWindow.resize(1000, 700);
     rawWindow.show();
 
-    /*RenderWindow processedWindow(imageProcessor.getProcessedData(),
+    RenderWindow processedWindow(imageProcessor.getProcessedData(),
                            imageProcessor.getN(), imageProcessor.getM());
 
     processedWindow.resize(1000, 700);
-    processedWindow.show();*/
+    processedWindow.show();
 
     return app.exec();
 }
