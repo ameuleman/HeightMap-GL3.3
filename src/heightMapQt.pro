@@ -46,4 +46,6 @@ DISTFILES += ../data.txt \
     ../shader/mapShader.frag \
     ../shader/displayShader.vert \
     ../shader/lvlShader.vert \
-    ../shader/mapShader.vert
+    ../shader/mapShader.vert \
+    ../data.jpg \
+    ../data.png

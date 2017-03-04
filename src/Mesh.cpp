@@ -208,22 +208,31 @@ struct VectorComparer
         const float BIAS = 0.001f;
 
         if (fabs(aLeftNode.x() - aRightNode.x()) > BIAS)
+        {
             if (aLeftNode.x() < aRightNode.x())
                 return (true);
             else
                 return (false);
+        }
+
 
         if (fabs(aLeftNode.y() - aRightNode.y()) > BIAS)
+        {
             if (aLeftNode.y() < aRightNode.y())
                 return (true);
             else
                 return (false);
+        }
+
 
         if (fabs(aLeftNode.z() - aRightNode.z()) > BIAS)
+        {
             if (aLeftNode.z() < aRightNode.z())
                 return (true);
             else
                 return (false);
+        }
+
         return (false);
     }
 };
