@@ -19,6 +19,8 @@
 #include <QtGui/QOpenGLShaderProgram>
 #include <cassert>
 #include <iostream>
+#include <math.h>
+
 #include "Mesh.h"
 
 //******************************************************************************
@@ -267,7 +269,7 @@ void Mesh::setIndex()
             hashTableElement->m_colour = colour;
         }
 
-        unsigned int dataSize = unsigned int(hash_table.size());
+        unsigned int dataSize = (unsigned int)(hash_table.size());
 
         //set the vertices normal and colour data
         if(m_hasNormalData)

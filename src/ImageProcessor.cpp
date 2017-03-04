@@ -64,7 +64,7 @@ void ImageProcessor::loadData(string const& fileName)
     //Load the image
     QImage image(fileName.c_str());
 
-    byte * pLine;
+    unsigned char * pLine;
 
     m_n = image.height();
     m_m = image.width();

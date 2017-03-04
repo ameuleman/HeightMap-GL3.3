@@ -167,7 +167,7 @@ void HeightMapMesh::create(vector<vector<float>> const& imageData)
 		}
 	}
 
-    m_verticesCount = unsigned int(m_verticesPosition.size());
+    m_verticesCount = (unsigned int)(m_verticesPosition.size());
 
     m_verticesNormal.reserve(m_verticesCount);
 
