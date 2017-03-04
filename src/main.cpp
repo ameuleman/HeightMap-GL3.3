@@ -8,7 +8,7 @@
 #include <QtGui/QScreen>
 
 #include <QtCore/qmath.h>
-
+#include <iostream>
 
 //------------------------------------------------------------------------------
 int main(int argc, char **argv)
@@ -18,10 +18,10 @@ int main(int argc, char **argv)
 
     QGuiApplication app(argc, argv);
 
-    QSurfaceFormat fmt;
-    fmt.setVersion( 3, 3 );
-    fmt.setProfile( QSurfaceFormat::CoreProfile );
-    QSurfaceFormat::setDefaultFormat( fmt );
+    QSurfaceFormat format;
+    format.setVersion(3, 3);
+    //format.setProfile(QSurfaceFormat::CoreProfile);
+    QSurfaceFormat::setDefaultFormat(format);
 
     RenderWindow rawWindow(imageProcessor.getRawData(),
                            imageProcessor.getN(), imageProcessor.getM());
@@ -29,11 +29,11 @@ int main(int argc, char **argv)
     rawWindow.resize(1000, 700);
     rawWindow.show();
 
-    RenderWindow processedWindow(imageProcessor.getProcessedData(),
+    /*RenderWindow processedWindow(imageProcessor.getProcessedData(),
                            imageProcessor.getN(), imageProcessor.getM());
 
     processedWindow.resize(1000, 700);
-    processedWindow.show();
+    processedWindow.show();*/
 
     return app.exec();
 }
