@@ -3,8 +3,8 @@
 *
 *  @file       main.cpp
 *
-*  @brief      Load an image, perform edge detection and display the results
-*               as height maps.
+*  @brief      Load an image, perform edge detection and display the result
+*               and the original data as height maps.
 *
 *  @date       17/06/2016
 *
