@@ -45,10 +45,10 @@ public:
 	//--------------------------------------------------------------------------
 	///render to the frame buffer, call initialize() if it has never been called before
 	/**
-	*  @param verticesData: the position of the vertices
-	*  @param dataCount: the pnumber of vertices
+    *  @param mesh: the mesh to be rendered
 	*  @param matrix: the projection matrix
-	*/
+    *  @param program: the OpenGL shader program to create the depth map
+    */
 	//--------------------------------------------------------------------------
     void render(Mesh &mesh, QMatrix4x4 const& matrix, QOpenGLShaderProgram * program);
 

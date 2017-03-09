@@ -6,7 +6,8 @@
 *
 *  @file       HeightMapMesh.h
 *
-*  @brief      Class to load a height map file to displpay it later thanks to OpenGL 
+*  @brief      Class to create a height map mesh thanks to a file or data
+*               to displpay it thanks to OpenGL
 *
 *  @date       16/06/2016
 *
@@ -64,6 +65,7 @@ public:
     float getLength() const;
     float getWidth() const;
 
+    //Getters
     unsigned int getN() const;
     unsigned int getM() const;
 
@@ -74,7 +76,10 @@ private:
 
     //--------------------------------------------------------------------------
     ///translate the vector read into three vector<QVector3D>
-    ///that can be exploited by the rendering window (position, colour and normal vector)
+    ///that can be exploited by the rendering window (position, colour and normal vectors)
+    /**
+    *  @param imageData: the data of the image as floats in the [0,1] range
+    */
     //--------------------------------------------------------------------------
     void create(vector<vector<float>> const& imageData);
 

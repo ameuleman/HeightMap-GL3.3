@@ -109,12 +109,24 @@ private:
 
     //--------------------------------------------------------------------------
     ///Rotate the camera
+    /**
+    *  @param angle: angle of rotation
+    *  @param x: axis of rotation
+    *  @param y: axis of rotation
+    *  @param z: axis of rotation
+    */
     //--------------------------------------------------------------------------
     void rotateCamera(float angle, float x, float y, float z);
 
 	//--------------------------------------------------------------------------
 	///Rotate the light source and rebuild the shadow
-	//--------------------------------------------------------------------------
+    /**
+    *  @param angle: angle of rotation
+    *  @param x: axis of rotation
+    *  @param y: axis of rotation
+    *  @param z: axis of rotation
+    */
+    //--------------------------------------------------------------------------
 	void rotateLightSource(float angle, float x, float y, float z);
 
 	//--------------------------------------------------------------------------

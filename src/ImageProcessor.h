@@ -6,7 +6,8 @@
 *
 *  @file       ImageProcessor.h
 *
-*  @brief      Class to load an image and process it
+*  @brief      Class to load an image and process it.
+*               Uses Canny's algorithm to perform edge detection.
 *
 *  @date       01/03/2017
 *
@@ -25,6 +26,7 @@
 /**
 *  @class  ImageProcessor
 *  @brief  ImageProcessor is Class to load an image and process it
+*               Uses Canny's algorithm to perform edge detection.
 */
 //==============================================================================
 class ImageProcessor
@@ -53,6 +55,9 @@ private:
 
     //--------------------------------------------------------------------------
     /// Load the file and store it as vector<vector<float>>
+    /**
+    *  @param fileName: the name of the height map file
+    */
     //--------------------------------------------------------------------------
     void loadData(string const& fileName);
 
@@ -61,11 +66,11 @@ private:
     //--------------------------------------------------------------------------
     void processImage();
 
-    vector<vector<float>> m_rawData,
-        m_processedData;
+    vector<vector<float>> m_rawData, //Data before processing
+        m_processedData; //Data after processing
 
-    unsigned int m_m,
-        m_n;
+    unsigned int m_m, //number of columns
+        m_n; //number of rows
 };
 
 #endif // IMAGEPROCESSOR_H
