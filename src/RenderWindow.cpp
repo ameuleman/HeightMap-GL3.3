@@ -5,8 +5,6 @@
 *
 *  @brief      Class to display the height map
 *
-*  @version    1.0
-*
 *  @date       17/06/2016
 *
 *  @author     Andréas Meuleman
@@ -153,15 +151,13 @@ void RenderWindow::initializeGL()
     m_pMatrix.perspective(m_zoomAngle, 4.f / 3.f, 0.1f, m_width+m_length);
 
     //set the view matrix
-    m_eyePos = QVector3D(-(50+m_length/2), -(50+m_width/2), 150.f);
+    m_eyePos = QVector3D((m_length/2), (m_width/2), 250.f);
 
     m_vMatrix.lookAt(
         m_eyePos,
         QVector3D(0.f, 0.f, -40.f),
         QVector3D(0.f, 0.f, 1.f)
         );
-
-    m_vMatrix.rotate(180.f, QVector3D(0.f, 0.f, 1.f));
 
     //set the model matrix, place it in the center
     m_mMatrix.translate(-m_length/2, -m_width/2, 0.f);
@@ -374,8 +370,6 @@ void RenderWindow::rotateCamera(float angle, float x, float y, float z)
         QVector3D(0.f, 0.f, -40.f),
         QVector3D(0.f, 0.f, 1.f)
         );
-
-    m_vMatrix.rotate(180.f, QVector3D(0.f, 0.f, 1.f));
 
     QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
 }

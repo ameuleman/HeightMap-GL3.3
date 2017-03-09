@@ -8,8 +8,6 @@
 *
 *  @brief      Class to display the height map
 *
-*  @version    1.0
-*
 *  @date       17/06/2016
 *
 *  @author     Andréas Meuleman

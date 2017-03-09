@@ -8,8 +8,6 @@
 *
 *  @brief      Class to load a height map file to displpay it later thanks to OpenGL 
 *
-*  @version    1.0
-*
 *  @date       16/06/2016
 *
 *  @author     Andréas Meuleman

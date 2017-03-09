@@ -5,8 +5,6 @@
 *
 *  @brief      Class to handel a lvl plan
 *
-*  @version    1.0
-*
 *  @date       23/02/2017
 *
 *  @author     Andréas Meuleman

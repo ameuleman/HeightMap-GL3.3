@@ -8,8 +8,6 @@
 *
 *  @brief      Class to load an image and process it
 *
-*  @version    1.0
-*
 *  @date       01/03/2017
 *
 *  @author     Andréas Meuleman
