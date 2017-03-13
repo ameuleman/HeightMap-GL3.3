@@ -162,8 +162,8 @@ void HeightMapMesh::create(vector<vector<float>> const& imageData)
             m_verticesColour.push_back(c4);
 
 			//the order of the vertices is important to calculate the right normal vector
-		}
-	}
+        }
+    }
 
     m_verticesCount = (unsigned int)(m_verticesPosition.size());
 
@@ -178,5 +178,5 @@ void HeightMapMesh::create(vector<vector<float>> const& imageData)
         for (unsigned int l(0); l < 3; l++) {
             m_verticesNormal.push_back(normal);
 		}
-	}
+    }
 }

@@ -70,20 +70,7 @@ void Mesh::initialize()
 void Mesh::updateVBO()
 //------------------------------------------------------------------------------
 {
-    if(m_isInitialized)
-    {
-        // Cleanup VBO if needed
-        glDeleteBuffers(1, &m_positionBuffer);
-
-        if(m_hasNormalData)
-            glDeleteBuffers(1, &m_normalBuffer);
-
-        if(m_hasColourData)
-            glDeleteBuffers(1, &m_colourBuffer);
-
-        if(m_verticesIndex.size())
-            glDeleteBuffers(1, &m_indexBuffer);
-    }
+    cleanUpVBO();
 
     //Create VBO thanks to the data
     glGenBuffers(1, &m_positionBuffer);
@@ -166,33 +153,6 @@ void Mesh::render()
         glDisableVertexAttribArray(2);
 }
 
-//------------------------------------------------------------------------------
-vector<QVector3D > Mesh::getVerticesPosition() const
-//------------------------------------------------------------------------------
-{
-    return m_verticesPosition;
-}
-
-//------------------------------------------------------------------------------
-vector<QVector3D > Mesh::getVerticesColour() const
-//------------------------------------------------------------------------------
-{
-    return m_verticesColour;
-}
-
-//------------------------------------------------------------------------------
-vector<QVector3D > Mesh::getVerticesNormal() const
-//------------------------------------------------------------------------------
-{
-    return m_verticesNormal;
-}
-
-//------------------------------------------------------------------------------
-unsigned int Mesh::getVerticeCount() const
-//------------------------------------------------------------------------------
-{
-    return m_verticesCount;
-}
 
 //--------------------------------------------------------------------------
 /// Enable to compare two vectors to create a hash table
@@ -327,4 +287,50 @@ void Mesh::setIndex()
 
         m_usesIndex = true;
     }
+}
+
+void Mesh::cleanUpVBO()
+{
+    if(m_isInitialized)
+    {
+        // Cleanup VBO if needed
+        glDeleteBuffers(1, &m_positionBuffer);
+
+        if(m_hasNormalData)
+            glDeleteBuffers(1, &m_normalBuffer);
+
+        if(m_hasColourData)
+            glDeleteBuffers(1, &m_colourBuffer);
+
+        if(m_verticesIndex.size())
+            glDeleteBuffers(1, &m_indexBuffer);
+    }
+}
+
+//------------------------------------------------------------------------------
+vector<QVector3D > Mesh::getVerticesPosition() const
+//------------------------------------------------------------------------------
+{
+    return m_verticesPosition;
+}
+
+//------------------------------------------------------------------------------
+vector<QVector3D > Mesh::getVerticesColour() const
+//------------------------------------------------------------------------------
+{
+    return m_verticesColour;
+}
+
+//------------------------------------------------------------------------------
+vector<QVector3D > Mesh::getVerticesNormal() const
+//------------------------------------------------------------------------------
+{
+    return m_verticesNormal;
+}
+
+//------------------------------------------------------------------------------
+unsigned int Mesh::getVerticeCount() const
+//------------------------------------------------------------------------------
+{
+    return m_verticesCount;
 }

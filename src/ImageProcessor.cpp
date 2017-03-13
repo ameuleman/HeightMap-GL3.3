@@ -82,6 +82,52 @@ void ImageProcessor::loadData(string const& fileName)
     }
 }
 
+#if 0
+//------------------------------------------------------------------------------
+vector<vector<float>> ImageProcessor::applyLinearFilter(vector<vector<float>> const& linearFilter)
+//------------------------------------------------------------------------------
+{
+    vector<vector<float>> filteredImage(m_n, vector<float>(m_m));
+
+    unsigned int filterSize(unsigned int(linearFilter.size()));
+    unsigned int filterRadius(unsigned int(filterSize/2));
+
+    for(unsigned int i(0); i < m_n; i++)
+    {
+        for(unsigned int j(0); j < m_m; j++)
+        {
+            float pixelSum(0);
+
+            for(int iFilter(-filterRadius); iFilter < filterRadius + 1; iFilter++)
+            {
+                for(int jFilter(-filterRadius); jFilter < filterRadius + 1; jFilter++)
+                {
+                    if(i + iFilter > 0)
+                        if(i + iFilter < m_n - 1)
+                            pixelSum += ;
+                        else
+                            gradient.setX(m_rawData[i][j] - m_rawData[i - 1][j]);
+                    else
+                        gradient.setX(m_rawData[i + 1][j] - m_rawData[i][j]);
+
+                    if(j > 0)
+                        if(j < m_m - 1)
+                            gradient.setY(m_rawData[i][j + 1] - m_rawData[i][j - 1]);
+                        else
+                            gradient.setY(m_rawData[i][j] - m_rawData[i][j - 1]);
+                    else
+                        gradient.setY(m_rawData[i][j + 1] - m_rawData[i][j]);
+                }
+            }
+
+            m_processedData[i][j] = pixelSum.length();
+        }
+    }
+
+    return filteredImage;
+}
+#endif
+
 //------------------------------------------------------------------------------
 void ImageProcessor::processImage()
 //------------------------------------------------------------------------------

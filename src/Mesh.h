@@ -62,6 +62,11 @@ public:
     //--------------------------------------------------------------------------
     void setIndex();
 
+    //--------------------------------------------------------------------------
+    /// Clean up VBO if needed
+    //--------------------------------------------------------------------------
+    void cleanUpVBO();
+
     //getters
     vector<QVector3D > getVerticesPosition() const;
     vector<QVector3D > getVerticesColour() const;

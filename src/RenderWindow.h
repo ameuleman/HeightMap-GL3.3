@@ -85,6 +85,17 @@ public:
 	//--------------------------------------------------------------------------	
 	void changeLvlPlanVisibility();
 
+    //--------------------------------------------------------------------------
+    /// Open a dialog to select a directory and save the current rendering
+    //--------------------------------------------------------------------------
+    void saveCurrentRendering();
+
+    //--------------------------------------------------------------------------
+    /// Open a window that describes how to control the display
+    //--------------------------------------------------------------------------
+    void displayHelp();
+
+
 //******************************************************************************
 private:
 	//No copy constructor
@@ -99,11 +110,12 @@ private:
     void wheelEvent(QWheelEvent *wheelEvent);
 
 	//--------------------------------------------------------------------------
-	///event to control the display 
-    ///rotation of the camera thanks to Z, Q, S, D,
-	///Enable/disable lvl plan display: spacebarre
-    ///change the height of the lvl plan: R and F
-	///Rotation of the light source: arrows
+    /// event to control the display
+    /// rotation of the camera thanks to Z, Q, S, D,
+    /// Enable/disable lvl plan display: spacebarre
+    /// change the height of the lvl plan: R and F
+    /// Rotation of the light source: arrows
+    /// Save the current rendering: W
 	//--------------------------------------------------------------------------
 	void keyPressEvent(QKeyEvent *event);
 
