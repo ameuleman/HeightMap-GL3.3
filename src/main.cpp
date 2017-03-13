@@ -27,17 +27,17 @@ int main(int argc, char **argv)
 //------------------------------------------------------------------------------
 {
     //Read the image and performe processing
-    ImageProcessor imageProcessor("../data/da1ta.png");
+    ImageProcessor imageProcessor("../data/data.png");
 
     //Launch the windows
     QApplication app(argc, argv);
 
-    /*RenderWindow rawWindow(imageProcessor.getRawData(),
+    RenderWindow rawWindow(imageProcessor.getRawData(),
                            imageProcessor.getN(), imageProcessor.getM());
 
     rawWindow.setTitle("Original image");
     rawWindow.resize(1000, 700);
-    rawWindow.show();*/
+    rawWindow.show();
 
     RenderWindow processedWindow(imageProcessor.getProcessedData(),
                            imageProcessor.getN(), imageProcessor.getM());

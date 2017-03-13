@@ -33,16 +33,14 @@ SOURCES += main.cpp \
     RenderWindow.cpp \
     Mesh.cpp \
     LvlPlan.cpp \
-    ImageProcessor.cpp \
-    NoDataException.cpp
+    ImageProcessor.cpp
 
 HEADERS  += RenderWindow.h \
     DepthMap.h \
     HeightMapMesh.h \
     Mesh.h \
     LvlPlan.h \
-    ImageProcessor.h \
-    NoDataException.h
+    ImageProcessor.h
 
 DISTFILES += ../data.txt \
     ../shader/displayShader.frag \
