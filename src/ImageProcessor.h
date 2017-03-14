@@ -19,8 +19,14 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
-#include "RenderWindow.h"
+#include <thread>
+#include <QImage>
 
+
+//******************************************************************************
+//  namespace
+//******************************************************************************
+using namespace std;
 
 //==============================================================================
 /**
@@ -41,8 +47,14 @@ public:
     //--------------------------------------------------------------------------
     ImageProcessor(string const& fileName);
 
+    template<class F> static void performInParallel(
+            F const& functor, unsigned int leftIndex, unsigned int rightIndex,
+            unsigned char parallilismLvl = 1,
+            unsigned char maxParallelism = thread::hardware_concurrency());
+
     // getters
     vector<vector<float>> getRawData() const;
+    vector<vector<float>> getPreprocessedData() const;
     vector<vector<float>> getProcessedData() const;
 
     unsigned int getM() const;
@@ -62,11 +74,22 @@ private:
     void loadData(string const& fileName);
 
     //--------------------------------------------------------------------------
+    /// Apply a linear filter on the raw data
+    /// and produce the smoother preprocessed data
+    /**
+    *  @param linearFilter: the linear filter to apply
+    */
+    //--------------------------------------------------------------------------
+    void applyLinearFilter(vector<vector<float>> const& linearFilter,
+            int leftIndex, int rightIndex);
+
+    //--------------------------------------------------------------------------
     /// Calculate the norm of the gradient of each pixel to extract the outline
     //--------------------------------------------------------------------------
     void processImage();
 
     vector<vector<float>> m_rawData, //Data before processing
+        m_preprocessedData, //Data after the first step of the processing
         m_processedData; //Data after processing
 
     unsigned int m_m, //number of columns

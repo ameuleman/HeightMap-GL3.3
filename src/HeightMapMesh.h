@@ -83,6 +83,16 @@ private:
     //--------------------------------------------------------------------------
     void create(vector<vector<float>> const& imageData);
 
+    //--------------------------------------------------------------------------
+    ///convert the vector read into three vector<QVector3D>
+    ///that can be exploited by the rendering window (position, colour and normal vectors)
+    /**
+    *  @param imageData: the data of the image as floats in the [0,1] range
+    */
+    //--------------------------------------------------------------------------
+    void convertVectors(unsigned int leftIndex, unsigned int rightIndex,
+       vector<vector<float>> const& imageData, float size);
+
     unsigned int m_n, //number of rows
         m_m; //number of columns
 };
