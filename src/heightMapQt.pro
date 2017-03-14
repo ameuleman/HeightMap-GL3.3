@@ -42,8 +42,7 @@ HEADERS  += RenderWindow.h \
     LvlPlan.h \
     ImageProcessor.h
 
-DISTFILES += ../data.txt \
-    ../shader/displayShader.frag \
+DISTFILES += ../shader/displayShader.frag \
     ../shader/lvlShader.frag \
     ../shader/mapShader.frag \
     ../shader/displayShader.vert \

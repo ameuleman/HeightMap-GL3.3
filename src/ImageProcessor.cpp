@@ -63,27 +63,28 @@ unsigned int ImageProcessor::getN() const
 }
 
 //------------------------------------------------------------------------------
-template<class F> static void ImageProcessor::performInParallel(
+template<class F> void ImageProcessor::performInParallel(
         F const& functor, unsigned int leftIndex, unsigned int rightIndex,
-        unsigned char maxParallelism, unsigned char parallelismLvl)
+        unsigned char parallelismLvl, unsigned char maxParallelism)
 //------------------------------------------------------------------------------
 {
+    parallelismLvl *= 2;
+
     if(parallelismLvl <= maxParallelism)
     {
-        parallelismLvl *= 2;
-        unsigned int midIndex(unsigned int(rightIndex / 2));
+        unsigned int midIndex((unsigned int)(rightIndex / 2));
 
         thread parallelProcessing(
-            [&functor, midIndex, rightIndex, maxParallelism, parallelismLvl]()
+            [&functor, midIndex, rightIndex, parallelismLvl, maxParallelism]()
             {
                 performInParallel(functor,
-                        midIndex + 1, rightIndex,
-                        maxParallelism, parallelismLvl);
+                        midIndex, rightIndex,
+                        parallelismLvl, maxParallelism);
             });
 
         performInParallel(functor,
                     leftIndex, midIndex,
-                    maxParallelism, parallelismLvl);
+                    parallelismLvl, maxParallelism);
 
         parallelProcessing.join();
     }
