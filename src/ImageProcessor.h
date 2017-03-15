@@ -19,6 +19,7 @@
 //******************************************************************************
 //  Include
 //******************************************************************************
+#include <QVector2D>
 #include <thread>
 #include <QImage>
 
@@ -54,8 +55,9 @@ public:
 
     // getters
     vector<vector<float>> getRawData() const;
-    vector<vector<float>> getPreprocessedData() const;
-    vector<vector<float>> getProcessedData() const;
+    vector<vector<float>> getSmoothedData() const;
+    vector<vector<float>> getGradientData() const;
+    vector<vector<float>> getCannyData() const;
 
     unsigned int getM() const;
     unsigned int getN() const;
@@ -73,6 +75,10 @@ private:
     //--------------------------------------------------------------------------
     void loadData(string const& fileName);
 
+    pair<int, int> obtainLowerIndices(int i, int j);
+
+    pair<int, int> obtainUpperIndices(int i, int j);
+
     //--------------------------------------------------------------------------
     /// Apply a linear filter on the raw data
     /// and produce the smoother preprocessed data
@@ -80,8 +86,11 @@ private:
     *  @param linearFilter: the linear filter to apply
     */
     //--------------------------------------------------------------------------
-    void applyLinearFilter(vector<vector<float>> const& linearFilter,
-            int leftIndex, int rightIndex);
+    void applyLinearFilter(vector<vector<float>> const& linearFilter);
+
+    void applyGradientNorm(unsigned int leftIndex, unsigned int rightIndex);
+
+    void applyCannyAlgorithm(unsigned int leftIndex, unsigned int rightIndex);
 
     //--------------------------------------------------------------------------
     /// Calculate the norm of the gradient of each pixel to extract the outline
@@ -89,8 +98,11 @@ private:
     void processImage();
 
     vector<vector<float>> m_rawData, //Data before processing
-        m_preprocessedData, //Data after the first step of the processing
-        m_processedData; //Data after processing
+        m_smoothedData, //Data after the first step of the processing
+        m_gradientData, //Data after gradient processing
+        m_cannyData; //Data after edge detection using Canny algorithm
+
+    vector<vector<QVector2D>> m_gradients; //Save all the gradients to apply Canny Algorithm
 
     unsigned int m_m, //number of columns
         m_n; //number of rows

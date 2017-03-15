@@ -150,7 +150,7 @@ void RenderWindow::initializeGL()
     m_shadowMap.render(m_heightMapMesh, m_shadowMapMatrix, m_depthMapProgram);
 
     //set the projection matrix for the camera to display on the window
-    m_pMatrix.perspective(m_zoomAngle, 4.f / 3.f, 0.1f, m_width+m_length);
+    m_pMatrix.perspective(m_zoomAngle, 16.f / 9.f, 0.1f, m_width+m_length);
 
     //set the view matrix
     m_eyePos = QVector3D((m_length/2), (m_width/2), 250.f);

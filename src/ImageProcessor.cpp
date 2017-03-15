@@ -12,10 +12,19 @@
 */
 
 //******************************************************************************
+//  constant variables
+//******************************************************************************
+//threshold for Canny algorithm
+const float THRESHOLD_1 = 0.02f;
+const float THRESHOLD_2 = 0.055f;
+
+//******************************************************************************
 //  Include
 //******************************************************************************
-#include <QVector2D>
-
+#define _USE_MATH_DEFINES
+#include <math.h>
+#include <algorithm>
+#include <iostream>
 #include "ImageProcessor.h"
 
 //------------------------------------------------------------------------------
@@ -35,17 +44,24 @@ vector<vector<float>> ImageProcessor::getRawData() const
 }
 
 //------------------------------------------------------------------------------
-vector<vector<float>> ImageProcessor::getPreprocessedData() const
+vector<vector<float>> ImageProcessor::getSmoothedData() const
 //------------------------------------------------------------------------------
 {
-    return m_preprocessedData;
+    return m_smoothedData;
 }
 
 //------------------------------------------------------------------------------
-vector<vector<float>> ImageProcessor::getProcessedData() const
+vector<vector<float>> ImageProcessor::getGradientData() const
 //------------------------------------------------------------------------------
 {
-    return m_processedData;
+    return m_gradientData;
+}
+
+//------------------------------------------------------------------------------
+vector<vector<float>> ImageProcessor::getCannyData() const
+//------------------------------------------------------------------------------
+{
+    return m_cannyData;
 }
 
 //------------------------------------------------------------------------------
@@ -108,8 +124,10 @@ void ImageProcessor::loadData(string const& fileName)
     m_m = image.width();
 
     m_rawData.resize(m_n, vector<float>(m_m));
-    m_preprocessedData.resize(m_n, vector<float>(m_m));
-    m_processedData.resize(m_n, vector<float>(m_m));
+    m_smoothedData.resize(m_n, vector<float>(m_m));
+    m_gradients.resize(m_n, vector<QVector2D>(m_m));
+    m_gradientData.resize(m_n, vector<float>(m_m));
+    m_cannyData.resize(m_n, vector<float>(m_m));
 
     for(unsigned int i(0); i < m_n; i++)
     {
@@ -125,8 +143,33 @@ void ImageProcessor::loadData(string const& fileName)
 }
 
 //------------------------------------------------------------------------------
-void ImageProcessor::applyLinearFilter(vector<vector<float>> const& linearFilter,
-        int leftIndex, int rightIndex)
+pair<int, int> ImageProcessor::obtainLowerIndices(int i, int j)
+//------------------------------------------------------------------------------
+{
+    if(i > 0)
+        i -= 1;
+
+    if(j > 0)
+        j -= 1;
+
+    return pair<int, int>(i, j);
+}
+
+//------------------------------------------------------------------------------
+pair<int, int> ImageProcessor::obtainUpperIndices(int i, int j)
+//------------------------------------------------------------------------------
+{
+    if(i < int(m_n) - 1)
+        i += 1;
+
+    if(j < int(m_m) - 1)
+        j += 1;
+
+    return pair<int, int>(i, j);
+}
+
+//------------------------------------------------------------------------------
+void ImageProcessor::applyLinearFilter(vector<vector<float>> const& linearFilter)
 //------------------------------------------------------------------------------
 {
     int filterIRadius(int(linearFilter.size()/2));
@@ -135,7 +178,7 @@ void ImageProcessor::applyLinearFilter(vector<vector<float>> const& linearFilter
     int n(m_n);
     int m(m_m);
 
-    for(int i(leftIndex); i < rightIndex; i++)
+    for(int i(0); i < n; i++)
     {
         for(int j(0); j < m; j++)
         {
@@ -144,6 +187,7 @@ void ImageProcessor::applyLinearFilter(vector<vector<float>> const& linearFilter
             for(int iFilter(-filterIRadius); iFilter < filterIRadius + 1; iFilter++)
             {
                 int iReadIndex;
+
 
                 if(i - iFilter > 0)
                     if(i - iFilter < n)
@@ -170,7 +214,148 @@ void ImageProcessor::applyLinearFilter(vector<vector<float>> const& linearFilter
                 }
             }
 
-            m_preprocessedData[i][j] = pixelSum;
+            m_smoothedData[i][j] = pixelSum;
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+void ImageProcessor::applyGradientNorm(unsigned int leftIndex, unsigned int rightIndex)
+//------------------------------------------------------------------------------
+{
+    for(unsigned int i(leftIndex); i < rightIndex; i++)
+    {
+        for(unsigned int j(0); j < m_m; j++)
+        {
+            pair<int, int> lowerIndices(obtainLowerIndices(i, j));
+            pair<int, int> upperIndices(obtainUpperIndices(i, j));
+
+            //gradient for the x axis
+            m_gradients[i][j].setX(m_smoothedData[upperIndices.first][j] -
+                    m_smoothedData[lowerIndices.first][j]);
+
+            //gradient for the y axis
+            m_gradients[i][j].setY(m_smoothedData[i][upperIndices.second] -
+                    m_smoothedData[i][lowerIndices.second]);
+
+            m_gradientData[i][j] = m_gradients[i][j].length();
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+void ImageProcessor::applyCannyAlgorithm(unsigned int leftIndex, unsigned int rightIndex)
+//------------------------------------------------------------------------------
+{
+    for(unsigned int i(leftIndex); i < rightIndex; i++)
+    {
+        for(unsigned int j(0); j < m_m; j++)
+        {
+            if(m_gradientData[i][j] < THRESHOLD_1)
+            {
+                m_cannyData[i][j] = 0;
+            }
+            else
+            {
+                float theta = atan((m_gradients[i][j].x() / m_gradients[i][j].y()) * 4 / M_PI);
+
+                pair<int, int> lowerIndices(obtainLowerIndices(i, j));
+                pair<int, int> upperIndices(obtainUpperIndices(i, j));
+
+                float maxChecker1, maxChecker2;
+
+                if(theta < - 1)
+                {
+
+                    maxChecker1 = m_gradientData[lowerIndices.first][j] * ( -1 - theta) +
+                        m_gradientData[lowerIndices.first][upperIndices.second] * (2 + theta);
+
+                    maxChecker2 = m_gradientData[upperIndices.first][j] * ( -1 - theta) +
+                        m_gradientData[upperIndices.first][lowerIndices.second] * (2 + theta);
+                }
+                else if(theta < 0)
+                {
+                    maxChecker1 = m_gradientData[lowerIndices.first][upperIndices.second] * (- theta) +
+                        m_gradientData[i][upperIndices.second] * (1 + theta);
+
+                    maxChecker2 = m_gradientData[upperIndices.first][lowerIndices.second] * (- theta) +
+                        m_gradientData[i][lowerIndices.second] * (1 + theta);
+                }
+                else if(theta < 1)
+                {
+                    maxChecker1 = m_gradientData[i][upperIndices.second] * (1 - theta) +
+                            m_gradientData[upperIndices.first][upperIndices.second] * (theta);
+
+                    maxChecker2 = m_gradientData[i][lowerIndices.second] * (1 - theta) +
+                            m_gradientData[lowerIndices.first][lowerIndices.second] * (theta);
+                }
+
+                else
+                {
+                    maxChecker1 = m_gradientData[upperIndices.first][j] * (theta - 1) +
+                        m_gradientData[upperIndices.first][upperIndices.second] * (2 - theta);
+
+                    maxChecker2 = m_gradientData[lowerIndices.first][j] * (theta - 1) +
+                        m_gradientData[lowerIndices.first][lowerIndices.second] * (2 - theta);
+                }
+
+
+                if(m_gradientData[i][j] < max(maxChecker1, maxChecker2))
+                {
+                    m_cannyData[i][j] = 0;
+                }
+                else if(m_gradientData[i][j] > THRESHOLD_2)
+                {
+                    m_cannyData[i][j] = 1;
+                }
+                else if(m_gradientData[i][j] > THRESHOLD_1)
+                {
+                    float hysteresisChecker1, hysteresisChecker2;
+
+                    if(theta < - 1)
+                    {
+                        hysteresisChecker1 = m_gradientData[i][upperIndices.second] * (-1 - theta) +
+                            m_gradientData[upperIndices.first][upperIndices.second] * (2 + theta);
+
+                        hysteresisChecker2 = m_gradientData[i][lowerIndices.second] * (-1 - theta) +
+                            m_gradientData[lowerIndices.first][lowerIndices.second] * (2 + theta);
+                    }
+                    else if(theta < 0)
+                    {
+                        hysteresisChecker1 = m_gradientData[upperIndices.first][upperIndices.second] *
+                                (- theta) +
+                            m_gradientData[upperIndices.first][j] * (1 + theta);
+
+                        hysteresisChecker2 = m_gradientData[lowerIndices.first][upperIndices.second] *
+                                (- theta) +
+                            m_gradientData[lowerIndices.first][j] * (1 + theta);
+                    }
+                    else if(theta < 1)
+                    {
+                        hysteresisChecker1 = m_gradientData[upperIndices.first][j] * (1 - theta) +
+                            m_gradientData[upperIndices.first][lowerIndices.second] * (theta);
+
+                        hysteresisChecker2 = m_gradientData[lowerIndices.first][j] * (1 - theta) +
+                            m_gradientData[lowerIndices.first][lowerIndices.second] * (theta);
+                    }
+                    else
+                    {
+                        hysteresisChecker1 = m_gradientData[upperIndices.first][lowerIndices.second] *
+                                (2 - theta) +
+                            m_gradientData[i][lowerIndices.second] * (theta - 1);
+
+                        hysteresisChecker2 = m_gradientData[lowerIndices.first][upperIndices.second] *
+                                (2 - theta) +
+                            m_gradientData[i][upperIndices.second] * (theta - 1);
+                    }
+
+                    if(max(hysteresisChecker1, hysteresisChecker2) > THRESHOLD_1)
+                    {
+                        m_cannyData[i][j] = 1;
+                    }
+
+                }
+            }
         }
     }
 }
@@ -190,39 +375,21 @@ void ImageProcessor::processImage()
              [](vector<float> &l){for_each(l.begin(), l.end(),
              [](float &n){n /= 159.f;});});
 
+    //Don't apply linear filter in parallel
+    //since the computation is bound by the memory bandwidth
+    applyLinearFilter(linearFilter);
+
     performInParallel(
-        [this, &linearFilter](unsigned int leftIndex, unsigned int rightIndex)
+        [this](unsigned int leftIndex, unsigned int rightIndex)
         {
-            applyLinearFilter(linearFilter, leftIndex, rightIndex);
+            applyGradientNorm(leftIndex, rightIndex);
         },
         0, m_n);
 
-    /*m_processedData.resize(m_n, vector<float>(m_m));
-    QVector2D gradient;
-
-    for(unsigned int i(0); i < m_n; i++)
-    {
-        for(unsigned int j(0); j < m_m; j++)
+    performInParallel(
+        [this](unsigned int leftIndex, unsigned int rightIndex)
         {
-            //gradient for the x axis
-            if(i > 0)
-                if(i < m_n - 1)
-                    gradient.setX(m_preprocessedData[i + 1][j] - m_preprocessedData[i - 1][j]);
-                else
-                    gradient.setX(m_preprocessedData[i][j] - m_preprocessedData[i - 1][j]);
-            else
-                gradient.setX(m_preprocessedData[i + 1][j] - m_preprocessedData[i][j]);
-
-            //gradient for the y axis
-            if(j > 0)
-                if(j < m_m - 1)
-                    gradient.setY(m_preprocessedData[i][j + 1] - m_preprocessedData[i][j - 1]);
-                else
-                    gradient.setY(m_preprocessedData[i][j] - m_preprocessedData[i][j - 1]);
-            else
-                gradient.setY(m_preprocessedData[i][j + 1] - m_preprocessedData[i][j]);
-
-            m_processedData[i][j] = gradient.length();
-        }
-    }*/
+            applyCannyAlgorithm(leftIndex, rightIndex);
+        },
+        0, m_n);
 }

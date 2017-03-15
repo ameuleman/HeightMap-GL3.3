@@ -32,26 +32,33 @@ int main(int argc, char **argv)
     //Launch the windows
     QApplication app(argc, argv);
 
-    /*RenderWindow rawWindow(imageProcessor.getRawData(),
+    RenderWindow rawWindow(imageProcessor.getRawData(),
                            imageProcessor.getN(), imageProcessor.getM());
 
     rawWindow.setTitle("Original image");
-    rawWindow.resize(1000, 700);
-    rawWindow.show();*/
+    rawWindow.resize(800, 450);
+    rawWindow.show();
 
-    RenderWindow preprocessedWindow(imageProcessor.getPreprocessedData(),
+    RenderWindow smoothedWindow(imageProcessor.getSmoothedData(),
                            imageProcessor.getN(), imageProcessor.getM());
 
-    preprocessedWindow.setTitle("Smoothed image");
-    preprocessedWindow.resize(1000, 700);
-    preprocessedWindow.show();
+    smoothedWindow.setTitle("Smoothed image");
+    smoothedWindow.resize(800, 450);
+    smoothedWindow.show();
 
-    /*RenderWindow processedWindow(imageProcessor.getProcessedData(),
+    RenderWindow gradientWindow(imageProcessor.getGradientData(),
                            imageProcessor.getN(), imageProcessor.getM());
 
-    processedWindow.setTitle("Processed image");
-    processedWindow.resize(1000, 700);
-    processedWindow.show();*/
+    gradientWindow.setTitle("Gradient norm image");
+    gradientWindow.resize(800, 450);
+    gradientWindow.show();
+
+    RenderWindow cannyWindow(imageProcessor.getCannyData(),
+                           imageProcessor.getN(), imageProcessor.getM());
+
+    cannyWindow.setTitle("Canny image");
+    cannyWindow.resize(800, 450);
+    cannyWindow.show();
 
     return app.exec();
 }

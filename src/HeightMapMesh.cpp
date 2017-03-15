@@ -19,7 +19,6 @@
 #include <cassert>
 
 #include "HeightMapMesh.h"
-#include "ImageProcessor.cpp"
 
 //******************************************************************************
 //  namespace
@@ -120,29 +119,14 @@ void HeightMapMesh::create(vector<vector<float>> const& imageData)
 {
     m_verticesCount = (m_n - 1) * (m_m - 1) * 6;
 
-    m_verticesNormal.resize(m_verticesCount);
-    m_verticesPosition.resize(m_verticesCount);
-    m_verticesColour.resize(m_verticesCount);
+    m_verticesNormal.reserve(m_verticesCount);
+    m_verticesPosition.reserve(m_verticesCount);
+    m_verticesColour.reserve(m_verticesCount);
 
     //multiply the x and y position of each vertex by this value
     float size(SIDE_FACTOR/(float(max(m_n, m_m))));
 
-    ImageProcessor::performInParallel(
-        [this, &imageData, size](unsigned int leftIndex, unsigned int rightIndex)
-        {
-            convertVectors(leftIndex, rightIndex, imageData, size);
-        },
-        0, m_n - 1);
-
-
-}
-
-//------------------------------------------------------------------------------
-void HeightMapMesh::convertVectors(unsigned int leftIndex, unsigned int rightIndex,
-    vector<vector<float>> const& imageData, float size)
-//------------------------------------------------------------------------------
-{
-    for (unsigned int i(leftIndex); i < rightIndex; i++) {
+    for (unsigned int i(0); i < m_n - 1; i++) {
         for (unsigned int j(0); j < m_m - 1; j++) {
 
             float x = i * size;
@@ -162,26 +146,9 @@ void HeightMapMesh::convertVectors(unsigned int leftIndex, unsigned int rightInd
             QVector3D c3(imageData[i + 1][j + 1], 0, 1 - imageData[i + 1][j + 1]);
             QVector3D c4(imageData[i][j + 1], 0, 1 - imageData[i][j + 1]);
 
-            unsigned int index((j + i * (m_m - 1))*6);
-
             //the first triangle
-            m_verticesPosition[index] = v1;
-            m_verticesPosition[index + 1] = v2;
-            m_verticesPosition[index + 2] = v3;
-
-            m_verticesPosition[index + 3] = v1;
-            m_verticesPosition[index + 4] = v3;
-            m_verticesPosition[index + 5] = v4;
-
-            m_verticesColour[index] = c1;
-            m_verticesColour[index + 1] = c2;
-            m_verticesColour[index + 2] = c3;
-
-            m_verticesColour[index + 3] = c1;
-            m_verticesColour[index + 4] = c3;
-            m_verticesColour[index + 5] = c4;
-
-            /*m_verticesPosition.push_back(v2);
+            m_verticesPosition.push_back(v1);
+            m_verticesPosition.push_back(v2);
             m_verticesPosition.push_back(v3);
 
             m_verticesColour.push_back(c1);
@@ -195,7 +162,7 @@ void HeightMapMesh::convertVectors(unsigned int leftIndex, unsigned int rightInd
 
             m_verticesColour.push_back(c1);
             m_verticesColour.push_back(c3);
-            m_verticesColour.push_back(c4);*/
+            m_verticesColour.push_back(c4);
 
             //the order of the vertices is important to calculate the right normal vector
 
@@ -205,8 +172,7 @@ void HeightMapMesh::convertVectors(unsigned int leftIndex, unsigned int rightInd
                 (v3 - v1)));
             normal.normalize();
             for (unsigned int l(0); l < 3; l++) {
-                m_verticesNormal[index + l] = normal;
-                //m_verticesNormal.push_back(normal);
+                m_verticesNormal.push_back(normal);
             }
 
             normal = QVector3D::crossProduct(
@@ -214,8 +180,7 @@ void HeightMapMesh::convertVectors(unsigned int leftIndex, unsigned int rightInd
                 (v4 - v1));
             normal.normalize();
             for (unsigned int l(3); l < 6; l++)
-                m_verticesNormal[index + l] = normal;
-                //m_verticesNormal.push_back(normal);
+                m_verticesNormal.push_back(normal);
         }
     }
 }
