@@ -15,8 +15,8 @@
 //  constant variables
 //******************************************************************************
 //threshold for Canny algorithm
-const float THRESHOLD_1 = 0.02f;
-const float THRESHOLD_2 = 0.055f;
+const float THRESHOLD_1 = 0.029f;
+const float THRESHOLD_2 = 0.065f;
 
 //******************************************************************************
 //  Include
@@ -24,8 +24,12 @@ const float THRESHOLD_2 = 0.055f;
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <algorithm>
+
 #include <iostream>
+#include <Windows.h>
+
 #include "ImageProcessor.h"
+#include "ParallelTool.h"
 
 //------------------------------------------------------------------------------
 ImageProcessor::ImageProcessor(string const& fileName)
@@ -78,10 +82,10 @@ unsigned int ImageProcessor::getN() const
     return m_n;
 }
 
-//------------------------------------------------------------------------------
+/*//------------------------------------------------------------------------------
 template<class F> void ImageProcessor::performInParallel(
         F const& functor, unsigned int leftIndex, unsigned int rightIndex,
-        unsigned char parallelismLvl, unsigned char maxParallelism)
+        unsigned char maxParallelism, unsigned char parallelismLvl)
 //------------------------------------------------------------------------------
 {
     parallelismLvl *= 2;
@@ -91,16 +95,16 @@ template<class F> void ImageProcessor::performInParallel(
         unsigned int midIndex((unsigned int)(rightIndex / 2));
 
         thread parallelProcessing(
-            [&functor, midIndex, rightIndex, parallelismLvl, maxParallelism]()
+            [&functor, midIndex, rightIndex, maxParallelism, parallelismLvl]()
             {
                 performInParallel(functor,
                         midIndex, rightIndex,
-                        parallelismLvl, maxParallelism);
+                        maxParallelism, maxParallelism);
             });
 
         performInParallel(functor,
                     leftIndex, midIndex,
-                    parallelismLvl, maxParallelism);
+                    maxParallelism, parallelismLvl);
 
         parallelProcessing.join();
     }
@@ -108,7 +112,7 @@ template<class F> void ImageProcessor::performInParallel(
     {
         functor(leftIndex, rightIndex);
     }
-}
+}*/
 
 
 //------------------------------------------------------------------------------
@@ -125,7 +129,7 @@ void ImageProcessor::loadData(string const& fileName)
 
     m_rawData.resize(m_n, vector<float>(m_m));
     m_smoothedData.resize(m_n, vector<float>(m_m));
-    m_gradients.resize(m_n, vector<QVector2D>(m_m));
+    m_gradientsAngles.resize(m_n, vector<float>(m_m));
     m_gradientData.resize(m_n, vector<float>(m_m));
     m_cannyData.resize(m_n, vector<float>(m_m));
 
@@ -169,7 +173,8 @@ pair<int, int> ImageProcessor::obtainUpperIndices(int i, int j)
 }
 
 //------------------------------------------------------------------------------
-void ImageProcessor::applyLinearFilter(vector<vector<float>> const& linearFilter)
+void ImageProcessor::applyLinearFilter(vector<vector<float>> const& linearFilter,
+                                unsigned int leftIndex, unsigned int rightIndex)
 //------------------------------------------------------------------------------
 {
     int filterIRadius(int(linearFilter.size()/2));
@@ -178,7 +183,7 @@ void ImageProcessor::applyLinearFilter(vector<vector<float>> const& linearFilter
     int n(m_n);
     int m(m_m);
 
-    for(int i(0); i < n; i++)
+    for(int i((int)(leftIndex)); i < (int)(rightIndex); i++)
     {
         for(int j(0); j < m; j++)
         {
@@ -223,6 +228,8 @@ void ImageProcessor::applyLinearFilter(vector<vector<float>> const& linearFilter
 void ImageProcessor::applyGradientNorm(unsigned int leftIndex, unsigned int rightIndex)
 //------------------------------------------------------------------------------
 {
+    QVector2D gradient;
+
     for(unsigned int i(leftIndex); i < rightIndex; i++)
     {
         for(unsigned int j(0); j < m_m; j++)
@@ -231,14 +238,17 @@ void ImageProcessor::applyGradientNorm(unsigned int leftIndex, unsigned int righ
             pair<int, int> upperIndices(obtainUpperIndices(i, j));
 
             //gradient for the x axis
-            m_gradients[i][j].setX(m_smoothedData[upperIndices.first][j] -
+            gradient.setX(m_smoothedData[upperIndices.first][j] -
                     m_smoothedData[lowerIndices.first][j]);
 
             //gradient for the y axis
-            m_gradients[i][j].setY(m_smoothedData[i][upperIndices.second] -
+            gradient.setY(m_smoothedData[i][upperIndices.second] -
                     m_smoothedData[i][lowerIndices.second]);
 
-            m_gradientData[i][j] = m_gradients[i][j].length();
+            m_gradientsAngles[i][j] = atan((gradient.x() /
+                                            gradient.y()) * 4 / M_PI);
+
+            m_gradientData[i][j] = gradient.length();
         }
     }
 }
@@ -257,7 +267,7 @@ void ImageProcessor::applyCannyAlgorithm(unsigned int leftIndex, unsigned int ri
             }
             else
             {
-                float theta = atan((m_gradients[i][j].x() / m_gradients[i][j].y()) * 4 / M_PI);
+                float theta = m_gradientsAngles[i][j];
 
                 pair<int, int> lowerIndices(obtainLowerIndices(i, j));
                 pair<int, int> upperIndices(obtainUpperIndices(i, j));
@@ -375,21 +385,54 @@ void ImageProcessor::processImage()
              [](vector<float> &l){for_each(l.begin(), l.end(),
              [](float &n){n /= 159.f;});});
 
-    //Don't apply linear filter in parallel
-    //since the computation is bound by the memory bandwidth
-    applyLinearFilter(linearFilter);
+    FILETIME ft;
+    LARGE_INTEGER li;
+    GetSystemTimeAsFileTime(&ft );
+    li.LowPart = ft.dwLowDateTime;
+    li.HighPart = ft.dwHighDateTime;
+    long unsigned int t1 = li.QuadPart;
 
-    performInParallel(
+    ParallelTool::performInParallel(
+        [this, linearFilter](unsigned int leftIndex, unsigned int rightIndex)
+        {
+            applyLinearFilter(linearFilter, leftIndex, rightIndex);
+        },
+        0, m_n);
+
+    ParallelTool::performInParallel(
         [this](unsigned int leftIndex, unsigned int rightIndex)
         {
             applyGradientNorm(leftIndex, rightIndex);
         },
         0, m_n);
 
-    performInParallel(
+    ParallelTool::performInParallel(
         [this](unsigned int leftIndex, unsigned int rightIndex)
         {
             applyCannyAlgorithm(leftIndex, rightIndex);
         },
         0, m_n);
+
+    GetSystemTimeAsFileTime(&ft );
+    li.LowPart = ft.dwLowDateTime;
+    li.HighPart = ft.dwHighDateTime;
+    long unsigned int t2 = li.QuadPart;
+    //cout << t2 - t1 << " ; ";
+    GetSystemTimeAsFileTime(&ft );
+    li.LowPart = ft.dwLowDateTime;
+    li.HighPart = ft.dwHighDateTime;
+    t1 = li.QuadPart;
+
+    applyLinearFilter(linearFilter, 0, m_n);
+
+    applyGradientNorm(0, m_n);
+
+    applyCannyAlgorithm(0, m_n);
+
+    GetSystemTimeAsFileTime(&ft );
+    li.LowPart = ft.dwLowDateTime;
+    li.HighPart = ft.dwHighDateTime;
+    t2 = li.QuadPart;
+    //cout << t2 - t1;
 }
+

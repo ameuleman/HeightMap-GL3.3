@@ -18,6 +18,7 @@
 #include <cassert>
 #include <iostream>
 #include <math.h>
+#include "ParallelTool.h"
 
 #include "Mesh.h"
 
@@ -56,7 +57,21 @@ void Mesh::initialize()
     m_hasNormalData = (m_verticesNormal.size() > 0);
     m_hasColourData = (m_verticesColour.size() > 0);
 
+    FILETIME ft;
+    LARGE_INTEGER li;
+    GetSystemTimeAsFileTime(&ft );
+    li.LowPart = ft.dwLowDateTime;
+    li.HighPart = ft.dwHighDateTime;
+    long unsigned int t1 = li.QuadPart;
+
     setIndex();
+
+    GetSystemTimeAsFileTime(&ft );
+    li.LowPart = ft.dwLowDateTime;
+    li.HighPart = ft.dwHighDateTime;
+    long unsigned int t2 = li.QuadPart;
+    cout << t2 - t1 << " ; ";
+
 
     assert(m_verticesPosition.size());
 
@@ -213,12 +228,41 @@ void Mesh::setIndex()
     if(!m_usesIndex)
     {
         // Add the vertices to the hash table
-        std::map<QVector3D, VertexData, VectorComparer> hash_table;
+        map<QVector3D, VertexData, VectorComparer> hash_table;
+
+        VertexData *hashTableElement;
 
         //Compute the vertices normal vectors
         //(sum of the adjacent faces normal vectors)
         //and set the hash table
-        for (unsigned int i(0); i < m_verticesCount; ++i)
+        /*ParallelTool::performInParallel(
+            [this, &hash_table, &hashTableElement](unsigned int leftIndex, unsigned int rightIndex)
+            {
+            for (unsigned int i(leftIndex); i < rightIndex; i++)
+            {
+                QVector3D currentVertex(m_verticesPosition[i]);
+                QVector3D normal;
+                QVector3D colour;
+
+                if(m_hasNormalData)
+                    normal = m_verticesNormal[i];
+
+                if(m_hasColourData)
+                    colour = m_verticesColour[i];
+
+                hashTableElement = (&hash_table[currentVertex]);
+
+                hashTableElement->m_normal += normal;
+                hashTableElement->m_colour = colour;
+            }
+            },
+            0, m_verticesCount);*/
+
+        /*vector<pair<QVector3D, VertexData>> pretable(m_verticesCount);
+        for(int i(0); i < m_verticesCount;  i++) pretable[i].first = m_verticesPosition[i];
+        hash_table.insert(pretable.begin(), pretable.end());*/
+
+        for (unsigned int i(0); i < m_verticesCount; i++)
         {
             QVector3D currentVertex(m_verticesPosition[i]);
             QVector3D normal;
@@ -230,7 +274,7 @@ void Mesh::setIndex()
             if(m_hasColourData)
                 colour = m_verticesColour[i];
 
-            VertexData *hashTableElement(&hash_table[currentVertex]);
+            hashTableElement = (&hash_table[currentVertex]);
 
             hashTableElement->m_normal += normal;
             hashTableElement->m_colour = colour;
@@ -269,10 +313,16 @@ void Mesh::setIndex()
         m_verticesIndex.clear();
         m_verticesIndex.resize(m_verticesCount);
 
-        for (unsigned int i(0); i < m_verticesCount; ++i)
-        {
-            m_verticesIndex[i] = hash_table[m_verticesPosition[i]].m_id;
-        }
+        ParallelTool::performInParallel(
+            [this, &hash_table, &hashTableElement](unsigned int leftIndex, unsigned int rightIndex)
+            {
+            for (unsigned int i(leftIndex); i < rightIndex; i++)
+            {
+                m_verticesIndex[i] = hash_table[m_verticesPosition[i]].m_id;
+            }
+            },
+            0, m_verticesCount);
+
 
         //set the vertices position data
         m_verticesPosition.clear();

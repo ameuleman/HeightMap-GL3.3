@@ -20,7 +20,6 @@
 //  Include
 //******************************************************************************
 #include <QVector2D>
-#include <thread>
 #include <QImage>
 
 
@@ -48,10 +47,10 @@ public:
     //--------------------------------------------------------------------------
     ImageProcessor(string const& fileName);
 
-    template<class F> static void performInParallel(
+    /*template<class F> static void performInParallel(
             F const& functor, unsigned int leftIndex, unsigned int rightIndex,
-            unsigned char parallilismLvl = 1,
-            unsigned char maxParallelism = thread::hardware_concurrency());
+            unsigned char maxParallelism = thread::hardware_concurrency(),
+            unsigned char parallilismLvl = 1);*/
 
     // getters
     vector<vector<float>> getRawData() const;
@@ -86,7 +85,8 @@ private:
     *  @param linearFilter: the linear filter to apply
     */
     //--------------------------------------------------------------------------
-    void applyLinearFilter(vector<vector<float>> const& linearFilter);
+    void applyLinearFilter(vector<vector<float>> const& linearFilter,
+                           unsigned int leftIndex, unsigned int rightIndex);
 
     void applyGradientNorm(unsigned int leftIndex, unsigned int rightIndex);
 
@@ -102,7 +102,7 @@ private:
         m_gradientData, //Data after gradient processing
         m_cannyData; //Data after edge detection using Canny algorithm
 
-    vector<vector<QVector2D>> m_gradients; //Save all the gradients to apply Canny Algorithm
+    vector<vector<float>> m_gradientsAngles; //Save all the gradients to apply Canny Algorithm
 
     unsigned int m_m, //number of columns
         m_n; //number of rows

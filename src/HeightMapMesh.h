@@ -83,6 +83,8 @@ private:
     //--------------------------------------------------------------------------
     void create(vector<vector<float>> const& imageData);
 
+    void generateVertices(float size, vector<vector<float>> const& imageData, unsigned int leftIndex, unsigned int rightIndex);
+
     unsigned int m_n, //number of rows
         m_m; //number of columns
 };

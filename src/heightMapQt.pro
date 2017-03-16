@@ -40,7 +40,8 @@ HEADERS  += RenderWindow.h \
     HeightMapMesh.h \
     Mesh.h \
     LvlPlan.h \
-    ImageProcessor.h
+    ImageProcessor.h \
+    ParallelTool.h
 
 DISTFILES += ../shader/displayShader.frag \
     ../shader/lvlShader.frag \

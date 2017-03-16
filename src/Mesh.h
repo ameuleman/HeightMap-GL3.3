@@ -20,6 +20,7 @@
 #include <QVector3D>
 #include <vector>
 #include <QOpenGLFunctions>
+#include <atomic>
 
 
 //******************************************************************************
