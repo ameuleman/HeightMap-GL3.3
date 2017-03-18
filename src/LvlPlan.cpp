@@ -1,13 +1,13 @@
 /**
 *******************************************************************************
 *
-*  @file       LvlPlan.h
+*  @file       LvlPlan.cpp
 *
 *  @brief      Class to handel a lvl plan
 *
 *  @date       23/02/2017
 *
-*  @author     Andréas Meuleman
+*  @author     AndrÃ©as Meuleman
 *******************************************************************************
 */
 
