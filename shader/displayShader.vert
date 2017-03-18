@@ -26,7 +26,6 @@ in vec3 colour;
 //******************************************************************************
 //      Outputs
 //******************************************************************************
-out  float hight;
 out  vec3 col;
 out  vec3 nor;
 out  vec3 eyeDir;
@@ -43,7 +42,6 @@ uniform mat4 shadowMapMatrix;
 void main()
 //---------
 {
-	hight = position.z / 50;
 	col = colour;
 	nor = normal;
 
