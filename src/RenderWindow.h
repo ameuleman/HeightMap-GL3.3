@@ -8,9 +8,7 @@
 *
 *  @brief      Class to display the height map
 *
-*  @date       17/06/2016
-*
-*  @author     Andréas Meuleman
+*  @author     AndrÃ©as Meuleman
 *******************************************************************************
 */
 
