@@ -5,9 +5,7 @@
 *
 *  @brief      fragment shader to display the transparant lvl plan without shading
 *
-*  @date       16/06/2016
-*
-*  @author     Andréas Meuleman
+*  @author     AndrÃ©as Meuleman
 *******************************************************************************
 */
 
