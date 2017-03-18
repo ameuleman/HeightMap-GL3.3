@@ -10,7 +10,7 @@
 *
 *  @date       23/02/2017
 *
-*  @author     Andréas Meuleman
+*  @author     AndrÃ©as Meuleman
 *******************************************************************************
 */
 
@@ -42,8 +42,8 @@ public:
 private:
 
     float m_height, //The height of the lvl plan. Can be seen as a threshold for the edge detection.
-        m_length,
-        m_width;
+        m_length, //Size of a side of the plan
+        m_width; //Size of the other side
 };
 
 #endif // LVLPLAN_H
