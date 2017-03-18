@@ -25,9 +25,6 @@ const float THRESHOLD_2 = 0.065f;
 #include <math.h>
 #include <algorithm>
 
-#include <iostream>
-#include <Windows.h>
-
 #include "ImageProcessor.h"
 #include "ParallelTool.h"
 
