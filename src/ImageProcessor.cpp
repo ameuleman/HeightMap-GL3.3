@@ -7,7 +7,7 @@
 *
 *  @date       01/03/2017
 *
-*  @author     Andréas Meuleman
+*  @author     AndrÃ©as Meuleman
 *******************************************************************************
 */
 
@@ -82,56 +82,24 @@ unsigned int ImageProcessor::getN() const
     return m_n;
 }
 
-/*//------------------------------------------------------------------------------
-template<class F> void ImageProcessor::performInParallel(
-        F const& functor, unsigned int leftIndex, unsigned int rightIndex,
-        unsigned char maxParallelism, unsigned char parallelismLvl)
-//------------------------------------------------------------------------------
-{
-    parallelismLvl *= 2;
-
-    if(parallelismLvl <= maxParallelism)
-    {
-        unsigned int midIndex((unsigned int)(rightIndex / 2));
-
-        thread parallelProcessing(
-            [&functor, midIndex, rightIndex, maxParallelism, parallelismLvl]()
-            {
-                performInParallel(functor,
-                        midIndex, rightIndex,
-                        maxParallelism, maxParallelism);
-            });
-
-        performInParallel(functor,
-                    leftIndex, midIndex,
-                    maxParallelism, parallelismLvl);
-
-        parallelProcessing.join();
-    }
-    else
-    {
-        functor(leftIndex, rightIndex);
-    }
-}*/
-
-
 //------------------------------------------------------------------------------
 void ImageProcessor::loadData(string const& fileName)
 //------------------------------------------------------------------------------
 {
     //Load the image
     QImage image(fileName.c_str());
-
-    unsigned char * pLine;
-
+    
     m_n = image.height();
     m_m = image.width();
 
+    //Allocate memory
     m_rawData.resize(m_n, vector<float>(m_m));
     m_smoothedData.resize(m_n, vector<float>(m_m));
     m_gradientsAngles.resize(m_n, vector<float>(m_m));
     m_gradientData.resize(m_n, vector<float>(m_m));
     m_cannyData.resize(m_n, vector<float>(m_m));
+
+    unsigned char * pLine;
 
     for(unsigned int i(0); i < m_n; i++)
     {
@@ -177,6 +145,7 @@ void ImageProcessor::applyLinearFilter(vector<vector<float>> const& linearFilter
                                 unsigned int leftIndex, unsigned int rightIndex)
 //------------------------------------------------------------------------------
 {
+    //To know how many pixel need to be read before and after the current pixel
     int filterIRadius(int(linearFilter.size()/2));
     int filterJRadius(int(linearFilter[0].size()/2));
 
@@ -187,13 +156,15 @@ void ImageProcessor::applyLinearFilter(vector<vector<float>> const& linearFilter
     {
         for(int j(0); j < m; j++)
         {
+            //Result of the filter for this pixel
             float pixelSum(0);
 
             for(int iFilter(-filterIRadius); iFilter < filterIRadius + 1; iFilter++)
             {
+                //Index of the pixel where the data will be read
                 int iReadIndex;
 
-
+                //Set iReadIndex and clamp it, preventing it from being out of range
                 if(i - iFilter > 0)
                     if(i - iFilter < n)
                         iReadIndex = i - iFilter;
@@ -215,10 +186,14 @@ void ImageProcessor::applyLinearFilter(vector<vector<float>> const& linearFilter
                     else
                         jReadIndex = 0;
 
-                    pixelSum += m_rawData[iReadIndex][jReadIndex] * linearFilter[iFilter + filterIRadius][jFilter + filterJRadius];
+                    //Add the value of the read index multiplied by the corresponding 
+                    //value in the filter to the result for the current pixel
+                    pixelSum += m_rawData[iReadIndex][jReadIndex] * 
+                        linearFilter[iFilter + filterIRadius][jFilter + filterJRadius];
                 }
             }
 
+            //Set the data
             m_smoothedData[i][j] = pixelSum;
         }
     }
@@ -245,9 +220,11 @@ void ImageProcessor::applyGradientNorm(unsigned int leftIndex, unsigned int righ
             gradient.setY(m_smoothedData[i][upperIndices.second] -
                     m_smoothedData[i][lowerIndices.second]);
 
+            //Store angles to apply Canny algorithm Later
             m_gradientsAngles[i][j] = atan((gradient.x() /
                                             gradient.y()) * 4 / M_PI);
 
+            //Store gradient norm
             m_gradientData[i][j] = gradient.length();
         }
     }
@@ -261,22 +238,26 @@ void ImageProcessor::applyCannyAlgorithm(unsigned int leftIndex, unsigned int ri
     {
         for(unsigned int j(0); j < m_m; j++)
         {
+            //In case the value of the gradient is below the first threshold, 
+            //we ignore the corresponding pixel
             if(m_gradientData[i][j] < THRESHOLD_1)
             {
                 m_cannyData[i][j] = 0;
             }
             else
             {
+                //Calculate the value of gradient norm for the adjacent pixels in the gradient directions
                 float theta = m_gradientsAngles[i][j];
 
                 pair<int, int> lowerIndices(obtainLowerIndices(i, j));
                 pair<int, int> upperIndices(obtainUpperIndices(i, j));
 
+                //Values of gradient norm in the two directions
                 float maxChecker1, maxChecker2;
 
                 if(theta < - 1)
                 {
-
+                    //Interpolate the value for both directions
                     maxChecker1 = m_gradientData[lowerIndices.first][j] * ( -1 - theta) +
                         m_gradientData[lowerIndices.first][upperIndices.second] * (2 + theta);
 
@@ -309,17 +290,22 @@ void ImageProcessor::applyCannyAlgorithm(unsigned int leftIndex, unsigned int ri
                         m_gradientData[lowerIndices.first][lowerIndices.second] * (2 - theta);
                 }
 
-
+                //If the value of the pixel is not bigger than the value of adjacent pixels
+                //in the gradient directions, we ignore it to make edges thinner
                 if(m_gradientData[i][j] < max(maxChecker1, maxChecker2))
                 {
                     m_cannyData[i][j] = 0;
                 }
+                //if the value is bigger than the second threshold, we keep it
                 else if(m_gradientData[i][j] > THRESHOLD_2)
                 {
                     m_cannyData[i][j] = 1;
                 }
+                //If the value is between the two thresholds, we apply the last part of Canny 
+                //algorithm: hysteresis
                 else if(m_gradientData[i][j] > THRESHOLD_1)
                 {
+                    //Values of gradient norm in the two directions of the gradient's normal vector
                     float hysteresisChecker1, hysteresisChecker2;
 
                     if(theta < - 1)
@@ -359,6 +345,8 @@ void ImageProcessor::applyCannyAlgorithm(unsigned int leftIndex, unsigned int ri
                             m_gradientData[i][upperIndices.second] * (theta - 1);
                     }
 
+                    //If the value of adjacent pixels in gradient's normal vector directions, 
+                    //we keep it
                     if(max(hysteresisChecker1, hysteresisChecker2) > THRESHOLD_1)
                     {
                         m_cannyData[i][j] = 1;
@@ -385,13 +373,6 @@ void ImageProcessor::processImage()
              [](vector<float> &l){for_each(l.begin(), l.end(),
              [](float &n){n /= 159.f;});});
 
-    FILETIME ft;
-    LARGE_INTEGER li;
-    GetSystemTimeAsFileTime(&ft );
-    li.LowPart = ft.dwLowDateTime;
-    li.HighPart = ft.dwHighDateTime;
-    long unsigned int t1 = li.QuadPart;
-
     ParallelTool::performInParallel(
         [this, linearFilter](unsigned int leftIndex, unsigned int rightIndex)
         {
@@ -412,27 +393,5 @@ void ImageProcessor::processImage()
             applyCannyAlgorithm(leftIndex, rightIndex);
         },
         0, m_n);
-
-    GetSystemTimeAsFileTime(&ft );
-    li.LowPart = ft.dwLowDateTime;
-    li.HighPart = ft.dwHighDateTime;
-    long unsigned int t2 = li.QuadPart;
-    //cout << t2 - t1 << " ; ";
-    GetSystemTimeAsFileTime(&ft );
-    li.LowPart = ft.dwLowDateTime;
-    li.HighPart = ft.dwHighDateTime;
-    t1 = li.QuadPart;
-
-    applyLinearFilter(linearFilter, 0, m_n);
-
-    applyGradientNorm(0, m_n);
-
-    applyCannyAlgorithm(0, m_n);
-
-    GetSystemTimeAsFileTime(&ft );
-    li.LowPart = ft.dwLowDateTime;
-    li.HighPart = ft.dwHighDateTime;
-    t2 = li.QuadPart;
-    //cout << t2 - t1;
 }
 
