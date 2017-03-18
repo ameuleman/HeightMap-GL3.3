@@ -6,9 +6,7 @@
 *  @brief      Load an image, perform edge detection and display the result
 *               and the original data as height maps.
 *
-*  @date       17/06/2016
-*
-*  @author     Andréas Meuleman
+*  @author     AndrÃ©as Meuleman
 *******************************************************************************
 */
 
@@ -32,7 +30,7 @@ int main(int argc, char **argv)
     //Launch the windows
     QApplication app(argc, argv);
 
-    /*RenderWindow rawWindow(imageProcessor.getRawData(),
+    RenderWindow rawWindow(imageProcessor.getRawData(),
                            imageProcessor.getN(), imageProcessor.getM());
 
     rawWindow.setTitle("Original image");
@@ -51,7 +49,7 @@ int main(int argc, char **argv)
 
     gradientWindow.setTitle("Gradient norm image");
     gradientWindow.resize(800, 450);
-    gradientWindow.show();*/
+    gradientWindow.show();
 
     RenderWindow cannyWindow(imageProcessor.getCannyData(),
                            imageProcessor.getN(), imageProcessor.getM());
