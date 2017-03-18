@@ -11,7 +11,7 @@
 *
 *  @date       16/06/2016
 *
-*  @author     Andréas Meuleman
+*  @author     AndrÃ©as Meuleman
 *******************************************************************************
 */
 
@@ -75,14 +75,23 @@ private:
     HeightMapMesh();
 
     //--------------------------------------------------------------------------
-    ///translate the vector read into three vector<QVector3D>
-    ///that can be exploited by the rendering window (position, colour and normal vectors)
+    ///Create the mesh
     /**
     *  @param imageData: the data of the image as floats in the [0,1] range
     */
     //--------------------------------------------------------------------------
     void create(vector<vector<float>> const& imageData);
 
+    //--------------------------------------------------------------------------
+    ///translate the vector read into three vector<QVector3D>
+    ///that can be exploited by the rendering window (position, colour and normal vectors)
+    /// Proceed between two values to enable parallel processing
+    /**
+    * @param imageData: the data of the image as floats in the [0,1] range
+    * @param leftIndex: proceed from this index
+    * @param rightIndex: to this index
+    */
+    //--------------------------------------------------------------------------
     void generateVertices(float size, vector<vector<float>> const& imageData, unsigned int leftIndex, unsigned int rightIndex);
 
     unsigned int m_n, //number of rows
