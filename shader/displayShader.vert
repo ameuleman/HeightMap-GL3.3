@@ -5,9 +5,7 @@
 *
 *  @brief      vertex shader to display a mesh with shading
 *
-*  @date       16/06/2016
-*
-*  @author     Andréas Meuleman
+*  @author     AndrÃ©as Meuleman
 *******************************************************************************
 */
 
