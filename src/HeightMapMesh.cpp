@@ -18,8 +18,6 @@
 #include <fstream>
 #include <cassert>
 
-#include <Windows.h>
-
 #include "ParallelTool.h"
 #include "HeightMapMesh.h"
 
