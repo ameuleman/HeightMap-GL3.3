@@ -184,7 +184,7 @@ private:
     float m_length, //length of the model
         m_width, //width of the model
         m_shadowMatrixSide, //size of the cube that the shadow map take into account
-        m_zoomAngle;
+        m_zoomAngle; //Angle for the view matrix
 
 	bool m_LvlPlanVisibility; //to chose if the lvl plan has to be displayed
 };
