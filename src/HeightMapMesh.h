@@ -9,8 +9,6 @@
 *  @brief      Class to create a height map mesh thanks to a file or data
 *               to displpay it thanks to OpenGL
 *
-*  @date       16/06/2016
-*
 *  @author     Andréas Meuleman
 *******************************************************************************
 */

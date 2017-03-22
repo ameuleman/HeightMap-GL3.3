@@ -5,8 +5,6 @@
 *
 *  @brief      Class to load an image and process it
 *
-*  @date       01/03/2017
-*
 *  @author     Andréas Meuleman
 *******************************************************************************
 */
@@ -24,7 +22,7 @@ const float THRESHOLD_2 = 0.065f;
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <algorithm>
-
+#include <iostream>
 #include "ImageProcessor.h"
 #include "ParallelTool.h"
 
@@ -32,9 +30,15 @@ const float THRESHOLD_2 = 0.065f;
 ImageProcessor::ImageProcessor(string const& fileName)
 //------------------------------------------------------------------------------
 {
-    loadData(fileName);
-
-    processImage();
+    try
+    {
+        loadData(fileName);
+        processImage();
+    }
+    catch(exception const& e)
+    {
+        cerr << "ERROR : " << e.what() << endl;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -89,26 +93,32 @@ void ImageProcessor::loadData(string const& fileName)
     m_n = image.height();
     m_m = image.width();
 
-    //Allocate memory
-    m_rawData.resize(m_n, vector<float>(m_m));
-    m_smoothedData.resize(m_n, vector<float>(m_m));
-    m_gradientsAngles.resize(m_n, vector<float>(m_m));
-    m_gradientData.resize(m_n, vector<float>(m_m));
-    m_cannyData.resize(m_n, vector<float>(m_m));
-
-    unsigned char * pLine;
-
-    for(unsigned int i(0); i < m_n; i++)
+    //Make sure their is data to load
+    if(m_n && m_m)
     {
-        //retrieve a line of data
-        pLine = image.scanLine(i);
+        //Allocate memory
+        m_rawData.resize(m_n, vector<float>(m_m));
+        m_smoothedData.resize(m_n, vector<float>(m_m));
+        m_gradientsAngles.resize(m_n, vector<float>(m_m));
+        m_gradientData.resize(m_n, vector<float>(m_m));
+        m_cannyData.resize(m_n, vector<float>(m_m));
 
-        //read all the data of the line and store them as floats in the [0,1] range
-        for(unsigned int j(0); j < m_m; j++)
+        unsigned char * pLine;
+
+        for(unsigned int i(0); i < m_n; i++)
         {
-            m_rawData[i][j] = float(pLine[j])/255.f;
+            //retrieve a line of data
+            pLine = image.scanLine(i);
+
+            //read all the data of the line and store them as floats in the [0,1] range
+            for(unsigned int j(0); j < m_m; j++)
+            {
+                m_rawData[i][j] = float(pLine[j])/255.f;
+            }
         }
     }
+    else
+        throw runtime_error("Wrong file name : cannot process " + fileName);
 }
 
 //------------------------------------------------------------------------------
@@ -142,58 +152,64 @@ void ImageProcessor::applyLinearFilter(vector<vector<float>> const& linearFilter
                                 unsigned int leftIndex, unsigned int rightIndex)
 //------------------------------------------------------------------------------
 {
-    //To know how many pixel need to be read before and after the current pixel
-    int filterIRadius(int(linearFilter.size()/2));
-    int filterJRadius(int(linearFilter[0].size()/2));
-
-    int n(m_n);
-    int m(m_m);
-
-    for(int i((int)(leftIndex)); i < (int)(rightIndex); i++)
+    //Make sure the filter's dimentions are odd numbers
+    if(linearFilter.size() % 2 && linearFilter[0].size() % 2)
     {
-        for(int j(0); j < m; j++)
+        //To know how many pixel need to be read before and after the current pixel
+        int filterIRadius(int(linearFilter.size()/2));
+        int filterJRadius(int(linearFilter[0].size()/2));
+
+        int n(m_n);
+        int m(m_m);
+
+        for(int i((int)(leftIndex)); i < (int)(rightIndex); i++)
         {
-            //Result of the filter for this pixel
-            float pixelSum(0);
-
-            for(int iFilter(-filterIRadius); iFilter < filterIRadius + 1; iFilter++)
+            for(int j(0); j < m; j++)
             {
-                //Index of the pixel where the data will be read
-                int iReadIndex;
+                //Result of the filter for this pixel
+                float pixelSum(0);
 
-                //Set iReadIndex and clamp it, preventing it from being out of range
-                if(i - iFilter > 0)
-                    if(i - iFilter < n)
-                        iReadIndex = i - iFilter;
-                    else
-                        iReadIndex = n - 1;
-                else
-                    iReadIndex = 0;
-
-
-                for(int jFilter(-filterJRadius); jFilter < filterJRadius + 1; jFilter++)
+                for(int iFilter(-filterIRadius); iFilter < filterIRadius + 1; iFilter++)
                 {
-                    int jReadIndex;
+                    //Index of the pixel where the data will be read
+                    int iReadIndex;
 
-                    if(j - jFilter > 0)
-                        if(j - jFilter < m)
-                            jReadIndex = j - jFilter;
+                    //Set iReadIndex and clamp it, preventing it from being out of range
+                    if(i - iFilter > 0)
+                        if(i - iFilter < n)
+                            iReadIndex = i - iFilter;
                         else
-                            jReadIndex = m - 1;
+                            iReadIndex = n - 1;
                     else
-                        jReadIndex = 0;
+                        iReadIndex = 0;
 
-                    //Add the value of the read index multiplied by the corresponding 
-                    //value in the filter to the result for the current pixel
-                    pixelSum += m_rawData[iReadIndex][jReadIndex] * 
-                        linearFilter[iFilter + filterIRadius][jFilter + filterJRadius];
+
+                    for(int jFilter(-filterJRadius); jFilter < filterJRadius + 1; jFilter++)
+                    {
+                        int jReadIndex;
+
+                        if(j - jFilter > 0)
+                            if(j - jFilter < m)
+                                jReadIndex = j - jFilter;
+                            else
+                                jReadIndex = m - 1;
+                        else
+                            jReadIndex = 0;
+
+                        //Add the value of the read index multiplied by the corresponding
+                        //value in the filter to the result for the current pixel
+                        pixelSum += m_rawData[iReadIndex][jReadIndex] *
+                            linearFilter[iFilter + filterIRadius][jFilter + filterJRadius];
+                    }
                 }
-            }
 
-            //Set the data
-            m_smoothedData[i][j] = pixelSum;
+                //Set the data
+                m_smoothedData[i][j] = pixelSum;
+            }
         }
     }
+    else
+        throw length_error("Wrong filter's dimensions");
 }
 
 //------------------------------------------------------------------------------
@@ -370,10 +386,18 @@ void ImageProcessor::processImage()
              [](vector<float> &l){for_each(l.begin(), l.end(),
              [](float &n){n /= 159.f;});});
 
+    //Perform image processing in parallel to reduce computation time
     ParallelTool::performInParallel(
         [this, linearFilter](unsigned int leftIndex, unsigned int rightIndex)
         {
-            applyLinearFilter(linearFilter, leftIndex, rightIndex);
+            try
+            {
+                applyLinearFilter(linearFilter, leftIndex, rightIndex);
+            }
+            catch(exception const& e)
+            {
+                cerr << "ERROR : " << e.what() << endl;
+            }
         },
         0, m_n);
 

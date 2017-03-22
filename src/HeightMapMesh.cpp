@@ -74,7 +74,14 @@ HeightMapMesh::HeightMapMesh(vector<vector<float>> const& imageData,
 {
     //create m_verticesPosition, m_verticesColour, m_verticesNormal
     //and m_verticesCount thanks to the data
-    create(imageData);
+    try
+    {
+        create(imageData);
+    }
+    catch(exception const& e)
+    {
+        cerr << "ERROR : " << e.what() << endl;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -124,14 +131,21 @@ void HeightMapMesh::create(vector<vector<float>> const& imageData)
     m_verticesPosition.resize(m_verticesCount);
     m_verticesColour.resize(m_verticesCount);
 
-    float size(SIDE_FACTOR/(float(max(m_n, m_m))));
+    if(m_n != 0 && m_m != 0 && imageData.size() == m_n && imageData[0].size() == m_m)
+    {
+        float size(SIDE_FACTOR/(float(max(m_n, m_m))));
 
-    ParallelTool::performInParallel(
-        [this, size, &imageData](unsigned int leftIndex, unsigned int rightIndex)
-        {
-            generateVertices(size, imageData, leftIndex, rightIndex);
-        },
-        0, m_n - 1);
+        ParallelTool::performInParallel(
+            [this, size, &imageData](unsigned int leftIndex, unsigned int rightIndex)
+            {
+                generateVertices(size, imageData, leftIndex, rightIndex);
+            },
+            0, m_n - 1);
+    }
+    else
+    {
+        throw runtime_error("Wrong data, cannot create the model");
+    }
 }
 
 //------------------------------------------------------------------------------

@@ -5,8 +5,6 @@
 *
 *  @brief      Class to handel a mesh to displpay it thanks to OpenGL
 *
-*  @date       23/02/2017
-*
 *  @author     Andréas Meuleman
 *******************************************************************************
 */
@@ -15,10 +13,10 @@
 //  Include
 //******************************************************************************
 #include <QtGui/QOpenGLShaderProgram>
-#include <cassert>
 #include <math.h>
-#include "ParallelTool.h"
+#include <iostream>
 
+#include "ParallelTool.h"
 #include "Mesh.h"
 
 //******************************************************************************
@@ -57,9 +55,11 @@ void Mesh::initialize()
     m_hasColourData = (m_verticesColour.size() > 0);
     
     //Fail if their is nothing to display
-    assert(m_verticesPosition.size());
+    if(m_verticesPosition.size())
+        setIndex();
+    else
+        throw runtime_error("No vertex data");
 
-    setIndex();
     
     initializeOpenGLFunctions();
 
@@ -108,51 +108,59 @@ void Mesh::updateVBO()
 void Mesh::render()
 //------------------------------------------------------------------------------
 {
-    //initialize if necessary
-    if(!m_isInitialized)
+    try
     {
-        initialize();
+
+        //initialize if necessary
+        if(!m_isInitialized)
+        {
+            initialize();
+        }
+
+        glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, m_positionBuffer);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+        if(m_hasNormalData)
+        {
+            glEnableVertexAttribArray(1);
+            glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffer);
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        }
+
+        if(m_hasColourData)
+        {
+            glEnableVertexAttribArray(2);
+            glBindBuffer(GL_ARRAY_BUFFER, m_colourBuffer);
+            glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        }
+
+        if(m_usesIndex)
+        {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
+
+            //draws the triangle on the window
+            glDrawElements(GL_TRIANGLES, m_verticesCount, GL_UNSIGNED_INT, (void*)0);
+        }
+        else
+        {
+            //draws the triangle on the window
+            glDrawArrays(GL_TRIANGLES, 0, m_verticesCount);
+        }
+
+        //Disable
+        glDisableVertexAttribArray(0);
+
+        if(m_hasNormalData)
+            glDisableVertexAttribArray(1);
+
+        if(m_hasColourData)
+            glDisableVertexAttribArray(2);
     }
-
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, m_positionBuffer);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-    if(m_hasNormalData)
+    catch(exception const& e)
     {
-        glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffer);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        cerr << "ERROR : " << e.what() << endl;
     }
-
-    if(m_hasColourData)
-    {
-        glEnableVertexAttribArray(2);
-        glBindBuffer(GL_ARRAY_BUFFER, m_colourBuffer);
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-    }
-
-    if(m_usesIndex)
-    {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
-
-        //draws the triangle on the window
-        glDrawElements(GL_TRIANGLES, m_verticesCount, GL_UNSIGNED_INT, (void*)0);
-    }
-    else
-    {
-        //draws the triangle on the window
-        glDrawArrays(GL_TRIANGLES, 0, m_verticesCount);
-    }
-
-    //Disable 
-    glDisableVertexAttribArray(0);
-
-    if(m_hasNormalData)
-        glDisableVertexAttribArray(1);
-
-    if(m_hasColourData)
-        glDisableVertexAttribArray(2);
 }
 
 

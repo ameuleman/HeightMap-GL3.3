@@ -14,7 +14,6 @@
 //******************************************************************************
 #include <iostream>
 #include <fstream>
-#include <cassert>
 #include <QOpenGLFunctions>
 #include <QString>
 #include <QFileDialog>
@@ -446,13 +445,17 @@ string RenderWindow::readShaderFile(string const& shaderFileName)
 {
     ifstream shaderFile(shaderFileName, ios::in);
 
-    assert(shaderFile);
+    if(shaderFile)
+    {
+        //read the shader file line by line
+        string line, source;
+        while (getline(shaderFile, line))
+            source += line + '\n';
+        shaderFile.close();
+        return source;
+    }
+    else
+        throw runtime_error("No shader file" + shaderFileName);
 
-    //read the shader file line by line
-    string line, source;
-    while (getline(shaderFile, line))
-        source += line + '\n';
-    shaderFile.close();
-    return source;
 }
 

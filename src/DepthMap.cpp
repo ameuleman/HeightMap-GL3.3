@@ -14,7 +14,6 @@
 //******************************************************************************
 #include <iostream>
 #include <fstream>
-#include <cassert>
 #include <QOpenGLFunctions>
 
 #include "DepthMap.h"
@@ -70,7 +69,8 @@ void DepthMap::initialize()
                            m_mapTexture, 0);
 
 	//check the creation of the buffer
-	assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        throw runtime_error("Depth map frame buffer creation incomplete");
 
 	// Cleanup for now
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

@@ -8,8 +8,6 @@
 *
 *  @brief      Class to handle a lvl plan to highlight the edges
 *
-*  @date       23/02/2017
-*
 *  @author     Andréas Meuleman
 *******************************************************************************
 */

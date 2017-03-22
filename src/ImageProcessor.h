@@ -9,8 +9,6 @@
 *  @brief      Class to load an image and process it.
 *               Uses Canny's algorithm to perform edge detection.
 *
-*  @date       01/03/2017
-*
 *  @author     Andréas Meuleman
 *******************************************************************************
 */

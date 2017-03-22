@@ -8,8 +8,6 @@
 *
 *  @brief      Class to render to a buffer in order to create, for exemple, a shadow map.
 *
-*  @date       22/06/2016
-*
 *  @author     Andréas Meuleman
 *******************************************************************************
 */
