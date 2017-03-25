@@ -23,6 +23,6 @@ out vec4 colour;
 void main()
 //---------
 {
-        //Output: always the same color
-        colour = vec4(0.5, 0.5, 0.5, 0.8);
+	//Output: always the same color
+	colour = vec4(0.5, 0.5, 0.5, 0.8);
 }

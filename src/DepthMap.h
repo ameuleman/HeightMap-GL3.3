@@ -19,6 +19,7 @@
 #include <QtGui/QMatrix4x4>
 #include <QOpenGLTexture>
 #include <vector>
+#include <memory>
 
 #include "Mesh.h"
 
@@ -43,12 +44,13 @@ public:
 	//--------------------------------------------------------------------------
 	///render to the frame buffer, call initialize() if it has never been called before
 	/**
-    *  @param mesh: the mesh to be rendered
+	*  @param mesh: the mesh to be rendered
 	*  @param matrix: the projection matrix
-    *  @param program: the OpenGL shader program to create the depth map
-    */
+	*  @param program: the OpenGL shader program to create the depth map
+	*/
 	//--------------------------------------------------------------------------
-    void render(Mesh &mesh, QMatrix4x4 const& matrix, QOpenGLShaderProgram * program);
+	void render(Mesh &mesh, QMatrix4x4 const& matrix,
+				std::unique_ptr<QOpenGLShaderProgram> const& program);
 
 	//--------------------------------------------------------------------------
 	///Get the texture
@@ -63,7 +65,7 @@ private:
 	bool m_isInitialized;//to know if initialize() has been called
 
 	//IDs for inputs in the map program
-    GLuint m_matrixID; //ID of the MVP matrix
+	GLuint m_matrixID; //ID of the MVP matrix
 
 	//To create a buffer for the scene map
 	GLuint	m_mapFrameBuffer,

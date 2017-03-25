@@ -20,11 +20,10 @@
 #include <QOpenGLFunctions>
 #include <atomic>
 
-
 //******************************************************************************
-//  namespace
+//  Type definition
 //******************************************************************************
-using namespace std;
+typedef std::vector<QVector3D> vector_data;
 
 //==============================================================================
 /**
@@ -35,63 +34,63 @@ using namespace std;
 class Mesh: protected QOpenGLFunctions
 {
 public:
-    Mesh();
+	Mesh();
 
-    virtual ~Mesh();
+	virtual ~Mesh();
 
-    //--------------------------------------------------------------------------
-    ///Initialize VBO
-    //--------------------------------------------------------------------------
-    void initialize();
+	//--------------------------------------------------------------------------
+	///Initialize VBO
+	//--------------------------------------------------------------------------
+	void initialize();
 
-    //--------------------------------------------------------------------------
-    /// VBO needs update when data change
-    //--------------------------------------------------------------------------
-    void updateVBO();
+	//--------------------------------------------------------------------------
+	/// VBO needs update when data change
+	//--------------------------------------------------------------------------
+	void updateVBO();
 
-    //--------------------------------------------------------------------------
-    /// Render the mesh in the current OpenGL context
-    //--------------------------------------------------------------------------
-    void render();
+	//--------------------------------------------------------------------------
+	/// Render the mesh in the current OpenGL context
+	//--------------------------------------------------------------------------
+	void render();
 
-    //--------------------------------------------------------------------------
-    /// change from one normal per face to one normal per vertex
-    /// and set the index to improve performance.
-    /// Do nothing if an index has already been set.
-    //--------------------------------------------------------------------------
-    void setIndex();
+	//--------------------------------------------------------------------------
+	/// change from one normal per face to one normal per vertex
+	/// and set the index to improve performance.
+	/// Do nothing if an index has already been set.
+	//--------------------------------------------------------------------------
+	void setIndex();
 
-    //--------------------------------------------------------------------------
-    /// Clean up VBO if needed
-    //--------------------------------------------------------------------------
-    void cleanUpVBO();
+	//--------------------------------------------------------------------------
+	/// Clean up VBO if needed
+	//--------------------------------------------------------------------------
+	void cleanUpVBO();
 
-    //getters
-    vector<QVector3D > getVerticesPosition() const;
-    vector<QVector3D > getVerticesColour() const;
-    vector<QVector3D > getVerticesNormal() const;
+	//getters
+	vector_data getVerticesPosition() const;
+	vector_data getVerticesColour() const;
+	vector_data getVerticesNormal() const;
 
-    unsigned int getVerticeCount() const;
+	unsigned int getVerticeCount() const;
 
 protected:
-    vector<QVector3D > m_verticesPosition, //Position of the vertices
-        m_verticesColour,
-        m_verticesNormal; //normal vector
+	vector_data m_verticesPosition, //Position of the vertices
+		m_verticesColour,
+		m_verticesNormal; //normal vector
 
-    vector<unsigned int> m_verticesIndex; //normal vector
+	std::vector<unsigned int> m_verticesIndex; //normal vector
 
-    unsigned int m_verticesCount; //number of vertices
+	unsigned int m_verticesCount; //number of vertices
 
-    //IDs of array buffers
-    GLuint m_positionBuffer,
-        m_normalBuffer,
-        m_colourBuffer,
-        m_indexBuffer;
+	//IDs of array buffers
+	GLuint m_positionBuffer,
+		m_normalBuffer,
+		m_colourBuffer,
+		m_indexBuffer;
 
-    bool m_isInitialized,//to know if initialize() has been called
-        m_hasNormalData,
-        m_hasColourData,
-        m_usesIndex;
+	bool m_isInitialized,//to know if initialize() has been called
+		m_hasNormalData,
+		m_hasColourData,
+		m_usesIndex;
 };
 
 #endif // MESH_H
