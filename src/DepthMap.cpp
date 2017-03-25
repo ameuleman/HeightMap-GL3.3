@@ -39,6 +39,8 @@ DepthMap::DepthMap() :
 DepthMap::~DepthMap()
 //------------------------------------------------------------------------
 {
+	glDeleteFramebuffers(1, &m_mapFrameBuffer);
+	glDeleteTextures(1, &m_mapTexture);
 }
 
 //------------------------------------------------------------------------
@@ -47,8 +49,8 @@ void DepthMap::initialize()
 {
 	initializeOpenGLFunctions();
 
-		//Intialize the buffer for the depth map texture and enable
-		//sampling in the fragment shader as a sampler2DShadow
+	//Intialize the buffer for the depth map texture and enable
+	//sampling in the fragment shader as a sampler2DShadow
 	glGenTextures(1, &m_mapTexture);
 	glBindTexture(GL_TEXTURE_2D, m_mapTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16,

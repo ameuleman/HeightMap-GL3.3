@@ -48,7 +48,7 @@ RenderWindow::RenderWindow(const std::string &fileName):
 
 //------------------------------------------------------------------------------
 RenderWindow::RenderWindow(std::vector<std::vector<float>> const& imageData,
-						   unsigned int n, unsigned int m):
+						  unsigned int n, unsigned int m):
 //------------------------------------------------------------------------------
 	m_heightMapMesh(imageData, n, m),
 	m_lvlPlan(0, m_heightMapMesh.getLength(), m_heightMapMesh.getWidth()),
@@ -70,6 +70,8 @@ RenderWindow::RenderWindow(std::vector<std::vector<float>> const& imageData,
 RenderWindow::~RenderWindow()
 //------------------------------------------------------------------------------
 {
+	//Make current to make sure children are destroyed with an active context.
+	makeCurrent();
 }
 
 //------------------------------------------------------------------------------
@@ -375,7 +377,7 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
 }
 
 //------------------------------------------------------------------------------
-void RenderWindow::rotateCamera(float angle, float x, float y, float z)
+void RenderWindow::rotateCamera(const float angle, const float x, const float y, const float z)
 //------------------------------------------------------------------------------
 {
 	//Rotate the camera position

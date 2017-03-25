@@ -162,7 +162,8 @@ void HeightMapMesh::create(vector<vector<float>> const& imageData)
 }
 
 //------------------------------------------------------------------------------
-void HeightMapMesh::generateVertices(float size, vector<vector<float>> const& imageData, unsigned int leftIndex, unsigned int rightIndex)
+void HeightMapMesh::generateVertices(float size, vector<vector<float>> const& imageData,
+									 unsigned int leftIndex, unsigned int rightIndex)
 //------------------------------------------------------------------------------
 {
 	for (unsigned int i(leftIndex); i < rightIndex; i++) {

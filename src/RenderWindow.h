@@ -122,7 +122,8 @@ private:
 	*  @param z: axis of rotation
 	*/
 	//--------------------------------------------------------------------------
-	void rotateCamera(float angle, float x, float y, float z);
+	void rotateCamera(float const angle, float const x, float const y,
+					  float const z);
 
 	//--------------------------------------------------------------------------
 	///Rotate the light source and rebuild the shadow

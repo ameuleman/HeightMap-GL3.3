@@ -29,7 +29,7 @@ using namespace std;
 //==============================================================================
 /**
 *  @class  ImageProcessor
-*  @brief  ImageProcessor is Class to load an image and process it
+*  @brief  ImageProcessor is Class to load an image and process it.
 *               Uses Canny's algorithm to perform edge detection.
 */
 //==============================================================================

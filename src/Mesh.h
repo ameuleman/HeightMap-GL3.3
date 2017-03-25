@@ -6,7 +6,7 @@
 *
 *  @file       Mesh.cpp
 *
-*  @brief      Class to handel a mesh to displpay it thanks to OpenGL
+*  @brief      Class to handel a mesh to display it thanks to OpenGL
 *
 *  @author     Andréas Meuleman
 *******************************************************************************
@@ -28,7 +28,7 @@ typedef std::vector<QVector3D> vector_data;
 //==============================================================================
 /**
 *  @class  Mesh
-*  @brief  Mesh is a class to handel a mesh to displpay it thanks to OpenGL
+*  @brief  Mesh is a class to handel a mesh to display it thanks to OpenGL
 */
 //==============================================================================
 class Mesh: protected QOpenGLFunctions
@@ -61,7 +61,7 @@ public:
 	void setIndex();
 
 	//--------------------------------------------------------------------------
-	/// Clean up VBO if needed
+	/// Clean up VBO if needed, needed before deletion
 	//--------------------------------------------------------------------------
 	void cleanUpVBO();
 

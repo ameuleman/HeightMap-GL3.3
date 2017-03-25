@@ -26,8 +26,9 @@
 
 //==============================================================================
 /**
-*  @class  Map
-*  @brief  Map is a class to load a height map file.
+*  @class  HeightMapMesh
+*  @brief  HeightMapMesh is a class to create a height map mesh thanks to a file or data
+*               to displpay it thanks to OpenGL
 */
 //==============================================================================
 class HeightMapMesh: public Mesh{
