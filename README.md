@@ -11,7 +11,7 @@ It is also possible to save the displayed image.
 
 
 ## Instructions
-The project requires a ***C++11*** capable compiler, ***OpenGL 3.3***, ***Qt 5.6*** and ***QtCreator 4*** or later.
+The project requires a ***C++11*** capable compiler, * **OpenGL 3.3***, ***Qt 5.6*** and ***QtCreator 4*** or later.
 
 To launch it, open ***src/heightMapQt.pro*** with QtCreator.
 

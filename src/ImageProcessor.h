@@ -22,9 +22,10 @@
 
 
 //******************************************************************************
-//  namespace
+//  Type definition
 //******************************************************************************
-using namespace std;
+typedef std::vector<float> float_line;
+typedef std::vector<float_line> image_matrix;
 
 //==============================================================================
 /**
@@ -43,13 +44,13 @@ public:
 	*  @param fileName: the name of the height map file
 	*/
 	//--------------------------------------------------------------------------
-	ImageProcessor(string const& fileName);
+	ImageProcessor(std::string const& fileName);
 
 	// getters
-	vector<vector<float>> getRawData() const;
-	vector<vector<float>> getSmoothedData() const;
-	vector<vector<float>> getGradientData() const;
-	vector<vector<float>> getCannyData() const;
+	image_matrix getRawData() const;
+	image_matrix getSmoothedData() const;
+	image_matrix getGradientData() const;
+	image_matrix getCannyData() const;
 
 	unsigned int getM() const;
 	unsigned int getN() const;
@@ -65,7 +66,7 @@ private:
 	*  @param fileName: the name of the height map file
 	*/
 	//--------------------------------------------------------------------------
-	void loadData(string const& fileName);
+	void loadData(std::string const& fileName);
 
 	//--------------------------------------------------------------------------
 	/// retrieve one to each index of the input if possible
@@ -75,7 +76,7 @@ private:
 	* @return the pair of indices minus 1 and clamp the result above 0
 	*/
 	//--------------------------------------------------------------------------
-	pair<int, int> obtainLowerIndices(int i, int j);
+	std::pair<int, int> obtainLowerIndices(int i, int j);
 
 	//--------------------------------------------------------------------------
 	/// add one to each index of the input if possible
@@ -85,7 +86,7 @@ private:
 	* @return the pair of indices plus 1 and clamp the result below the size of the data
 	*/
 	//--------------------------------------------------------------------------
-	pair<int, int> obtainUpperIndices(int i, int j);
+	std::pair<int, int> obtainUpperIndices(int i, int j);
 
 	//--------------------------------------------------------------------------
 	/// Apply a linear filter on the raw data
@@ -97,7 +98,7 @@ private:
 	* @param rightIndex: to this index
 	*/
 	//--------------------------------------------------------------------------
-	void applyLinearFilter(vector<vector<float>> const& linearFilter,
+	void applyLinearFilter(image_matrix const& linearFilter,
 						   unsigned int leftIndex, unsigned int rightIndex);
 
 	//--------------------------------------------------------------------------
@@ -125,12 +126,12 @@ private:
 	//--------------------------------------------------------------------------
 	void processImage();
 
-	vector<vector<float>> m_rawData, //Data before processing
+	image_matrix m_rawData, //Data before processing
 		m_smoothedData, //Data after the first step of the processing: the linear filtering
 		m_gradientData, //Data after gradient processing
 		m_cannyData; //Data after edge detection using Canny algorithm
 
-	vector<vector<float>> m_gradientsAngles; //Save all the gradients to apply Canny Algorithm
+	image_matrix m_gradientsAngles; //Save all the gradients to apply Canny Algorithm
 
 	unsigned int m_m, //number of columns
 		m_n; //number of rows

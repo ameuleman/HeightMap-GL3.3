@@ -261,7 +261,7 @@ void RenderWindow::wheelEvent(QWheelEvent *wheelEvent)
 
 		//Update the projection matrix
 		m_pMatrix.setToIdentity();
-		m_pMatrix.perspective(m_zoomAngle, 4.f / 3.f, 0.1f, m_width+m_length);
+		m_pMatrix.perspective(m_zoomAngle, 16.f / 9.f, 0.1f, m_width+m_length);
 
 		QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
 	}

@@ -27,7 +27,7 @@ const float THRESHOLD_2 = 0.065f;
 #include "ParallelTool.h"
 
 //------------------------------------------------------------------------------
-ImageProcessor::ImageProcessor(string const& fileName)
+ImageProcessor::ImageProcessor(std::string const& fileName)
 //------------------------------------------------------------------------------
 {
 	try
@@ -35,35 +35,35 @@ ImageProcessor::ImageProcessor(string const& fileName)
 		loadData(fileName);
 		processImage();
 	}
-	catch(exception const& e)
+	catch(std::exception const& e)
 	{
-		cerr << "ERROR : " << e.what() << endl;
+		std::cerr << "ERROR : " << e.what() << std::endl;
 	}
 }
 
 //------------------------------------------------------------------------------
-vector<vector<float>> ImageProcessor::getRawData() const
+image_matrix ImageProcessor::getRawData() const
 //------------------------------------------------------------------------------
 {
 	return m_rawData;
 }
 
 //------------------------------------------------------------------------------
-vector<vector<float>> ImageProcessor::getSmoothedData() const
+image_matrix ImageProcessor::getSmoothedData() const
 //------------------------------------------------------------------------------
 {
 	return m_smoothedData;
 }
 
 //------------------------------------------------------------------------------
-vector<vector<float>> ImageProcessor::getGradientData() const
+image_matrix ImageProcessor::getGradientData() const
 //------------------------------------------------------------------------------
 {
 	return m_gradientData;
 }
 
 //------------------------------------------------------------------------------
-vector<vector<float>> ImageProcessor::getCannyData() const
+image_matrix ImageProcessor::getCannyData() const
 //------------------------------------------------------------------------------
 {
 	return m_cannyData;
@@ -84,7 +84,7 @@ unsigned int ImageProcessor::getN() const
 }
 
 //------------------------------------------------------------------------------
-void ImageProcessor::loadData(string const& fileName)
+void ImageProcessor::loadData(std::string const& fileName)
 //------------------------------------------------------------------------------
 {
 	//Load the image
@@ -97,11 +97,11 @@ void ImageProcessor::loadData(string const& fileName)
 	if(m_n && m_m)
 	{
 		//Allocate memory
-		m_rawData.resize(m_n, vector<float>(m_m));
-		m_smoothedData.resize(m_n, vector<float>(m_m));
-		m_gradientsAngles.resize(m_n, vector<float>(m_m));
-		m_gradientData.resize(m_n, vector<float>(m_m));
-		m_cannyData.resize(m_n, vector<float>(m_m));
+		m_rawData.resize(m_n, float_line(m_m));
+		m_smoothedData.resize(m_n, float_line(m_m));
+		m_gradientsAngles.resize(m_n, float_line(m_m));
+		m_gradientData.resize(m_n, float_line(m_m));
+		m_cannyData.resize(m_n, float_line(m_m));
 
 		unsigned char * pLine;
 
@@ -118,11 +118,11 @@ void ImageProcessor::loadData(string const& fileName)
 		}
 	}
 	else
-		throw runtime_error("Wrong file name : cannot process " + fileName);
+		throw std::runtime_error("Wrong file name : cannot process " + fileName);
 }
 
 //------------------------------------------------------------------------------
-pair<int, int> ImageProcessor::obtainLowerIndices(int i, int j)
+std::pair<int, int> ImageProcessor::obtainLowerIndices(int i, int j)
 //------------------------------------------------------------------------------
 {
 	if(i > 0)
@@ -131,11 +131,11 @@ pair<int, int> ImageProcessor::obtainLowerIndices(int i, int j)
 	if(j > 0)
 		j -= 1;
 
-	return pair<int, int>(i, j);
+	return std::pair<int, int>(i, j);
 }
 
 //------------------------------------------------------------------------------
-pair<int, int> ImageProcessor::obtainUpperIndices(int i, int j)
+std::pair<int, int> ImageProcessor::obtainUpperIndices(int i, int j)
 //------------------------------------------------------------------------------
 {
 	if(i < int(m_n) - 1)
@@ -144,11 +144,11 @@ pair<int, int> ImageProcessor::obtainUpperIndices(int i, int j)
 	if(j < int(m_m) - 1)
 		j += 1;
 
-	return pair<int, int>(i, j);
+	return std::pair<int, int>(i, j);
 }
 
 //------------------------------------------------------------------------------
-void ImageProcessor::applyLinearFilter(vector<vector<float>> const& linearFilter,
+void ImageProcessor::applyLinearFilter(const image_matrix &linearFilter,
 								unsigned int leftIndex, unsigned int rightIndex)
 //------------------------------------------------------------------------------
 {
@@ -209,7 +209,7 @@ void ImageProcessor::applyLinearFilter(vector<vector<float>> const& linearFilter
 		}
 	}
 	else
-		throw length_error("Wrong filter's dimensions");
+		throw std::length_error("Wrong filter's dimensions");
 }
 
 //------------------------------------------------------------------------------
@@ -222,8 +222,8 @@ void ImageProcessor::applyGradientNorm(unsigned int leftIndex, unsigned int righ
 	{
 		for(unsigned int j(0); j < m_m; j++)
 		{
-			pair<int, int> lowerIndices(obtainLowerIndices(i, j));
-			pair<int, int> upperIndices(obtainUpperIndices(i, j));
+			std::pair<int, int> lowerIndices(obtainLowerIndices(i, j));
+			std::pair<int, int> upperIndices(obtainUpperIndices(i, j));
 
 			//gradient for the x axis
 			gradient.setX(m_smoothedData[upperIndices.first][j] -
@@ -262,8 +262,8 @@ void ImageProcessor::applyCannyAlgorithm(unsigned int leftIndex, unsigned int ri
 				//Calculate the value of gradient norm for the adjacent pixels in the gradient directions
 				float theta = m_gradientsAngles[i][j];
 
-				pair<int, int> lowerIndices(obtainLowerIndices(i, j));
-				pair<int, int> upperIndices(obtainUpperIndices(i, j));
+				std::pair<int, int> lowerIndices(obtainLowerIndices(i, j));
+				std::pair<int, int> upperIndices(obtainUpperIndices(i, j));
 
 				//Values of gradient norm in the two directions
 				float maxChecker1, maxChecker2;
@@ -305,7 +305,7 @@ void ImageProcessor::applyCannyAlgorithm(unsigned int leftIndex, unsigned int ri
 
 				//If the value of the pixel is not bigger than the value of adjacent pixels
 				//in the gradient directions, we ignore it to make edges thinner
-				if(m_gradientData[i][j] < max(maxChecker1, maxChecker2))
+				if(m_gradientData[i][j] < std::max(maxChecker1, maxChecker2))
 				{
 					m_cannyData[i][j] = 0;
 				}
@@ -360,7 +360,7 @@ void ImageProcessor::applyCannyAlgorithm(unsigned int leftIndex, unsigned int ri
 
 					//If the value of adjacent pixels in gradient's normal vector directions,
 					//we keep it
-					if(max(hysteresisChecker1, hysteresisChecker2) > THRESHOLD_1)
+					if(std::max(hysteresisChecker1, hysteresisChecker2) > THRESHOLD_1)
 					{
 						m_cannyData[i][j] = 1;
 					}
@@ -376,14 +376,14 @@ void ImageProcessor::processImage()
 //------------------------------------------------------------------------------
 {
 	//Create the linear filter
-	vector<vector<float>> linearFilter({vector<float>({2, 4, 5, 4, 2}),
-										vector<float>({4, 9, 12, 9, 4}),
-										vector<float>({5, 12, 15, 12, 5}),
-										vector<float>({4, 9, 12, 9, 4}),
-										vector<float>({2, 4, 5, 4, 2})});
+	image_matrix linearFilter({float_line({2, 4, 5, 4, 2}),
+										float_line({4, 9, 12, 9, 4}),
+										float_line({5, 12, 15, 12, 5}),
+										float_line({4, 9, 12, 9, 4}),
+										float_line({2, 4, 5, 4, 2})});
 
 	for_each(linearFilter.begin(), linearFilter.end(),
-			 [](vector<float> &l){for_each(l.begin(), l.end(),
+			 [](float_line &l){for_each(l.begin(), l.end(),
 			 [](float &n){n /= 159.f;});});
 
 	//Perform image processing in parallel to reduce computation time
@@ -394,9 +394,9 @@ void ImageProcessor::processImage()
 			{
 				applyLinearFilter(linearFilter, leftIndex, rightIndex);
 			}
-			catch(exception const& e)
+			catch(std::exception const& e)
 			{
-				cerr << "ERROR : " << e.what() << endl;
+				std::cerr << "ERROR : " << e.what() << std::endl;
 			}
 		},
 		0, m_n);
