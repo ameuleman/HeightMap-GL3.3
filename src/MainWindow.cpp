@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow)
 {
+	setWindowTitle("Control panel");
 	ui->setupUi(this);
 
 	ui->errorText->setTextColor(QColor(255, 0, 0));
