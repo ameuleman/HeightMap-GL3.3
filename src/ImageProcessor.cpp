@@ -30,15 +30,14 @@ const float THRESHOLD_2 = 0.065f;
 ImageProcessor::ImageProcessor(std::string const& fileName)
 //------------------------------------------------------------------------------
 {
-	try
-	{
-		loadData(fileName);
-		processImage();
-	}
-	catch(std::exception const& e)
-	{
-		std::cerr << "ERROR : " << e.what() << std::endl;
-	}
+	loadData(fileName);
+	processImage();
+}
+
+//------------------------------------------------------------------------------
+ImageProcessor::ImageProcessor()
+//------------------------------------------------------------------------------
+{
 }
 
 //------------------------------------------------------------------------------
@@ -96,26 +95,31 @@ void ImageProcessor::loadData(std::string const& fileName)
 	//Make sure their is data to load
 	if(m_n && m_m)
 	{
-		//Allocate memory
-		m_rawData.resize(m_n, float_line(m_m));
-		m_smoothedData.resize(m_n, float_line(m_m));
-		m_gradientsAngles.resize(m_n, float_line(m_m));
-		m_gradientData.resize(m_n, float_line(m_m));
-		m_cannyData.resize(m_n, float_line(m_m));
-
-		unsigned char * pLine;
-
-		for(unsigned int i(0); i < m_n; i++)
+		if(image.format() == QImage::Format_Grayscale8)
 		{
-			//retrieve a line of data
-			pLine = image.scanLine(i);
+			//Allocate memory
+			m_rawData.resize(m_n, float_line(m_m));
+			m_smoothedData.resize(m_n, float_line(m_m));
+			m_gradientsAngles.resize(m_n, float_line(m_m));
+			m_gradientData.resize(m_n, float_line(m_m));
+			m_cannyData.resize(m_n, float_line(m_m));
 
-			//read all the data of the line and store them as floats in the [0,1] range
-			for(unsigned int j(0); j < m_m; j++)
+			unsigned char * pLine;
+
+			for(unsigned int i(0); i < m_n; i++)
 			{
-				m_rawData[i][j] = float(pLine[j])/255.f;
+				//retrieve a line of data
+				pLine = image.scanLine(i);
+
+				//read all the data of the line and store them as floats in the [0,1] range
+				for(unsigned int j(0); j < m_m; j++)
+				{
+					m_rawData[i][j] = float(pLine[j])/255.f;
+				}
 			}
 		}
+		else
+			throw std::runtime_error("Wrong file : unsusual format, requires grayscale");
 	}
 	else
 		throw std::runtime_error("Wrong file name : cannot process " + fileName);

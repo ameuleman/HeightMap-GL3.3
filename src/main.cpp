@@ -13,12 +13,11 @@
 //******************************************************************************
 // Include
 //******************************************************************************
-#include "RenderWindow.h"
-#include "ImageProcessor.h"
+#include "MainWindow.h"
+//#include "ImageProcessor.h"
 
 #include <QApplication>
-#include <QtGui/QScreen>
-#include <iostream>
+
 
 //------------------------------------------------------------------------------
 int main(int argc, char **argv)
@@ -30,6 +29,9 @@ int main(int argc, char **argv)
 	//Launch the windows
 	QApplication app(argc, argv);
 
+	MainWindow w;
+	w.show();
+
 	/*RenderWindow rawWindow(imageProcessor.getRawData(),
 						   imageProcessor.getN(), imageProcessor.getM());
 
@@ -37,12 +39,12 @@ int main(int argc, char **argv)
 	rawWindow.resize(800, 450);
 	rawWindow.show();*/
 
-	RenderWindow smoothedWindow(imageProcessor.getSmoothedData(),
+	/*RenderWindow smoothedWindow(imageProcessor.getSmoothedData(),
 						   imageProcessor.getN(), imageProcessor.getM());
 
 	smoothedWindow.setTitle("Smoothed image");
 	smoothedWindow.resize(800, 450);
-	smoothedWindow.show();
+	smoothedWindow.show();*/
 
 	/*RenderWindow gradientWindow(imageProcessor.getGradientData(),
 						   imageProcessor.getN(), imageProcessor.getM());

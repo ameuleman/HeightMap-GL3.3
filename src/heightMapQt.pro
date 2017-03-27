@@ -12,6 +12,7 @@ TEMPLATE = app
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp \
+    MainWindow.cpp \
     DepthMap.cpp \
     HeightMapMesh.cpp \
     RenderWindow.cpp \
@@ -19,7 +20,8 @@ SOURCES += main.cpp \
     LvlPlan.cpp \
     ImageProcessor.cpp
 
-HEADERS  += RenderWindow.h \
+HEADERS  += MainWindow.h \
+    RenderWindow.h \
     DepthMap.h \
     HeightMapMesh.h \
     Mesh.h \
@@ -37,3 +39,5 @@ DISTFILES += ../shader/displayShader.frag \
     ../data/data.png \
     ../data/data.txt \
     ../results
+
+FORMS    += mainwindow.ui

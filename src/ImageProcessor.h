@@ -41,10 +41,30 @@ public:
 	/// Overloaded constructor with the name of the image file
 	/// Load the file and perform the procesing
 	/**
-	*  @param fileName: the name of the height map file
+	* @param fileName: the name of the height map file
+	* @throws
 	*/
 	//--------------------------------------------------------------------------
 	ImageProcessor(std::string const& fileName);
+
+	ImageProcessor();
+
+	//--------------------------------------------------------------------------
+	/// Load the file and store it as vector<vector<float>>
+	/**
+	* @param fileName: the name of the height map file
+	* @throws
+	*/
+	//--------------------------------------------------------------------------
+	void loadData(std::string const& fileName);
+
+	//--------------------------------------------------------------------------
+	/// Calculate the norm of the gradient of each pixel to extract the outline
+	/**
+	* @throws
+	*/
+	//--------------------------------------------------------------------------
+	void processImage();
 
 	// getters
 	image_matrix getRawData() const;
@@ -57,17 +77,6 @@ public:
 
 //******************************************************************************
 private:
-	//No default constructor
-	ImageProcessor();
-
-	//--------------------------------------------------------------------------
-	/// Load the file and store it as vector<vector<float>>
-	/**
-	*  @param fileName: the name of the height map file
-	*/
-	//--------------------------------------------------------------------------
-	void loadData(std::string const& fileName);
-
 	//--------------------------------------------------------------------------
 	/// retrieve one to each index of the input if possible
 	/**
@@ -96,6 +105,7 @@ private:
 	* @param linearFilter: the linear filter to apply
 	* @param leftIndex: proceed from this index
 	* @param rightIndex: to this index
+	* @throws
 	*/
 	//--------------------------------------------------------------------------
 	void applyLinearFilter(image_matrix const& linearFilter,
@@ -120,11 +130,6 @@ private:
 	*/
 	//--------------------------------------------------------------------------
 	void applyCannyAlgorithm(unsigned int leftIndex, unsigned int rightIndex);
-
-	//--------------------------------------------------------------------------
-	/// Calculate the norm of the gradient of each pixel to extract the outline
-	//--------------------------------------------------------------------------
-	void processImage();
 
 	image_matrix m_rawData, //Data before processing
 		m_smoothedData, //Data after the first step of the processing: the linear filtering
