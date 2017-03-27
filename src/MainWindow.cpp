@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	updateImageProcessor();
 
-	setWindowTitle("Control pannel");
+	setWindowTitle("Control panel");
 }
 
 MainWindow::~MainWindow()
