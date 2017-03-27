@@ -40,7 +40,7 @@ private:
 
 	ImageProcessor m_imageProcessor;
 
-	std::string m_imageFile = "../data/data.jpg";
+	std::string m_imageFile = "../data/data.png";
 
 };
 

@@ -220,7 +220,7 @@ void RenderWindow::paintGL()
 void RenderWindow::changeLvlPlanVisibility()
 //------------------------------------------------------------------------------
 {
-	//if m_LvlPlanVisibility is true, it become false
+	//if m_LvlPlanVisibility is true, it becomes false
 	if(m_LvlPlanVisibility){
 		m_LvlPlanVisibility = false;
 	}
@@ -233,20 +233,20 @@ void RenderWindow::changeLvlPlanVisibility()
 void RenderWindow::saveCurrentRendering()
 //------------------------------------------------------------------------------
 {
-	//Make sure the scene is corectly rendered
-	QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
-
-	//get the rendering
-	QImage rendering(grabFramebuffer());
-
 	//Chose the name and directory of the file
 	QString fileName = QFileDialog::getSaveFileName(nullptr, "Save current rendering",
 							   "../results/",
-							   "Images (*.png *.xpm *.jpg)");
+							   "Images (*.png *.jpg)");
 
 	//Save the image
 	if(fileName.size())
 	{
+		//Make sure the scene is corectly rendered
+		paintGL();
+
+		//get the rendering
+		QImage rendering(grabFramebuffer());
+
 		rendering.save(fileName);
 	}
 }

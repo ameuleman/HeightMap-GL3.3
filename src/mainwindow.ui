@@ -92,7 +92,7 @@
       <x>30</x>
       <y>190</y>
       <width>421</width>
-      <height>121</height>
+      <height>131</height>
      </rect>
     </property>
     <property name="html">
@@ -102,13 +102,12 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Instructions&lt;/span&gt;  : &lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;To control the display, use &lt;span style=&quot; font-weight:600;&quot;&gt;ZQSD&lt;/span&gt; to rotate the model, arrows to rotate the light source, &lt;span style=&quot; font-weight:600;&quot;&gt;space bar&lt;/span&gt; to make the plan appear or disappear, &lt;span style=&quot; font-weight:600;&quot;&gt;RF&lt;/span&gt; to raise or lower it and &lt;span style=&quot; font-weight:600;&quot;&gt;W&lt;/span&gt; to save the current rendering as an image.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;First, chose another image or keep the demo image. it must be a greyscale image. Then, launch visualisations of heightmaps corresponding to any  step of Canny algorithm.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;To control the display, use &lt;span style=&quot; font-weight:600;&quot;&gt;ZQSD&lt;/span&gt; to rotate the model, arrows to rotate the light source, &lt;span style=&quot; font-weight:600;&quot;&gt;space bar&lt;/span&gt; to make the plan appear or disappear, &lt;span style=&quot; font-weight:600;&quot;&gt;RF&lt;/span&gt; to raise or lower it and &lt;span style=&quot; font-weight:600;&quot;&gt;W&lt;/span&gt; to save the current rendering as an image.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
