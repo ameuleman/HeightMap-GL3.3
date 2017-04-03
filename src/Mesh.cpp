@@ -155,7 +155,7 @@ void Mesh::render()
 	}
 	catch(std::exception const& e)
 	{
-		std::cerr << "ERROR : " << e.what() << endl;
+        std::cerr << "ERROR : " << e.what() << std::endl;
 	}
 }
 
