@@ -48,7 +48,7 @@ RenderWindow::RenderWindow(const std::string &fileName):
 
 //------------------------------------------------------------------------------
 RenderWindow::RenderWindow(std::vector<std::vector<float>> const& imageData,
-						  unsigned int n, unsigned int m):
+						  unsigned int n, unsigned int m, bool useIndex):
 //------------------------------------------------------------------------------
 	m_heightMapMesh(imageData, n, m),
 	m_lvlPlan(0, m_heightMapMesh.getLength(), m_heightMapMesh.getWidth()),
@@ -61,7 +61,8 @@ RenderWindow::RenderWindow(std::vector<std::vector<float>> const& imageData,
 	m_width(m_heightMapMesh.getWidth()),
 	m_shadowMatrixSide(std::max(m_width, m_length)*0.8),
 	m_zoomAngle(70),
-	m_LvlPlanVisibility(false)
+	m_LvlPlanVisibility(false),
+	m_useIndex(useIndex)
 //------------------------------------------------------------------------------
 {
 }
@@ -112,6 +113,13 @@ void RenderWindow::initializeGL()
 	m_depthMapProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, readShaderFile(SHADER_FOLDER + "mapShader.vert").c_str());
 	m_depthMapProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, readShaderFile(SHADER_FOLDER + "mapShader.frag").c_str());
 	m_depthMapProgram->link();
+
+	//Set indexes if necessary
+	if(m_useIndex)
+	{
+		m_heightMapMesh.setIndex();
+	}
+	m_lvlPlan.setIndex();
 
 	//initialize the buffers
 	m_shadowMap.initialize();

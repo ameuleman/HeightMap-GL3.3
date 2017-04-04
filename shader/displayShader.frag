@@ -18,7 +18,6 @@
 //******************************************************************************
 //      Inputs
 //******************************************************************************
-in float hight;
 in vec3 col;
 in vec3 nor;
 in vec3 eyeDir;
@@ -52,11 +51,13 @@ void main()
 	//cosinus of the light direction and the normal vector
 	float cosLightNormal = max(0., dot(lightDir, nor));
 
-	//visibility equals 0.3 if the fragment is in the shadow and 1 if not (if it is on the back of the face, it is in the shadow).
+	//visibility equals 0.3 if the fragment is in the shadow and 1 if not
+	//(if it is on the back of the face, it is in the shadow).
 	float visibility = texture(shadowMap, vec3(shadowChangedCoord.xy, shadowChangedCoord.z-BIAS));
 	visibility = visibility * clamp(cosLightNormal - 0.1, 0., 1.) * 0.7 + 0.3;
 
-	vec3 specular = 0.5 * vec3(1., 1., 1.) * pow(clamp( dot( eyeDir, reflect(lightDir, nor)), 0., 1.), 4.);
+	vec3 specular = 0.5 * vec3(1., 1., 1.) *
+		pow(clamp( dot( eyeDir, reflect(lightDir, nor)), 0., 1.), 4.);
 
 	if (visibility <= 0.3)
 	{

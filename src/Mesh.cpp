@@ -47,15 +47,11 @@ Mesh::~Mesh()
 void Mesh::initialize()
 //------------------------------------------------------------------------------
 {
-	m_hasNormalData = (m_verticesNormal.size() > 0);
-	m_hasColourData = (m_verticesColour.size() > 0);
-
-	//Fail if their is nothing to display
-	if(m_verticesPosition.size())
-		setIndex();
-	else
-		throw std::runtime_error("No vertex data");
-
+	if(!m_usesIndex)
+	{
+		m_hasNormalData = (m_verticesNormal.size() > 0);
+		m_hasColourData = (m_verticesColour.size() > 0);
+	}
 
 	initializeOpenGLFunctions();
 
@@ -218,6 +214,12 @@ void Mesh::setIndex()
 {
 	if(!m_usesIndex)
 	{
+		if(!m_isInitialized)
+		{
+			m_hasNormalData = (m_verticesNormal.size() > 0);
+			m_hasColourData = (m_verticesColour.size() > 0);
+		}
+
 		// Add the vertices to the hash table
 		std::map<QVector3D, VertexData, VectorComparer> hash_table;
 
@@ -298,6 +300,9 @@ void Mesh::setIndex()
 		{
 			m_verticesPosition[id] = ite->first;
 		}
+
+		if(m_isInitialized)
+			updateVBO();
 
 		m_usesIndex = true;
 	}

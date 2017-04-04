@@ -57,10 +57,11 @@ public:
 	*  @param imageData: the data of the image as floats in the [0,1] range
 	*  @param n: height of the image
 	*  @param m: width of the image
+	*  @param useIndex: to know if an index has to be set for the height map mesh
 	*/
 	//--------------------------------------------------------------------------
 	RenderWindow(std::vector<std::vector<float>> const& imageData,
-				 unsigned int n, unsigned int m);
+				 unsigned int n, unsigned int m, bool useIndex = true);
 
 	virtual ~RenderWindow();
 
@@ -184,7 +185,8 @@ private:
 		m_shadowMatrixSide, //size of the cube that the shadow map take into account
 		m_zoomAngle; //Angle for the view matrix
 
-	bool m_LvlPlanVisibility; //to chose if the lvl plan has to be displayed
+	bool m_LvlPlanVisibility, //to chose if the lvl plan has to be displayed
+		m_useIndex; //to know if an index has to be set for the height map mash
 };
 
 #endif //RENDERWINDOW_H
