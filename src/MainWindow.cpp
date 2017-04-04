@@ -79,15 +79,15 @@ void MainWindow::on_useIndexButton_clicked()
 
 void MainWindow::launchRenderWindow(QString const& windowName, image_matrix const& imageData)
 {
-	//QSurfaceFormat format;
-	//format.setDepthBufferSize(24);
+	QSurfaceFormat format;
+	format.setDepthBufferSize(24);
 
 	//Use pointer to avoid deletion after the end of the function
 	RenderWindow *renderWindow(new RenderWindow(imageData,
 								m_imageProcessor.getN(), m_imageProcessor.getM(),
 								m_useIndex));
 
-	//renderWindow->setFormat(format);
+	renderWindow->setFormat(format);
     renderWindow->setTitle(windowName);
 	renderWindow->resize(800, 450);
 	renderWindow->show();
