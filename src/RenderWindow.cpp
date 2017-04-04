@@ -80,7 +80,7 @@ RenderWindow::~RenderWindow()
 void RenderWindow::initializeGL()
 //------------------------------------------------------------------------------
 {
-	makeCurrent();
+    makeCurrent();
 
 	initializeOpenGLFunctions();
 
