@@ -60,6 +60,17 @@ void MainWindow::on_choseImageButton_clicked()
 	}
 }
 
+
+
+void MainWindow::on_useIndexButton_clicked()
+{
+    if(m_useIndex)
+    {
+        m_useIndex = false;
+    }
+}
+
+
 void MainWindow::launchRenderWindow(QString const& windowName, image_matrix const& imageData)
 {
     QSurfaceFormat format;
@@ -101,4 +112,3 @@ void MainWindow::updateImageProcessor()
 
 
 }
-

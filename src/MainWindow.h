@@ -30,6 +30,8 @@ private slots:
 
 	void on_choseImageButton_clicked();
 
+    void on_useIndexButton_clicked();
+
 private:
 
 	void launchRenderWindow(QString const& windowName, image_matrix const& imageData);
@@ -42,6 +44,7 @@ private:
 
 	std::string m_imageFile = "../data/data.png";
 
+    bool m_useIndex = true;
 };
 
 #endif // MAINWINDOW_H
