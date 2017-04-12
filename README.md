@@ -1,7 +1,7 @@
 # HeightMap
 
 ## Description
-The program load a black and white image and perform edge detection thanks to Canny algorithm. Then it convert the original image, the processed one and the intermediate steps as height maps to display them using OpenGL. 
+The program loads a black and white image and perform edge detection thanks to Canny algorithm. Then it converts the original image, the processed one and the intermediate steps as height maps to display them using OpenGL. 
 
 It is possible to activate a plan that enables to highlight edges over a threshold. 
 
