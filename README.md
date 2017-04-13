@@ -20,4 +20,4 @@ To launch it, open ***src/heightMapQt.pro*** with QtCreator.
 *Height map corresponding to the original image*
 
 ![Canny](/results/city_canny.png)
-*Height map corresponding to the Canny image*
+*Height map corresponding to the Canny image with a plan to hightlight edges*
