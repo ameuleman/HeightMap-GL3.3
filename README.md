@@ -17,7 +17,7 @@ To launch it, open ***src/heightMapQt.pro*** with QtCreator.
 
 ## Results
 ![raw](/results/city_raw.png)
-*Height map correspinding to the original image*
+*Height map corresponding to the original image*
 
 ![Canny](/results/city_canny.png)
 *Height map corresponding to the Canny image*
