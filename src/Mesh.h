@@ -4,7 +4,7 @@
 /**
 *******************************************************************************
 *
-*  @file       Mesh.cpp
+*  @file       Mesh.h
 *
 *  @brief      Class to handel a mesh to display it thanks to OpenGL
 *

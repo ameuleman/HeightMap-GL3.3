@@ -1,6 +1,20 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+/**
+*******************************************************************************
+*
+*  @file       MainWindow.h
+*
+*  @brief      Class that describes a control panel for the application
+*
+*  @author     Andréas Meuleman
+*******************************************************************************
+*/
+
+//******************************************************************************
+//  Include
+//******************************************************************************
 #include <QMainWindow>
 #include <string>
 
@@ -8,9 +22,15 @@
 #include "RenderWindow.h"
 
 namespace Ui {
-class MainWindow;
+	class MainWindow;
 }
 
+//==============================================================================
+/**
+*  @class  MainWindow
+*  @brief  MainWindow is Class that describes a control panel for the application
+*/
+//==============================================================================
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -19,6 +39,9 @@ public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
 
+//******************************************************************************
+//  slots that define the action of buttons
+//******************************************************************************
 private slots:
 	void on_originalImageButton_clicked();
 
@@ -32,18 +55,32 @@ private slots:
 
     void on_useIndexButton_clicked();
 
+//******************************************************************************
 private:
 
+	//--------------------------------------------------------------------------
+	/// launch a new render window to display a height map
+	/**
+	*  @param windowName: the name of the window to be created
+	*  @param imageData: data corresponding to the height map to be displayed
+	*/
+	//--------------------------------------------------------------------------
 	void launchRenderWindow(QString const& windowName, image_matrix const& imageData);
 
+	//--------------------------------------------------------------------------
+	/// Update the image processor by changing the original image and process it
+	//--------------------------------------------------------------------------
 	void updateImageProcessor();
 
 	Ui::MainWindow *ui;
 
+	//image processor that store the height maps data and process them
 	ImageProcessor m_imageProcessor;
 
+	//name of the image file
 	std::string m_imageFile = "../data/data.png";
 
+	//To know if the index needs to be set
     bool m_useIndex = true;
 };
 

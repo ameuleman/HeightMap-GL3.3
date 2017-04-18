@@ -28,12 +28,22 @@
 class ParallelTool
 {
 public:
+	//--------------------------------------------------------------------------
+	///Perform a function in parallel
+	/**
+	*  @param functor: the functor to apply
+	*  @param leftIndex: the index of the begining of the part where processing is needed
+	*  @param rightIndex: the index of the end of the part where processing is needed
+	*  @param maxParallelism: maximum number of thread launched at the same time.
+	*	@default: std::thread::hardware_concurrency() (number of concurrent threads supported)
+	*  @param parallelismLvl: current level of parallelism @default: 1
+	*/
+	//--------------------------------------------------------------------------
 	template<class F> static void performInParallel(
 			F const& functor, unsigned int leftIndex, unsigned int rightIndex,
 			unsigned char maxParallelism = std::thread::hardware_concurrency(),
-			unsigned char parallilismLvl = 1);
+			unsigned char parallelismLvl = 1);
 
-	template<class F> static void performInParallel(F const& functor);
 };
 
 //------------------------------------------------------------------------------
@@ -49,6 +59,7 @@ template<class F> void ParallelTool::performInParallel(
 	{
 		unsigned int midIndex((unsigned int)(rightIndex / 2));
 
+		//launch a thread that perform the functor on the left side of the array
 		std::thread parallelProcessing(
 			[&functor, midIndex, rightIndex, maxParallelism, parallelismLvl]()
 			{
@@ -57,10 +68,12 @@ template<class F> void ParallelTool::performInParallel(
 						maxParallelism, maxParallelism);
 			});
 
+		//perform the functor on the right side
 		performInParallel(functor,
 					leftIndex, midIndex,
 					maxParallelism, parallelismLvl);
 
+		//wait for the first thread to end processing
 		parallelProcessing.join();
 	}
 	else
@@ -70,16 +83,5 @@ template<class F> void ParallelTool::performInParallel(
 	}
 }
 
-//------------------------------------------------------------------------------
-template<class F> void ParallelTool::performInParallel(F const& functor)
-//------------------------------------------------------------------------------
-{
-		//Launch a thread for the functor
-		std::thread parallelProcessing(
-			[&functor]()
-			{
-				functor();
-			});
-}
 
 #endif // PARALLELTOOL_H
