@@ -36,25 +36,25 @@ public:
 
 	~DepthMap();
 
-	//--------------------------------------------------------------------------
-	///Initialize the buffers
-	//--------------------------------------------------------------------------
+	/**
+	 * @brief initialize Initialize the buffers
+	 */
 	void initialize();
 
-	//--------------------------------------------------------------------------
-	///render to the frame buffer, call initialize() if it has never been called before
 	/**
-	*  @param mesh: the mesh to be rendered
-	*  @param matrix: the projection matrix
-	*  @param program: the OpenGL shader program to create the depth map
-	*/
-	//--------------------------------------------------------------------------
+	 * @brief render render to the frame buffer,
+	 * call initialize() if it has never been called before
+	 * @param mesh the mesh to be rendered
+	 * @param matrix the projection matrix
+	 * @param program the OpenGL shader program to create the depth map
+	 */
 	void render(Mesh &mesh, QMatrix4x4 const& matrix,
 				std::unique_ptr<QOpenGLShaderProgram> const& program);
 
-	//--------------------------------------------------------------------------
-	///Get the texture
-	//--------------------------------------------------------------------------
+	/**
+	 * @brief getMapTexture
+	 * @return the depth map as a texture
+	 */
 	GLuint getMapTexture() const;
 
 //******************************************************************************
@@ -62,12 +62,13 @@ private:
 	//No copy constructor
 	DepthMap(DepthMap const&);
 
-	bool m_isInitialized;//to know if initialize() has been called
+	//to know if initialize() has been called
+	bool m_isInitialized;
 
-	//IDs for inputs in the map program
-	GLuint m_matrixID; //ID of the MVP matrix
+	//ID of the MVP matrix for inputs in the shader program
+	GLuint m_matrixID;
 
-	//To create a buffer for the scene map
+	//To create a buffer for the depth map
 	GLuint	m_mapFrameBuffer,
 		m_mapTexture;
 

@@ -39,8 +39,7 @@ public:
 	*  @param parallelismLvl: current level of parallelism @default: 1
 	*/
 	//--------------------------------------------------------------------------
-	template<class F> static void performInParallel(
-			F const& functor, unsigned int leftIndex, unsigned int rightIndex,
+	template<class F> static void performInParallel(F const& functor, unsigned int leftIndex, unsigned int rightIndex,
 			unsigned char maxParallelism = std::thread::hardware_concurrency(),
 			unsigned char parallelismLvl = 1);
 

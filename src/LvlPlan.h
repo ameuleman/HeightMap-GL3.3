@@ -28,12 +28,10 @@ class LvlPlan: public Mesh
 public:
 	LvlPlan(float height, float length, float width);
 
-	//--------------------------------------------------------------------------
-	/// Change the height of the lvl plan
 	/**
-	  * @param delta: add this to the height of the plan
-	  */
-	//--------------------------------------------------------------------------
+	 * @brief changeHeight  Change the height of the lvl plan
+	 * @param delta add this value to the height of the plan
+	 */
 	void changeHeight(float delta);
 
 //******************************************************************************

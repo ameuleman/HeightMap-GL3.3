@@ -33,7 +33,6 @@ m_hasColourData(false),
 m_usesIndex(false)
 //------------------------------------------------------------------------------
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -155,10 +154,11 @@ void Mesh::render()
 	}
 }
 
-
-//--------------------------------------------------------------------------
-/// Enable to compare two vectors to create a hash table
-//--------------------------------------------------------------------------
+///@cond
+/**
+ * @brief The VectorComparer struct Enable to compare two vectors
+ * to create a hash table containing vertices
+ */
 struct VectorComparer
 {
 	// Return true if aLeftNode is less than aRightNode
@@ -197,9 +197,10 @@ struct VectorComparer
 	}
 };
 
-//--------------------------------------------------------------------------
-/// Store some data of a vertex: its normal vector, colour and id for the index
-//--------------------------------------------------------------------------
+/**
+ * @brief The VertexData class store some data of a vertex:
+ * its normal vector, colour and id for the index
+ */
 class VertexData
 {
 public:
@@ -207,6 +208,7 @@ public:
 	QVector3D m_colour;
 	unsigned int m_id;
 };
+///@endcond
 
 //----------------------------------------------
 void Mesh::setIndex()

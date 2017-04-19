@@ -37,98 +37,112 @@ typedef std::vector<float_line> image_matrix;
 class ImageProcessor
 {
 public:
-	//--------------------------------------------------------------------------
-	/// Overloaded constructor with the name of the image file
-	/// Load the file and perform the procesing
 	/**
-	* @param fileName: the name of the height map file
-	* @throws
-	*/
-	//--------------------------------------------------------------------------
+	 * @brief ImageProcessor Overloaded constructor with the name of the image file
+	 * Load the file and perform the procesing
+	 * @param fileName the name of the height map file
+	 * @throws
+	 */
 	ImageProcessor(std::string const& fileName);
 
+	/**
+	 * @brief ImageProcessor default constructor, create an empty image processor
+	 */
 	ImageProcessor();
 
-	//--------------------------------------------------------------------------
-	/// Load the file and store it as vector<vector<float>>
 	/**
-	* @param fileName: the name of the height map file
-	* @throws
-	*/
-	//--------------------------------------------------------------------------
+	 * @brief loadData Load the file and store it as vector<vector<float>>
+	 * @param fileName the name of the height map file
+	 * @throws
+	 */
 	void loadData(std::string const& fileName);
 
-	//--------------------------------------------------------------------------
-	/// Calculate the norm of the gradient of each pixel to extract the outline
 	/**
-	* @throws
-	*/
-	//--------------------------------------------------------------------------
+	 * @brief processImage Apply Canny algorithm and store the intermediate steps
+	 * @throws
+	 */
 	void processImage();
 
-	// getters
+	/**
+	 * @brief getRawData get data corresponding to an image
+	 * @return data before processing
+	 */
 	image_matrix getRawData() const;
+
+	/**
+	 * @brief getSmoothedData get data corresponding to an image
+	 * @return data after linear filtering
+	 */
 	image_matrix getSmoothedData() const;
+
+	/**
+	 * @brief getGradientData get data corresponding to an image
+	 * @return gradient norm for each pixel
+	 */
 	image_matrix getGradientData() const;
+
+	/**
+	 * @brief getCannyData get data corresponding to an image
+	 * @return data after Canny  algorithm
+	 */
 	image_matrix getCannyData() const;
 
+	/**
+	 * @brief getM get the size of the image
+	 * @return number of columns
+	 */
 	unsigned int getM() const;
+
+	/**
+	 * @brief getN get the size of the image
+	 * @return number of rows
+	 */
 	unsigned int getN() const;
 
 //******************************************************************************
 private:
-	//--------------------------------------------------------------------------
-	/// retrieve one to each index of the input if possible
 	/**
-	* @param i: the first index
-	* @param j: the second index
-	* @return the pair of indices minus 1 and clamp the result above 0
-	*/
-	//--------------------------------------------------------------------------
+	 * @brief obtainLowerIndices retrieve one to each index of the input if possible
+	 * @param i the first index
+	 * @param j the second index
+	 * @return the pair of indices minus 1 and clamp the result above 0
+	 */
 	std::pair<int, int> obtainLowerIndices(int i, int j);
 
-	//--------------------------------------------------------------------------
-	/// add one to each index of the input if possible
 	/**
-	* @param i: the first index
-	* @param j: the second index
-	* @return the pair of indices plus 1 and clamp the result below the size of the data
-	*/
-	//--------------------------------------------------------------------------
+	 * @brief obtainUpperIndices add one to each index of the input if possible
+	 * @param i the first index
+	 * @param j the second index
+	 * @return the pair of indices plus 1 and clamp the result below the size of the data
+	 */
 	std::pair<int, int> obtainUpperIndices(int i, int j);
 
-	//--------------------------------------------------------------------------
-	/// Apply a linear filter on the raw data
-	/// and produce the smoother preprocessed data
-	/// Proceed between two values to enable parallel processing
 	/**
-	* @param linearFilter: the linear filter to apply
-	* @param leftIndex: proceed from this index
-	* @param rightIndex: to this index
-	* @throws
-	*/
-	//--------------------------------------------------------------------------
+	 * @brief applyLinearFilter Apply a linear filter on the raw data
+	 * and produce the smoother preprocessed data m_smoothedData
+	 * Proceed between two values to enable parallel processing
+	 * @param linearFilter the linear filter to apply
+	 * @param leftIndex proceed from this index
+	 * @param rightIndex to this index
+	 */
 	void applyLinearFilter(image_matrix const& linearFilter,
 						   unsigned int leftIndex, unsigned int rightIndex);
 
-	//--------------------------------------------------------------------------
-	/// Calculate the gradient and its norm for each pixel
-	/// Proceed between two values to enable parallel processing
 	/**
-	* @param leftIndex: proceed from this index
-	* @param rightIndex: to this index
-	*/
-	//--------------------------------------------------------------------------
+	 * @brief applyGradientNorm Calculate the gradient and its norm for each pixel
+	 * and store it in m_gradientData. Also store gradients angles in m_gradientsAngles
+	 * Proceed between two values to enable parallel processing
+	 * @param leftIndex
+	 * @param rightIndex
+	 */
 	void applyGradientNorm(unsigned int leftIndex, unsigned int rightIndex);
 
-	//--------------------------------------------------------------------------
-	/// Applay Canny algorithm
-	/// Proceed between two values to enable parallel processing
 	/**
-	* @param leftIndex: proceed from this index
-	* @param rightIndex: to this index
-	*/
-	//--------------------------------------------------------------------------
+	 * @brief applyCannyAlgorithm Apply Canny algorithm and store it in m_cannyData
+	 * Proceed between two values to enable parallel processing
+	 * @param leftIndex proceed from this index
+	 * @param rightIndex to this index
+	 */
 	void applyCannyAlgorithm(unsigned int leftIndex, unsigned int rightIndex);
 
 	image_matrix m_rawData, //Data before processing
@@ -136,7 +150,8 @@ private:
 		m_gradientData, //Data after gradient processing
 		m_cannyData; //Data after edge detection using Canny algorithm
 
-	image_matrix m_gradientsAngles; //Save all the gradients to apply Canny Algorithm
+	//Save all the gradients angles to apply Canny Algorithm
+	image_matrix m_gradientsAngles;
 
 	unsigned int m_m, //number of columns
 		m_n; //number of rows

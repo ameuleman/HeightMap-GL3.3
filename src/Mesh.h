@@ -36,50 +36,73 @@ class Mesh: protected QOpenGLFunctions
 public:
 	Mesh();
 
+	/**
+	 * @brief ~Mesh destructor, call cleanUpVBO()
+	 */
 	virtual ~Mesh();
 
-	//--------------------------------------------------------------------------
-	///Initialize VBO
-	//--------------------------------------------------------------------------
+	/**
+	 * @brief initialize Initialize VBO
+	 */
 	void initialize();
 
-	//--------------------------------------------------------------------------
-	/// VBO needs update when data change
-	//--------------------------------------------------------------------------
+	/**
+	 * @brief updateVBO VBO needs update when data change
+	 */
 	void updateVBO();
 
-	//--------------------------------------------------------------------------
-	/// Render the mesh in the current OpenGL context
-	//--------------------------------------------------------------------------
+	/**
+	 * @brief render Render the mesh in the current OpenGL context.
+	 * An OpenGL shader program need to be bound before calling this function.
+	 */
 	void render();
 
-	//--------------------------------------------------------------------------
-	/// change from one normal per face to one normal per vertex
-	/// and set the index to improve performance.
-	/// Do nothing if an index has already been set.
-	//--------------------------------------------------------------------------
+	/**
+	 * @brief setIndex change from one normal per face to one normal per vertex
+	 * and set the index to improve performance.
+	 * Do nothing if an index has already been set.
+	 */
 	void setIndex();
 
-	//--------------------------------------------------------------------------
-	/// Clean up VBO if needed, needed before deletion
-	//--------------------------------------------------------------------------
+	/**
+	 * @brief cleanUpVBO Clean up VBO if needed, needed before deletion
+	 */
 	void cleanUpVBO();
 
-	//getters
+	/**
+	 * @brief getVerticesPosition get data describing the mesh
+	 * @return position of the vertices
+	 */
 	vector_data getVerticesPosition() const;
+
+	/**
+	 * @brief getVerticesColour get data describing the mesh
+	 * @return colour of the vertices
+	 */
 	vector_data getVerticesColour() const;
+
+	/**
+	 * @brief getVerticesNormal get data describing the mesh
+	 * @return Normal vectors of the vertices
+	 */
 	vector_data getVerticesNormal() const;
 
+	/**
+	 * @brief getVerticeCount
+	 * @return number of vertices of the mesh
+	 */
 	unsigned int getVerticeCount() const;
 
 protected:
 	vector_data m_verticesPosition, //Position of the vertices
 		m_verticesColour,
-		m_verticesNormal; //normal vector
+		m_verticesNormal; //normal vectors
 
-	std::vector<unsigned int> m_verticesIndex; //normal vector
+	//normal vector
+	std::vector<unsigned int> m_verticesIndex;
 
-	unsigned int m_verticesCount; //number of vertices
+	//number of vertices
+	unsigned int m_verticesCount;
 
 	//IDs of array buffers
 	GLuint m_positionBuffer,

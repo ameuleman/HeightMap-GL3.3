@@ -42,54 +42,49 @@
 class RenderWindow : public QOpenGLWindow, protected QOpenGLFunctions {
 
 public:
-	//--------------------------------------------------------------------------
-	/// Overloaded constructor with the name of the file. The file has to contain
-	/// the width, the height and then the data in the [0,1] range
 	/**
-	*  @param fileName: the name of the height map file
-	*/
-	//--------------------------------------------------------------------------
+	 * @brief RenderWindow Overloaded constructor with the name of the file. The file has to contain
+	 * the width, the height and then the data in the [0,1] range
+	 * @param fileName the name of the height map file
+	 */
 	RenderWindow(std::string const& fileName);
 
-	//--------------------------------------------------------------------------
-	/// Overloaded constructor with the image size and data
 	/**
-	*  @param imageData: the data of the image as floats in the [0,1] range
-	*  @param n: height of the image
-	*  @param m: width of the image
-	*  @param useIndex: to know if an index has to be set for the height map mesh
-	*/
-	//--------------------------------------------------------------------------
+	 * @brief RenderWindow Overloaded constructor with the image size and data
+	 * @param imageData the data of the image as floats in the [0,1] range
+	 * @param n height of the image
+	 * @param m width of the image
+	 * @param useIndex to know if an index has to be set for the height map mesh
+	 */
 	RenderWindow(std::vector<std::vector<float>> const& imageData,
 				 unsigned int n, unsigned int m, bool useIndex = true);
 
+	/**
+	 * @brief ~RenderWindow call makeCurrent() to make sure children objects
+	 * are destrayed with an active context.
+	 */
 	virtual ~RenderWindow();
 
-	//--------------------------------------------------------------------------
-	/// Initialize the programs and the buffers
-	//--------------------------------------------------------------------------
+	/**
+	 * @brief initializeGL Initialize programs and buffers
+	 */
 	virtual void initializeGL();
 
-	//--------------------------------------------------------------------------
-	/// display on the window
-	//--------------------------------------------------------------------------
+	/**
+	 * @brief paintGL display on the window
+	 */
 	virtual void paintGL();
 
-	//--------------------------------------------------------------------------
-	/// set the visibility of the lvl plan to false if it was true and vice versa
-	//--------------------------------------------------------------------------
+	/**
+	 * @brief changeLvlPlanVisibility set the visibility of the lvl plan
+	 * to false if it was true and vice versa
+	 */
 	void changeLvlPlanVisibility();
 
-	//--------------------------------------------------------------------------
-	/// Open a dialog to select a directory and save the current rendering
-	//--------------------------------------------------------------------------
+	/**
+	 * @brief saveCurrentRendering  Open a dialog to select a directory and save the current rendering
+	 */
 	void saveCurrentRendering();
-
-	//--------------------------------------------------------------------------
-	/// Open a window that describes how to control the display
-	//--------------------------------------------------------------------------
-	void displayHelp();
-
 
 //******************************************************************************
 private:
@@ -99,51 +94,48 @@ private:
 	//No default constructor
 	RenderWindow();
 
-	//--------------------------------------------------------------------------
-	///Zoom in or zoom out
-	//--------------------------------------------------------------------------
+	/**
+	 * @brief wheelEvent Zoom in or zoom out
+	 * @param wheelEvent
+	 */
 	void wheelEvent(QWheelEvent *wheelEvent);
 
-	//--------------------------------------------------------------------------
-	/// event to control the display
-	/// rotation of the camera thanks to Z, Q, S, D,
-	/// Enable/disable lvl plan display: spacebarre
-	/// change the height of the lvl plan: R and F
-	/// Rotation of the light source: arrows
-	/// Save the current rendering: W
-	//--------------------------------------------------------------------------
+	/**
+	 * @brief keyPressEvent event to control the display
+	 * rotation of the camera thanks to Z, Q, S, D,
+	 * Enable/disable lvl plan display: spacebarre
+	 * change the height of the lvl plan: R and F
+	 * Rotation of the light source: arrows
+	 * Save the current rendering: W
+	 * @param event
+	 */
 	void keyPressEvent(QKeyEvent *event);
 
-	//--------------------------------------------------------------------------
-	///Rotate the camera
 	/**
-	*  @param angle: angle of rotation
-	*  @param x: axis of rotation
-	*  @param y: axis of rotation
-	*  @param z: axis of rotation
-	*/
-	//--------------------------------------------------------------------------
+	 * @brief rotateCamera Rotate the camera
+	 * @param angle angle of rotation
+	 * @param x axis of rotation
+	 * @param y axis of rotation
+	 * @param z axis of rotation
+	 */
 	void rotateCamera(float const angle, float const x, float const y,
 					  float const z);
 
-	//--------------------------------------------------------------------------
-	///Rotate the light source and rebuild the shadow
 	/**
-	*  @param angle: angle of rotation
-	*  @param x: axis of rotation
-	*  @param y: axis of rotation
-	*  @param z: axis of rotation
-	*/
-	//--------------------------------------------------------------------------
+	 * @brief rotateLightSource Rotate the light source and rebuild the shadow map
+	 * @param angle angle of rotation
+	 * @param x axis of rotation
+	 * @param y axis of rotation
+	 * @param z axis of rotation
+	 */
 	void rotateLightSource(float const angle, float const x, float const y,
 						   float const z);
 
-	//--------------------------------------------------------------------------
-	///read the shader file to crate a program
 	/**
-	*  @param shaderFileName: the name of the shader file to load
-	*/
-	//--------------------------------------------------------------------------
+	 * @brief readShaderFile read the shader file to crate a program
+	 * @param shaderFileName the name of the shader file to load
+	 * @return shader source code
+	 */
 	static std::string readShaderFile(std::string const& shaderFileName);
 
 	//Height map to display

@@ -20,7 +20,7 @@
 #include "ui_mainwindow.h"
 
 //------------------------------------------------------------------------------
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(QWidget *parent):
 	QMainWindow(parent),
 	ui(new Ui::MainWindow)
 //------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->errorText->setTextColor(QColor(255, 0, 0));
 	ui->imageFileText->setText(m_imageFile.c_str());
 
-	updateImageProcessor();
+	//updateImageProcessor();
 
 	setWindowTitle("Control panel");
 }
