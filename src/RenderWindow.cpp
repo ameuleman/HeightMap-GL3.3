@@ -73,8 +73,6 @@ RenderWindow::~RenderWindow()
 {
 	//Make current to make sure children are destroyed with an active context.
 	makeCurrent();
-
-	//initializeOpenGLFunctions();
 }
 
 //------------------------------------------------------------------------------

@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent):
 	ui->errorText->setTextColor(QColor(255, 0, 0));
 	ui->imageFileText->setText(m_imageFile.c_str());
 
-	//updateImageProcessor();
+	updateImageProcessor();
 
 	setWindowTitle("Control panel");
 }
