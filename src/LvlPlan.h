@@ -36,6 +36,8 @@ public:
 
 //******************************************************************************
 private:
+	//No default constructor
+	LvlPlan();
 
 	float m_height, //The height of the lvl plan. Can be seen as a threshold for the edge detection.
 		m_length, //Size of a side of the plan

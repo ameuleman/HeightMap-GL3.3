@@ -94,6 +94,9 @@ public:
 	unsigned int getVerticeCount() const;
 
 protected:
+	//no copy constructor
+	Mesh(const Mesh&);
+
 	vector_data m_verticesPosition, //Position of the vertices
 		m_verticesColour,
 		m_verticesNormal; //normal vectors

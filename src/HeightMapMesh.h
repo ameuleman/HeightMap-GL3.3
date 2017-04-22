@@ -73,6 +73,9 @@ private:
 	//No default constructor
 	HeightMapMesh();
 
+	//No copy constructor
+	HeightMapMesh(HeightMapMesh const&);
+
 	/**
 	 * @brief create Create the mesh
 	 * @param imageData the data of the image as floats in the [0,1] range
