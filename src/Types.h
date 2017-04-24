@@ -22,8 +22,7 @@
 //==============================================================================
 /**
 *  @class  Types
-*  @brief  Types is Class to load an image and process it.
-*               Uses Canny's algorithm to perform edge detection.
+*  @brief  Types to handle some usefull type definitions
 */
 //==============================================================================
 class Types
