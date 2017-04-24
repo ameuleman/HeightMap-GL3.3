@@ -27,7 +27,8 @@ HEADERS  += MainWindow.h \
     Mesh.h \
     LvlPlan.h \
     ImageProcessor.h \
-    ParallelTool.h
+    ParallelTool.h \
+    Types.h
 
 DISTFILES += ../shader/displayShader.frag \
     ../shader/lvlShader.frag \

@@ -20,10 +20,7 @@
 #include <QOpenGLFunctions>
 #include <atomic>
 
-//******************************************************************************
-//  Type definition
-//******************************************************************************
-typedef std::vector<QVector3D> vector_data;
+#include "Types.h"
 
 //==============================================================================
 /**
@@ -73,19 +70,19 @@ public:
 	 * @brief getVerticesPosition get data describing the mesh
 	 * @return position of the vertices
 	 */
-	vector_data getVerticesPosition() const;
+	Types::vertices_data getVerticesPosition() const;
 
 	/**
 	 * @brief getVerticesColour get data describing the mesh
 	 * @return colour of the vertices
 	 */
-	vector_data getVerticesColour() const;
+	Types::vertices_data getVerticesColour() const;
 
 	/**
 	 * @brief getVerticesNormal get data describing the mesh
 	 * @return Normal vectors of the vertices
 	 */
-	vector_data getVerticesNormal() const;
+	Types::vertices_data getVerticesNormal() const;
 
 	/**
 	 * @brief getVerticeCount
@@ -97,7 +94,7 @@ protected:
 	//no copy constructor
 	Mesh(const Mesh&);
 
-	vector_data m_verticesPosition, //Position of the vertices
+	Types::vertices_data m_verticesPosition, //Position of the vertices
 		m_verticesColour,
 		m_verticesNormal; //normal vectors
 
