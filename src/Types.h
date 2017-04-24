@@ -42,6 +42,11 @@ public:
 	 * @brief image_matrix
 	 */
 	typedef std::vector<float_line> float_matrix;
+
+	/**
+	 * @brief int_line
+	 */
+	typedef std::vector<unsigned int> uint_line;
 };
 
 #endif // USEFULLTYPES_H

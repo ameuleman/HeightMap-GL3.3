@@ -62,7 +62,7 @@ private:
 	 * @param windowName the name of the window to be created
 	 * @param imageData data corresponding to the height map to be displayed
 	 */
-	void launchRenderWindow(QString const& windowName, image_matrix const& imageData);
+	void launchRenderWindow(QString const& windowName, Types::float_matrix const& imageData);
 
 	/**
 	 * @brief updateImageProcessor Update the image processor

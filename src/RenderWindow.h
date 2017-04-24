@@ -56,7 +56,7 @@ public:
 	 * @param m width of the image
 	 * @param useIndex to know if an index has to be set for the height map mesh
 	 */
-	RenderWindow(std::vector<std::vector<float>> const& imageData,
+	RenderWindow(const Types::float_matrix &imageData,
 				 unsigned int n, unsigned int m, bool useIndex = true);
 
 	/**

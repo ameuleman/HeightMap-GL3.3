@@ -41,28 +41,28 @@ ImageProcessor::ImageProcessor()
 }
 
 //------------------------------------------------------------------------------
-image_matrix ImageProcessor::getRawData() const
+Types::float_matrix ImageProcessor::getRawData() const
 //------------------------------------------------------------------------------
 {
 	return m_rawData;
 }
 
 //------------------------------------------------------------------------------
-image_matrix ImageProcessor::getSmoothedData() const
+Types::float_matrix ImageProcessor::getSmoothedData() const
 //------------------------------------------------------------------------------
 {
 	return m_smoothedData;
 }
 
 //------------------------------------------------------------------------------
-image_matrix ImageProcessor::getGradientData() const
+Types::float_matrix ImageProcessor::getGradientData() const
 //------------------------------------------------------------------------------
 {
 	return m_gradientData;
 }
 
 //------------------------------------------------------------------------------
-image_matrix ImageProcessor::getCannyData() const
+Types::float_matrix ImageProcessor::getCannyData() const
 //------------------------------------------------------------------------------
 {
 	return m_cannyData;
@@ -98,11 +98,11 @@ void ImageProcessor::loadData(std::string const& fileName)
 		if(image.format() == QImage::Format_Grayscale8)
 		{
 			//Allocate memory
-			m_rawData.resize(m_n, float_line(m_m));
-			m_smoothedData.resize(m_n, float_line(m_m));
-			m_gradientsAngles.resize(m_n, float_line(m_m));
-			m_gradientData.resize(m_n, float_line(m_m));
-			m_cannyData.resize(m_n, float_line(m_m));
+			m_rawData.resize(m_n, Types::float_line(m_m));
+			m_smoothedData.resize(m_n, Types::float_line(m_m));
+			m_gradientsAngles.resize(m_n, Types::float_line(m_m));
+			m_gradientData.resize(m_n, Types::float_line(m_m));
+			m_cannyData.resize(m_n, Types::float_line(m_m));
 
 			unsigned char * pLine;
 
@@ -152,7 +152,7 @@ std::pair<int, int> ImageProcessor::obtainUpperIndices(int i, int j)
 }
 
 //------------------------------------------------------------------------------
-void ImageProcessor::applyLinearFilter(const image_matrix &linearFilter,
+void ImageProcessor::applyLinearFilter(const Types::float_matrix &linearFilter,
 								unsigned int leftIndex, unsigned int rightIndex)
 //------------------------------------------------------------------------------
 {
@@ -380,14 +380,14 @@ void ImageProcessor::processImage()
 //------------------------------------------------------------------------------
 {
 	//Create the linear filter
-	image_matrix linearFilter({float_line({2, 4, 5, 4, 2}),
-										float_line({4, 9, 12, 9, 4}),
-										float_line({5, 12, 15, 12, 5}),
-										float_line({4, 9, 12, 9, 4}),
-										float_line({2, 4, 5, 4, 2})});
+	Types::float_matrix linearFilter({Types::float_line({2, 4, 5, 4, 2}),
+										Types::float_line({4, 9, 12, 9, 4}),
+										Types::float_line({5, 12, 15, 12, 5}),
+										Types::float_line({4, 9, 12, 9, 4}),
+										Types::float_line({2, 4, 5, 4, 2})});
 
 	for_each(linearFilter.begin(), linearFilter.end(),
-			 [](float_line &l){for_each(l.begin(), l.end(),
+			 [](Types::float_line &l){for_each(l.begin(), l.end(),
 			 [](float &n){n /= 159.f;});});
 
 	//Perform image processing in parallel to reduce computation time

@@ -99,7 +99,7 @@ protected:
 		m_verticesNormal; //normal vectors
 
 	//normal vector
-	std::vector<unsigned int> m_verticesIndex;
+	Types::uint_line m_verticesIndex;
 
 	//number of vertices
 	unsigned int m_verticesCount;

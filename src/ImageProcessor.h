@@ -20,12 +20,7 @@
 #include <QVector2D>
 #include <QImage>
 
-
-//******************************************************************************
-//  Type definition
-//******************************************************************************
-typedef std::vector<float> float_line;
-typedef std::vector<float_line> image_matrix;
+#include "Types.h"
 
 //==============================================================================
 /**
@@ -67,25 +62,25 @@ public:
 	 * @brief getRawData get data corresponding to an image
 	 * @return data before processing
 	 */
-	image_matrix getRawData() const;
+	Types::float_matrix getRawData() const;
 
 	/**
 	 * @brief getSmoothedData get data corresponding to an image
 	 * @return data after linear filtering
 	 */
-	image_matrix getSmoothedData() const;
+	Types::float_matrix getSmoothedData() const;
 
 	/**
 	 * @brief getGradientData get data corresponding to an image
 	 * @return gradient norm for each pixel
 	 */
-	image_matrix getGradientData() const;
+	Types::float_matrix getGradientData() const;
 
 	/**
 	 * @brief getCannyData get data corresponding to an image
 	 * @return data after Canny  algorithm
 	 */
-	image_matrix getCannyData() const;
+	Types::float_matrix getCannyData() const;
 
 	/**
 	 * @brief getM get the size of the image
@@ -125,7 +120,7 @@ private:
 	 * @param leftIndex proceed from this index
 	 * @param rightIndex to this index
 	 */
-	void applyLinearFilter(image_matrix const& linearFilter,
+	void applyLinearFilter(Types::float_matrix const& linearFilter,
 						   unsigned int leftIndex, unsigned int rightIndex);
 
 	/**
@@ -145,13 +140,13 @@ private:
 	 */
 	void applyCannyAlgorithm(unsigned int leftIndex, unsigned int rightIndex);
 
-	image_matrix m_rawData, //Data before processing
+	Types::float_matrix m_rawData, //Data before processing
 		m_smoothedData, //Data after the first step of the processing: the linear filtering
 		m_gradientData, //Data after gradient processing
 		m_cannyData; //Data after edge detection using Canny algorithm
 
 	//Save all the gradients angles to apply Canny Algorithm
-	image_matrix m_gradientsAngles;
+	Types::float_matrix m_gradientsAngles;
 
 	unsigned int m_m, //number of columns
 		m_n; //number of rows

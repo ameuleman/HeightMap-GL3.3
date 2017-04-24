@@ -22,11 +22,6 @@
 #include "HeightMapMesh.h"
 
 //******************************************************************************
-//  namespace
-//******************************************************************************
-using namespace std;
-
-//******************************************************************************
 //  constant variables
 //******************************************************************************
 //give the size of the greater side of the mesh
@@ -36,13 +31,13 @@ const float SIDE_FACTOR = 300.f;
 const float HEIGHT_FACTOR = 50.f;
 
 //------------------------------------------------------------------------------
-HeightMapMesh::HeightMapMesh(string const& fileName)
+HeightMapMesh::HeightMapMesh(std::string const& fileName)
 //------------------------------------------------------------------------------
 {
 	// Open the file
-	ifstream input(fileName, ios::in);
+	std::ifstream input(fileName, std::ios::in);
 
-	vector<vector<float>> imageData;
+	Types::float_matrix imageData;
 
 	if(input)
 	{
@@ -50,7 +45,7 @@ HeightMapMesh::HeightMapMesh(string const& fileName)
 		input >> m_m >> m_n;
 
 		//allocate the vector
-		imageData.resize(m_n, vector<float>(m_m));
+		imageData.resize(m_n, Types::float_line(m_m));
 
 		//read the imageData itself
 		for (unsigned int i(0); i < m_n; i++) {
@@ -62,7 +57,7 @@ HeightMapMesh::HeightMapMesh(string const& fileName)
 		input.close();
 	}
 	else
-		throw runtime_error("Cannot open " + fileName);
+		throw std::runtime_error("Cannot open " + fileName);
 
 
 	//create m_verticesPosition, m_verticesColour, m_verticesNormal
@@ -71,14 +66,14 @@ HeightMapMesh::HeightMapMesh(string const& fileName)
 	{
 		create(imageData);
 	}
-	catch(exception const& e)
+	catch(std::exception const& e)
 	{
-		cerr << "ERROR : " << e.what() << endl;
+		std::cerr << "ERROR : " << e.what() << std::endl;
 	}
 }
 
 //------------------------------------------------------------------------------
-HeightMapMesh::HeightMapMesh(vector<vector<float>> const& imageData,
+HeightMapMesh::HeightMapMesh(Types::float_matrix const& imageData,
 							 unsigned int n, unsigned int m):
 //------------------------------------------------------------------------------
 	m_n(n),
@@ -91,9 +86,9 @@ HeightMapMesh::HeightMapMesh(vector<vector<float>> const& imageData,
 	{
 		create(imageData);
 	}
-	catch(exception const& e)
+	catch(std::exception const& e)
 	{
-		cerr << "ERROR : " << e.what() << endl;
+		std::cerr << "ERROR : " << e.what() << std::endl;
 	}
 }
 
@@ -107,14 +102,14 @@ HeightMapMesh::~HeightMapMesh()
 float HeightMapMesh::getLength() const
 //------------------------------------------------------------------------------
 {
-	return SIDE_FACTOR * m_n / max(m_n,m_m);
+	return SIDE_FACTOR * m_n / std::max(m_n,m_m);
 }
 
 //------------------------------------------------------------------------------
 float HeightMapMesh::getWidth() const
 //------------------------------------------------------------------------------
 {
-	return SIDE_FACTOR * m_m / max(m_n,m_m);
+	return SIDE_FACTOR * m_m / std::max(m_n,m_m);
 }
 
 
@@ -135,7 +130,7 @@ unsigned int HeightMapMesh::getM() const
 
 
 //------------------------------------------------------------------------------
-void HeightMapMesh::create(vector<vector<float>> const& imageData)
+void HeightMapMesh::create(Types::float_matrix const& imageData)
 //------------------------------------------------------------------------------
 {
 	m_verticesCount = (m_n - 1) * (m_m - 1) * 6;
@@ -146,7 +141,7 @@ void HeightMapMesh::create(vector<vector<float>> const& imageData)
 
 	if(m_n != 0 && m_m != 0 && imageData.size() == m_n && imageData[0].size() == m_m)
 	{
-		float size(SIDE_FACTOR/(float(max(m_n, m_m))));
+		float size(SIDE_FACTOR/(float(std::max(m_n, m_m))));
 
 		ParallelTool::performInParallel(
 			[this, size, &imageData](unsigned int leftIndex, unsigned int rightIndex)
@@ -157,12 +152,12 @@ void HeightMapMesh::create(vector<vector<float>> const& imageData)
 	}
 	else
 	{
-		throw runtime_error("Wrong data, cannot create the model");
+		throw std::runtime_error("Wrong data, cannot create the model");
 	}
 }
 
 //------------------------------------------------------------------------------
-void HeightMapMesh::generateVertices(float size, vector<vector<float>> const& imageData,
+void HeightMapMesh::generateVertices(float size, const Types::float_matrix &imageData,
 									 unsigned int leftIndex, unsigned int rightIndex)
 //------------------------------------------------------------------------------
 {

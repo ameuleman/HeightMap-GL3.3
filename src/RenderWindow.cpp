@@ -47,7 +47,7 @@ RenderWindow::RenderWindow(const std::string &fileName):
 }
 
 //------------------------------------------------------------------------------
-RenderWindow::RenderWindow(std::vector<std::vector<float>> const& imageData,
+RenderWindow::RenderWindow(Types::float_matrix const& imageData,
 						  unsigned int n, unsigned int m, bool useIndex):
 //------------------------------------------------------------------------------
 	m_heightMapMesh(imageData, n, m),

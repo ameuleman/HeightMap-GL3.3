@@ -23,6 +23,7 @@
 #include <QtGui/QOpenGLShaderProgram>
 #include <QVector3D>
 
+#include "Types.h"
 #include "Mesh.h"
 
 //==============================================================================
@@ -48,7 +49,7 @@ public:
 	 * @param n height of the image
 	 * @param m width of the image
 	 */
-	HeightMapMesh(std::vector<std::vector<float>> const& imageData, unsigned int n, unsigned int m);
+	HeightMapMesh(const Types::float_matrix &imageData, unsigned int n, unsigned int m);
 
 	virtual ~HeightMapMesh();
 
@@ -80,7 +81,7 @@ private:
 	 * @brief create Create the mesh
 	 * @param imageData the data of the image as floats in the [0,1] range
 	 */
-	void create(std::vector<std::vector<float>> const& imageData);
+	void create(Types::float_matrix const& imageData);
 
 	/**
 	 * @brief generateVertices translate the vector read into three vector<QVector3D>
@@ -91,7 +92,7 @@ private:
 	 * @param leftIndex proceed from this index
 	 * @param rightIndex to this index
 	 */
-	void generateVertices(float size, std::vector<std::vector<float>> const& imageData,
+	void generateVertices(float size, Types::float_matrix const& imageData,
 						  unsigned int leftIndex, unsigned int rightIndex);
 
 	unsigned int m_n, //number of rows

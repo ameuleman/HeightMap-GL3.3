@@ -111,7 +111,7 @@ void MainWindow::on_useIndexButton_clicked()
 
 
 //------------------------------------------------------------------------------
-void MainWindow::launchRenderWindow(QString const& windowName, image_matrix const& imageData)
+void MainWindow::launchRenderWindow(QString const& windowName, const Types::float_matrix &imageData)
 //------------------------------------------------------------------------------
 {
 	//set the size of the depth buffer
