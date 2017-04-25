@@ -24,7 +24,7 @@ const float THRESHOLD_2 = 0.065f;
 #include <algorithm>
 #include <iostream>
 #include "ImageProcessor.h"
-#include "ParallelTool.h"
+#include "tools/ParallelTool.h"
 
 //------------------------------------------------------------------------------
 ImageProcessor::ImageProcessor(std::string const& fileName)

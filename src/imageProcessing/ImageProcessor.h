@@ -20,7 +20,7 @@
 #include <QVector2D>
 #include <QImage>
 
-#include "Types.h"
+#include "tools/Types.h"
 
 //==============================================================================
 /**

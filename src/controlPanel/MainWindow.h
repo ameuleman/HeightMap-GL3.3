@@ -18,8 +18,8 @@
 #include <QMainWindow>
 #include <string>
 
-#include "ImageProcessor.h"
-#include "RenderWindow.h"
+#include "imageProcessing/ImageProcessor.h"
+#include "rendering/RenderWindow.h"
 
 namespace Ui {
 	class MainWindow;

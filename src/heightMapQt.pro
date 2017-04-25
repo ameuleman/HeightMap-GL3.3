@@ -12,23 +12,23 @@ TEMPLATE = app
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp \
-    MainWindow.cpp \
-    DepthMap.cpp \
-    HeightMapMesh.cpp \
-    RenderWindow.cpp \
-    Mesh.cpp \
-    LvlPlan.cpp \
-    ImageProcessor.cpp
+    controlPanel/MainWindow.cpp \
+    rendering/DepthMap.cpp \
+    rendering/HeightMapMesh.cpp \
+    rendering/RenderWindow.cpp \
+    rendering/Mesh.cpp \
+    rendering/LvlPlan.cpp \
+    imageProcessing/ImageProcessor.cpp
 
-HEADERS  += MainWindow.h \
-    RenderWindow.h \
-    DepthMap.h \
-    HeightMapMesh.h \
-    Mesh.h \
-    LvlPlan.h \
-    ImageProcessor.h \
-    ParallelTool.h \
-    Types.h
+HEADERS  += controlPanel/MainWindow.h \
+    rendering/RenderWindow.h \
+    rendering/DepthMap.h \
+    rendering/HeightMapMesh.h \
+    rendering/Mesh.h \
+    rendering/LvlPlan.h \
+    imageProcessing/ImageProcessor.h \
+    tools/ParallelTool.h \
+    tools/Types.h
 
 DISTFILES += ../shader/displayShader.frag \
     ../shader/lvlShader.frag \
@@ -42,4 +42,4 @@ DISTFILES += ../shader/displayShader.frag \
     ../data/data.txt \
     ../results
 
-FORMS    += mainwindow.ui
+FORMS    += controlPanel/mainwindow.ui
