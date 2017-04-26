@@ -73,41 +73,59 @@ RenderWindow::~RenderWindow()
 void RenderWindow::initializeGL()
 //------------------------------------------------------------------------------
 {
-    makeCurrent();
+	makeCurrent();
 
 	initializeOpenGLFunctions();
 
-    //the folder where the shaders are stored
-    const std::string SHADER_FOLDER = (QCoreApplication::applicationDirPath() + "/resources/shader/").toUtf8().data();
+	//the folder where the shaders are stored
+	const std::string SHADER_FOLDER = (QCoreApplication::applicationDirPath() + "/resources/shader/").toUtf8().data();
 
-	//Load the display shader for the ground
-	m_displayProgram.reset(new QOpenGLShaderProgram(this));
-	m_displayProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, readShaderFile(SHADER_FOLDER + "displayShader.vert").c_str());
-	m_displayProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, readShaderFile(SHADER_FOLDER + "displayShader.frag").c_str());
-	m_displayProgram->link();
+	try{
+		//Load the display shader for the ground
+		m_displayProgram.reset(new QOpenGLShaderProgram(this));
+		m_displayProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, readShaderFile(SHADER_FOLDER + "displayShader.vert").c_str());
+		m_displayProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, readShaderFile(SHADER_FOLDER + "displayShader.frag").c_str());
+		m_displayProgram->link();
 
-	//link the atribute in the shader program to their IDs
-	m_lightDirID = m_displayProgram->uniformLocation("lightDir");
-	m_mvpMatrixID = m_displayProgram->uniformLocation("mvpMatrix");
-	m_cameraPosID = m_displayProgram->uniformLocation("cameraPos");
-	m_shadowMapDisplayMatrixID = m_displayProgram->uniformLocation("shadowMapMatrix");
-	m_shadowMapTextureID = m_displayProgram->uniformLocation("shadowMap");
+		//link the atribute in the shader program to their IDs
+		m_lightDirID = m_displayProgram->uniformLocation("lightDir");
+		m_mvpMatrixID = m_displayProgram->uniformLocation("mvpMatrix");
+		m_cameraPosID = m_displayProgram->uniformLocation("cameraPos");
+		m_shadowMapDisplayMatrixID = m_displayProgram->uniformLocation("shadowMapMatrix");
+		m_shadowMapTextureID = m_displayProgram->uniformLocation("shadowMap");
+	}
+	catch(std::exception e)
+	{
+		std::cerr << e.what() << std::endl;
+	}
 
-	//Load the display shader for the lvl plan
-	m_lvlProgram.reset(new QOpenGLShaderProgram(this));
-	m_lvlProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, readShaderFile(SHADER_FOLDER + "lvlShader.vert").c_str());
-	m_lvlProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, readShaderFile(SHADER_FOLDER + "lvlShader.frag").c_str());
-	m_lvlProgram->link();
+	try{
+		//Load the display shader for the lvl plan
+		m_lvlProgram.reset(new QOpenGLShaderProgram(this));
+		m_lvlProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, readShaderFile(SHADER_FOLDER + "lvlShader.vert").c_str());
+		m_lvlProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, readShaderFile(SHADER_FOLDER + "lvlShader.frag").c_str());
+		m_lvlProgram->link();
 
-	//Link the atribute to its ID
-	m_verticesLvlPlanPositionID = m_lvlProgram->attributeLocation("position");
-	m_mvpLvlPlanMatrixID = m_lvlProgram->uniformLocation("mvpMatrix");
+		//Link the atribute to its ID
+		m_verticesLvlPlanPositionID = m_lvlProgram->attributeLocation("position");
+		m_mvpLvlPlanMatrixID = m_lvlProgram->uniformLocation("mvpMatrix");
+	}
+	catch(std::exception e)
+	{
+		std::cerr << e.what() << std::endl;
+	}
 
-	//Load the shadow shader
-	m_depthMapProgram.reset(new QOpenGLShaderProgram(this));
-	m_depthMapProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, readShaderFile(SHADER_FOLDER + "mapShader.vert").c_str());
-	m_depthMapProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, readShaderFile(SHADER_FOLDER + "mapShader.frag").c_str());
-	m_depthMapProgram->link();
+	try{
+		//Load the shadow shader
+		m_depthMapProgram.reset(new QOpenGLShaderProgram(this));
+		m_depthMapProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, readShaderFile(SHADER_FOLDER + "mapShader.vert").c_str());
+		m_depthMapProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, readShaderFile(SHADER_FOLDER + "mapShader.frag").c_str());
+		m_depthMapProgram->link();
+	}
+	catch(std::exception e)
+	{
+		std::cerr << e.what() << std::endl;
+	}
 
 	//Set indexes if necessary
 	if(m_useIndex)
@@ -136,7 +154,8 @@ void RenderWindow::initializeGL()
 	m_shadowMapMatrix.translate(-m_length/2, -m_width/2, 0.f);
 
 	//render the shadow map to the buffers of m_shadowMap
-	m_shadowMap.render(m_heightMapMesh, m_shadowMapMatrix, m_depthMapProgram);
+	if(m_depthMapProgram->isLinked())
+		m_shadowMap.render(m_heightMapMesh, m_shadowMapMatrix, m_depthMapProgram);
 
 	//set the projection matrix for the camera to display on the window
 	m_pMatrix.perspective(m_zoomAngle, 16.f / 9.f, 0.1f, m_width+m_length);
@@ -177,45 +196,52 @@ void RenderWindow::paintGL()
 	// Clear the screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//use the display shader program
-	m_displayProgram->bind();
+	if(m_displayProgram->isLinked())
+	{
+		//use the display shader program
+		m_displayProgram->bind();
 
-	//Bind the shadow map texture in texture unit 0
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_shadowMap.getMapTexture());
-	m_displayProgram->setUniformValue(m_shadowMapTextureID, 0);
+		//Bind the shadow map texture in texture unit 0
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_shadowMap.getMapTexture());
+		m_displayProgram->setUniformValue(m_shadowMapTextureID, 0);
 
-	//send the matrixes to the display shader
-	m_displayProgram->setUniformValue(m_mvpMatrixID, mvpMatrix);
-	//position of the camera
-	m_displayProgram->setUniformValue(m_cameraPosID, cameraPos);
-	//matrix for the shadow
-	m_displayProgram->setUniformValue(m_shadowMapDisplayMatrixID, m_shadowMapMatrix);
-	//direction of the light, for the shadows, the difuse and the specular component
-	m_displayProgram->setUniformValue(m_lightDirID, m_lightDir);
+		//send the matrixes to the display shader
+		m_displayProgram->setUniformValue(m_mvpMatrixID, mvpMatrix);
+		//position of the camera
+		m_displayProgram->setUniformValue(m_cameraPosID, cameraPos);
+		//matrix for the shadow
+		m_displayProgram->setUniformValue(m_shadowMapDisplayMatrixID, m_shadowMapMatrix);
+		//direction of the light, for the shadows, the difuse and the specular component
+		m_displayProgram->setUniformValue(m_lightDirID, m_lightDir);
 
-	//Render the height map
-	m_heightMapMesh.render();
+		//Render the height map
+		m_heightMapMesh.render();
 
-	m_displayProgram->release();
+		m_displayProgram->release();
+	}
 
 	//Draw the lvl plan only if it has to be displayed
-	if (m_LvlPlanVisibility) {
+	if (m_LvlPlanVisibility)
+	{
 
 		//Enable transparency
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_BLEND);
 
-		//bind the program for the lvl Plan
-		m_lvlProgram->bind();
+		if(m_lvlProgram->isLinked())
+		{
+			//bind the program for the lvl Plan
+			m_lvlProgram->bind();
 
-		//send the matrix to the lvl plan display shader
-		m_lvlProgram->setUniformValue(m_mvpLvlPlanMatrixID, mvpMatrix);
+			//send the matrix to the lvl plan display shader
+			m_lvlProgram->setUniformValue(m_mvpLvlPlanMatrixID, mvpMatrix);
 
-		//Render the lvl plan
-		m_lvlPlan.render();
+			//Render the lvl plan
+			m_lvlPlan.render();
 
-		m_lvlProgram->release();
+			m_lvlProgram->release();
+		}
 	}
 }
 
@@ -427,7 +453,11 @@ void RenderWindow::rotateLightSource(const float angle, const float x, const flo
 
 	//render the shadow map to the buffers of m_shadowMap
 	makeCurrent();
-	m_shadowMap.render(m_heightMapMesh, m_shadowMapMatrix, m_depthMapProgram);
+
+	if(m_depthMapProgram->isLinked())
+	{
+		m_shadowMap.render(m_heightMapMesh, m_shadowMapMatrix, m_depthMapProgram);
+	}
 
 	QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
 }
