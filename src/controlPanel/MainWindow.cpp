@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent):
 
 	updateImageProcessor();
 
-	setWindowTitle("Control panel");
+    setWindowTitle("Control panel");
 }
 
 //------------------------------------------------------------------------------
@@ -77,8 +77,8 @@ void MainWindow::on_choseImageButton_clicked()
 {
 	//Chose the name and directory of the file
 	QString fileName = QFileDialog::getOpenFileName(nullptr, "Open image file",
-							   "../data/",
-							   "Images (*.png *.xpm *.jpg)");
+                               QCoreApplication::applicationDirPath() + "/resources/data/",
+                               "Images (*.png *.xpm *.jpg)");
 
 	if(fileName.size())
 	{

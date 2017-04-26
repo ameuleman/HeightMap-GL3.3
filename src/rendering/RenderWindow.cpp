@@ -21,12 +21,6 @@
 #include "RenderWindow.h"
 
 
-//******************************************************************************
-//  constant variables
-//******************************************************************************
-//the folder where the shaders are stored
-const std::string SHADER_FOLDER = "../shader/";
-
 //------------------------------------------------------------------------------
 RenderWindow::RenderWindow(const std::string &fileName):
 //------------------------------------------------------------------------------
@@ -82,6 +76,9 @@ void RenderWindow::initializeGL()
     makeCurrent();
 
 	initializeOpenGLFunctions();
+
+    //the folder where the shaders are stored
+    const std::string SHADER_FOLDER = (QCoreApplication::applicationDirPath() + "/resources/shader/").toUtf8().data();
 
 	//Load the display shader for the ground
 	m_displayProgram.reset(new QOpenGLShaderProgram(this));
@@ -241,7 +238,7 @@ void RenderWindow::saveCurrentRendering()
 {
 	//Chose the name and directory of the file
 	QString fileName = QFileDialog::getSaveFileName(nullptr, "Save current rendering",
-							   "../results/",
+							   "",
 							   "Images (*.png *.jpg)");
 
 	//Save the image
