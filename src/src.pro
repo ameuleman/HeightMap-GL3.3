@@ -10,10 +10,11 @@ TEMPLATE = app
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
-#Copy required folder to the build destination
+#path of the resources folder
 resources_folder = $${PWD}/resources
 resources_destination = $${DESTDIR}
 
+#change slashs for backslashs in paths if using windows
 win32 {
     resources_destination = $${DESTDIR}/resources
 
@@ -21,12 +22,14 @@ win32 {
     resources_destination ~= s,/,\\,g
 }
 
+#Copy resources folder to the build destination
 copyresources.commands = $(COPY_DIR) $${resources_folder}  $${resources_destination}
 first.depends = $(first) copyresources
 export(first.depends)
 export(copyresources.commands)
 QMAKE_EXTRA_TARGETS += first copyresources
 
+#Files
 SOURCES += main.cpp \
     controlPanel/MainWindow.cpp \
     rendering/DepthMap.cpp \
