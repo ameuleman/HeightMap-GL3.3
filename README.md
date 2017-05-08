@@ -14,11 +14,11 @@ The project requires a ***C++11*** capable compiler, ***OpenGL 3.3***, ***Qt 5.6
 
 To launch it, open ***heightMap-GL3.3.pro*** with QtCreator.
 
-Additional data to test the program are available in ***additional***_***data***/.
+Additional data to test the program are available in [***additional***_***data***/](additional_data/).
 
-For more information, see ***doc***/.
+For more information, see [***doc***/](doc/index.html).
 
-An OpenGL 2.0 version including tests and benchmarks is available at github.com/ameuleman/HeightMap-GL2
+An OpenGL 2.0 version including tests and benchmarks is available at [github.com/ameuleman/HeightMap-GL2](https://github.com/ameuleman/HeightMap-GL2)
 
 ## Results
 ![raw](/results/city_raw.png)
