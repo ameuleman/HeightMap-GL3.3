@@ -1,0 +1,10 @@
+<map id="src/main.cpp" name="src/main.cpp">
+<area shape="rect" id="node2" href="$_main_window_8h.html" title="Class that describes a control panel for the application. " alt="" coords="236,80,420,107"/>
+<area shape="rect" id="node5" href="$_image_processor_8h.html" title="Class to load an image and process it. Uses Canny&#39;s algorithm to perform edge detection. " alt="" coords="136,155,368,181"/>
+<area shape="rect" id="node11" href="$_render_window_8h.html" title="Class to display the height map. " alt="" coords="943,155,1121,181"/>
+<area shape="rect" id="node8" href="$_types_8h.html" title="Class to handle some usefull type definitions. " alt="" coords="508,379,609,405"/>
+<area shape="rect" id="node22" href="$_height_map_mesh_8h.html" title="Class to create a height map mesh thanks to a file or data to displpay it thanks to OpenGL..." alt="" coords="508,229,636,256"/>
+<area shape="rect" id="node26" href="$_depth_map_8h.html" title="Class to render to a buffer in order to create, for exemple, a shadow map. " alt="" coords="832,229,925,256"/>
+<area shape="rect" id="node27" href="$_lvl_plan_8h.html" title="Class to handle a lvl plan to highlight the edges. " alt="" coords="1978,229,2054,256"/>
+<area shape="rect" id="node23" href="$_mesh_8h.html" title="Class to handel a mesh to display it thanks to OpenGL. " alt="" coords="1141,304,1206,331"/>
+</map>

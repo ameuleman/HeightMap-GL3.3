@@ -3,9 +3,9 @@
 *
 *  @file       HeightMapMesh.cpp
 *
-*  @brief      Class to load a height imageData file to displpay it later thanks to OpenGL
-*
-*  @date       16/06/2016
+*  @brief      Class to create a height map mesh thanks to a file or data
+* to displpay it thanks to OpenGL.
+* Produce a mesh contained in a cuboid of size 150 * 150 * 50
 *
 *  @author     Andréas Meuleman
 *******************************************************************************
@@ -62,14 +62,7 @@ HeightMapMesh::HeightMapMesh(std::string const& fileName)
 
 	//create m_verticesPosition, m_verticesColour, m_verticesNormal
 	//and m_verticesCount thanks to the data
-	try
-	{
-		create(imageData);
-	}
-	catch(std::exception const& e)
-	{
-		std::cerr << "ERROR : " << e.what() << std::endl;
-	}
+	create(imageData);
 }
 
 //------------------------------------------------------------------------------
@@ -82,14 +75,7 @@ HeightMapMesh::HeightMapMesh(Types::float_matrix const& imageData,
 {
 	//create m_verticesPosition, m_verticesColour, m_verticesNormal
 	//and m_verticesCount thanks to the data
-	try
-	{
-		create(imageData);
-	}
-	catch(std::exception const& e)
-	{
-		std::cerr << "ERROR : " << e.what() << std::endl;
-	}
+	create(imageData);
 }
 
 //------------------------------------------------------------------------------

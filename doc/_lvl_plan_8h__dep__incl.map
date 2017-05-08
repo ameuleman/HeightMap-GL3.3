@@ -1,0 +1,8 @@
+<map id="src/rendering/LvlPlan.h" name="src/rendering/LvlPlan.h">
+<area shape="rect" id="node2" href="$_lvl_plan_8cpp.html" title="Class to handel a lvl plan. " alt="" coords="29,80,199,107"/>
+<area shape="rect" id="node3" href="$_render_window_8h.html" title="Class to display the height map. " alt="" coords="223,80,424,107"/>
+<area shape="rect" id="node4" href="$_main_window_8h.html" title="Class that describes a control panel for the application. " alt="" coords="103,155,309,181"/>
+<area shape="rect" id="node7" href="$_render_window_8cpp.html" title="Class to display the height map. " alt="" coords="333,155,548,181"/>
+<area shape="rect" id="node5" href="$_main_window_8cpp.html" title="Class that describes a control panel for the application. " alt="" coords="5,229,225,256"/>
+<area shape="rect" id="node6" href="$main_8cpp.html" title="Launch the control panel. " alt="" coords="249,229,347,256"/>
+</map>

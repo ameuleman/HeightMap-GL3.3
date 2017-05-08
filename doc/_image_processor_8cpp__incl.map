@@ -1,0 +1,5 @@
+<map id="src/imageProcessing/ImageProcessor.cpp" name="src/imageProcessing/ImageProcessor.cpp">
+<area shape="rect" id="node5" href="$_image_processor_8h.html" title="Class to load an image and process it. Uses Canny&#39;s algorithm to perform edge detection. " alt="" coords="287,95,415,121"/>
+<area shape="rect" id="node11" href="$_parallel_tool_8h.html" title="Class to handle functions to simplify parallel processing. " alt="" coords="454,95,587,121"/>
+<area shape="rect" id="node8" href="$_types_8h.html" title="Class to handle some usefull type definitions. " alt="" coords="395,169,497,196"/>
+</map>

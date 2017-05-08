@@ -4,11 +4,11 @@
 /**
 *******************************************************************************
 *
-*  @file       MainWindow.h
+*  @file	MainWindow.h
 *
-*  @brief      Class that describes a control panel for the application
+*  @brief	Class that describes a control panel for the application
 *
-*  @author     Andréas Meuleman
+*  @author	Andréas Meuleman
 *******************************************************************************
 */
 
@@ -53,7 +53,7 @@ private slots:
 
 	void on_choseImageButton_clicked();
 
-    void on_useIndexButton_clicked();
+	void on_useIndexButton_clicked();
 
 //******************************************************************************
 private:
@@ -79,11 +79,10 @@ private:
 	 * @brief m_imageFile name of the image file.
 	 * @default "../data/data.png"
 	 */
-    std::string m_imageFile = (QCoreApplication::applicationDirPath() +
-                               "/resources/data/data.png").toUtf8().data();
+	std::string m_imageFile = (":/data/data.png");
 
 	//To know if the index needs to be set
-    bool m_useIndex = true;
+	bool m_useIndex = true;
 };
 
 #endif // MAINWINDOW_H

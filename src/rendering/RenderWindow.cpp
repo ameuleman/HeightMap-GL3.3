@@ -77,14 +77,14 @@ void RenderWindow::initializeGL()
 
 	initializeOpenGLFunctions();
 
-	//the folder where the shaders are stored
-	const std::string SHADER_FOLDER = (QCoreApplication::applicationDirPath() + "/resources/shader/").toUtf8().data();
+    //the folder where the s are stored
+    const std::string SHADER_FOLDER = ":/shader/";
 
 	try{
 		//Load the display shader for the ground
 		m_displayProgram.reset(new QOpenGLShaderProgram(this));
-		m_displayProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, readShaderFile(SHADER_FOLDER + "displayShader.vert").c_str());
-		m_displayProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, readShaderFile(SHADER_FOLDER + "displayShader.frag").c_str());
+        m_displayProgram->addShaderFromSourceFile(QOpenGLShader::Vertex, (SHADER_FOLDER + "displayShader.vert").c_str());
+        m_displayProgram->addShaderFromSourceFile(QOpenGLShader::Fragment, (SHADER_FOLDER + "displayShader.frag").c_str());
 		m_displayProgram->link();
 
 		//link the atribute in the shader program to their IDs
@@ -96,14 +96,14 @@ void RenderWindow::initializeGL()
 	}
 	catch(std::exception e)
 	{
-		std::cerr << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
 	}
 
 	try{
 		//Load the display shader for the lvl plan
 		m_lvlProgram.reset(new QOpenGLShaderProgram(this));
-		m_lvlProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, readShaderFile(SHADER_FOLDER + "lvlShader.vert").c_str());
-		m_lvlProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, readShaderFile(SHADER_FOLDER + "lvlShader.frag").c_str());
+        m_lvlProgram->addShaderFromSourceFile(QOpenGLShader::Vertex, (SHADER_FOLDER + "lvlShader.vert").c_str());
+        m_lvlProgram->addShaderFromSourceFile(QOpenGLShader::Fragment, (SHADER_FOLDER + "lvlShader.frag").c_str());
 		m_lvlProgram->link();
 
 		//Link the atribute to its ID
@@ -112,19 +112,19 @@ void RenderWindow::initializeGL()
 	}
 	catch(std::exception e)
 	{
-		std::cerr << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
 	}
 
 	try{
 		//Load the shadow shader
 		m_depthMapProgram.reset(new QOpenGLShaderProgram(this));
-		m_depthMapProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, readShaderFile(SHADER_FOLDER + "mapShader.vert").c_str());
-		m_depthMapProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, readShaderFile(SHADER_FOLDER + "mapShader.frag").c_str());
+        m_depthMapProgram->addShaderFromSourceFile(QOpenGLShader::Vertex, (SHADER_FOLDER + "mapShader.vert").c_str());
+        m_depthMapProgram->addShaderFromSourceFile(QOpenGLShader::Fragment, (SHADER_FOLDER + "mapShader.frag").c_str());
 		m_depthMapProgram->link();
 	}
 	catch(std::exception e)
 	{
-		std::cerr << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
 	}
 
 	//Set indexes if necessary
@@ -204,7 +204,7 @@ void RenderWindow::paintGL()
 		//Bind the shadow map texture in texture unit 0
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, m_shadowMap.getMapTexture());
-		m_displayProgram->setUniformValue(m_shadowMapTextureID, 0);
+        m_displayProgram->setUniformValue(m_shadowMapTextureID, 0);
 
 		//send the matrixes to the display shader
 		m_displayProgram->setUniformValue(m_mvpMatrixID, mvpMatrix);
@@ -461,23 +461,3 @@ void RenderWindow::rotateLightSource(const float angle, const float x, const flo
 
 	QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
 }
-
-//------------------------------------------------------------------------------
-std::string RenderWindow::readShaderFile(std::string const& shaderFileName)
-//------------------------------------------------------------------------------
-{
-	std::ifstream shaderFile(shaderFileName, std::ios::in);
-
-	if(shaderFile)
-	{
-		//read the shader file line by line
-		std::string line, source;
-		while (getline(shaderFile, line))
-			source += line + '\n';
-		shaderFile.close();
-		return source;
-	}
-	else
-		throw std::runtime_error("No shader file" + shaderFileName);
-}
-

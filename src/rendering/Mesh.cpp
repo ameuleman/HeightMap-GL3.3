@@ -329,24 +329,31 @@ void Mesh::cleanUpVBO()
 }
 
 //------------------------------------------------------------------------------
-std::vector<QVector3D > Mesh::getVerticesPosition() const
+Types::vertices_data Mesh::getVerticesPosition() const
 //------------------------------------------------------------------------------
 {
 	return m_verticesPosition;
 }
 
 //------------------------------------------------------------------------------
-std::vector<QVector3D > Mesh::getVerticesColour() const
+Types::vertices_data Mesh::getVerticesColour() const
 //------------------------------------------------------------------------------
 {
 	return m_verticesColour;
 }
 
 //------------------------------------------------------------------------------
-std::vector<QVector3D > Mesh::getVerticesNormal() const
+Types::vertices_data Mesh::getVerticesNormal() const
 //------------------------------------------------------------------------------
 {
 	return m_verticesNormal;
+}
+
+//------------------------------------------------------------------------------
+Types::uint_line Mesh::getIndex() const
+//------------------------------------------------------------------------------
+{
+	return m_verticesIndex;
 }
 
 //------------------------------------------------------------------------------

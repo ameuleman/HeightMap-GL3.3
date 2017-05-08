@@ -1,60 +1,35 @@
+DESTDIR = build/
+TARGET = heightMap
+TEMPLATE = app
+
 QT += core gui opengl
 
 CONFIG += c++11
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-DESTDIR = build/
-TARGET = heightMap
-TEMPLATE = app
-
 DEFINES += QT_DEPRECATED_WARNINGS
 
-#path of the resources folder
-resources_folder = $${PWD}/resources
-resources_destination = $${DESTDIR}
+RESOURCES = $$PWD/src.qrc
 
-#change slashs for backslashs in paths if using windows
-win32 {
-    resources_destination = $${DESTDIR}/resources
+SOURCES += $$PWD/main.cpp \
+    $$PWD/controlPanel/MainWindow.cpp \
+    $$PWD/rendering/DepthMap.cpp \
+    $$PWD/rendering/HeightMapMesh.cpp \
+    $$PWD/rendering/RenderWindow.cpp \
+    $$PWD/rendering/Mesh.cpp \
+    $$PWD/rendering/LvlPlan.cpp \
+    $$PWD/imageProcessing/ImageProcessor.cpp
 
-    resources_folder ~= s,/,\\,g
-    resources_destination ~= s,/,\\,g
-}
+HEADERS  += $$PWD/controlPanel/MainWindow.h \
+    $$PWD/rendering/RenderWindow.h \
+    $$PWD/rendering/DepthMap.h \
+    $$PWD/rendering/HeightMapMesh.h \
+    $$PWD/rendering/Mesh.h \
+    $$PWD/rendering/LvlPlan.h \
+    $$PWD/imageProcessing/ImageProcessor.h \
+    $$PWD/tools/ParallelTool.h \
+    $$PWD/tools/Types.h
 
-#Copy resources folder to the build destination
-copyresources.commands = $(COPY_DIR) $${resources_folder}  $${resources_destination}
-first.depends = $(first) copyresources
-export(first.depends)
-export(copyresources.commands)
-QMAKE_EXTRA_TARGETS += first copyresources
+FORMS += $$PWD/controlPanel/mainwindow.ui
 
-#Files
-SOURCES += main.cpp \
-    controlPanel/MainWindow.cpp \
-    rendering/DepthMap.cpp \
-    rendering/HeightMapMesh.cpp \
-    rendering/RenderWindow.cpp \
-    rendering/Mesh.cpp \
-    rendering/LvlPlan.cpp \
-    imageProcessing/ImageProcessor.cpp
-
-HEADERS  += controlPanel/MainWindow.h \
-    rendering/RenderWindow.h \
-    rendering/DepthMap.h \
-    rendering/HeightMapMesh.h \
-    rendering/Mesh.h \
-    rendering/LvlPlan.h \
-    imageProcessing/ImageProcessor.h \
-    tools/ParallelTool.h \
-    tools/Types.h
-
-DISTFILES += resources/shader/displayShader.frag \
-    resources/shader/lvlShader.frag \
-    resources/shader/mapShader.frag \
-    resources/shader/displayShader.vert \
-    resources/shader/lvlShader.vert \
-    resources/shader/mapShader.vert \
-    resources/data/*
-
-FORMS    += controlPanel/mainwindow.ui

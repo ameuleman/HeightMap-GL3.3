@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/data">
+        <file alias="data.png">resources/data/data.png</file>
+    </qresource>
+    <qresource prefix="/shader">
+        <file alias="displayShader.frag">resources/shader/displayShader.frag</file>
+        <file alias="displayShader.vert">resources/shader/displayShader.vert</file>
+        <file alias="lvlShader.frag">resources/shader/lvlShader.frag</file>
+        <file alias="lvlShader.vert">resources/shader/lvlShader.vert</file>
+        <file alias="mapShader.frag">resources/shader/mapShader.frag</file>
+        <file alias="mapShader.vert">resources/shader/mapShader.vert</file>
+    </qresource>
+</RCC>

@@ -85,6 +85,12 @@ public:
 	Types::vertices_data getVerticesNormal() const;
 
 	/**
+	 * @brief getIndex get the index
+	 * @return index
+	 */
+	Types::uint_line getIndex() const;
+
+	/**
 	 * @brief getVerticeCount
 	 * @return number of vertices of the mesh
 	 */

@@ -1,11 +1,11 @@
 /**
 *******************************************************************************
 *
-*  @file       ImageProcessor.cpp
+*  @file	ImageProcessor.cpp
 *
-*  @brief      Class to load an image and process it
+*  @brief	Class to load an image and process it
 *
-*  @author     Andréas Meuleman
+*  @author	Andréas Meuleman
 *******************************************************************************
 */
 
@@ -38,6 +38,17 @@ ImageProcessor::ImageProcessor(std::string const& fileName)
 ImageProcessor::ImageProcessor()
 //------------------------------------------------------------------------------
 {
+}
+
+//------------------------------------------------------------------------------
+void ImageProcessor::setRawData(Types::float_matrix const & imageData, unsigned int n, unsigned int m)
+//------------------------------------------------------------------------------
+{
+	m_rawData = imageData;
+	m_n = n;
+	m_m = m;
+
+	processImage();
 }
 
 //------------------------------------------------------------------------------
@@ -99,10 +110,6 @@ void ImageProcessor::loadData(std::string const& fileName)
 		{
 			//Allocate memory
 			m_rawData.resize(m_n, Types::float_line(m_m));
-			m_smoothedData.resize(m_n, Types::float_line(m_m));
-			m_gradientsAngles.resize(m_n, Types::float_line(m_m));
-			m_gradientData.resize(m_n, Types::float_line(m_m));
-			m_cannyData.resize(m_n, Types::float_line(m_m));
 
 			unsigned char * pLine;
 
@@ -379,44 +386,57 @@ void ImageProcessor::applyCannyAlgorithm(unsigned int leftIndex, unsigned int ri
 void ImageProcessor::processImage()
 //------------------------------------------------------------------------------
 {
-	//Create the linear filter
-	Types::float_matrix linearFilter({Types::float_line({2, 4, 5, 4, 2}),
-										Types::float_line({4, 9, 12, 9, 4}),
-										Types::float_line({5, 12, 15, 12, 5}),
-										Types::float_line({4, 9, 12, 9, 4}),
-										Types::float_line({2, 4, 5, 4, 2})});
+	if(m_n != 0 && m_m != 0 && m_rawData.size() == m_n && m_rawData[0].size() == m_m)
+	{
+		//Alocate memory
+		m_smoothedData.resize(m_n, Types::float_line(m_m));
+		m_gradientsAngles.resize(m_n, Types::float_line(m_m));
+		m_gradientData.resize(m_n, Types::float_line(m_m));
+		m_cannyData.resize(m_n, Types::float_line(m_m));
 
-	for_each(linearFilter.begin(), linearFilter.end(),
-			 [](Types::float_line &l){for_each(l.begin(), l.end(),
-			 [](float &n){n /= 159.f;});});
+		//Create the linear filter
+		Types::float_matrix linearFilter({Types::float_line({2, 4, 5, 4, 2}),
+											Types::float_line({4, 9, 12, 9, 4}),
+											Types::float_line({5, 12, 15, 12, 5}),
+											Types::float_line({4, 9, 12, 9, 4}),
+											Types::float_line({2, 4, 5, 4, 2})});
 
-	//Perform image processing in parallel to reduce computation time
-	ParallelTool::performInParallel(
-		[this, linearFilter](unsigned int leftIndex, unsigned int rightIndex)
-		{
-			try
+		for_each(linearFilter.begin(), linearFilter.end(),
+				 [](Types::float_line &l){for_each(l.begin(), l.end(),
+				 [](float &n){n /= 159.f;});});
+
+		//Perform image processing in parallel to reduce computation time
+		ParallelTool::performInParallel(
+			[this, linearFilter](unsigned int leftIndex, unsigned int rightIndex)
 			{
-				applyLinearFilter(linearFilter, leftIndex, rightIndex);
-			}
-			catch(std::exception const& e)
+				try
+				{
+					applyLinearFilter(linearFilter, leftIndex, rightIndex);
+				}
+				catch(std::exception const& e)
+				{
+					std::cerr << "ERROR : " << e.what() << std::endl;
+				}
+			},
+			0, m_n);
+
+		ParallelTool::performInParallel(
+			[this](unsigned int leftIndex, unsigned int rightIndex)
 			{
-				std::cerr << "ERROR : " << e.what() << std::endl;
-			}
-		},
-		0, m_n);
+				applyGradientNorm(leftIndex, rightIndex);
+			},
+			0, m_n);
 
-	ParallelTool::performInParallel(
-		[this](unsigned int leftIndex, unsigned int rightIndex)
-		{
-			applyGradientNorm(leftIndex, rightIndex);
-		},
-		0, m_n);
-
-	ParallelTool::performInParallel(
-		[this](unsigned int leftIndex, unsigned int rightIndex)
-		{
-			applyCannyAlgorithm(leftIndex, rightIndex);
-		},
-		0, m_n);
+		ParallelTool::performInParallel(
+			[this](unsigned int leftIndex, unsigned int rightIndex)
+			{
+				applyCannyAlgorithm(leftIndex, rightIndex);
+			},
+			0, m_n);
+	}
+	else
+	{
+		throw std::runtime_error("Wrong data sizes, cannot process image");
+	}
 }
 

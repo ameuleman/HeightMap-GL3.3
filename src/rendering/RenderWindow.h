@@ -131,12 +131,6 @@ private:
 	void rotateLightSource(float const angle, float const x, float const y,
 						   float const z);
 
-	/**
-	 * @brief readShaderFile read the shader file to crate a program
-	 * @param shaderFileName the name of the shader file to load
-	 * @return shader source code
-	 */
-	static std::string readShaderFile(std::string const& shaderFileName);
 
 	//Height map to display
 	HeightMapMesh m_heightMapMesh;
