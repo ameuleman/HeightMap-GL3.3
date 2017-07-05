@@ -27,6 +27,6 @@ An OpenGL 2.0 version including tests and benchmarks is available at [github.com
 ![Canny](/results/city_canny.png)
 *Height map corresponding to the Canny image with a plan to hightlight edges*
 
-##Licence
+## Licence
 
 [LGPL](http://www.gnu.org/licenses/licenses.en.html)
