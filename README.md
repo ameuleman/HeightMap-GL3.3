@@ -22,7 +22,7 @@ An OpenGL 2.0 version including tests and benchmarks is available at [github.com
 
 ## Results
 
-The original image is from [Chris Bobko](http://niotex.blogspot.kr/2011/09/chaos-complete.html#comment-form).
+The original image is from [niotex.blogspot.kr](http://niotex.blogspot.kr).
 
 ![raw](/results/city_raw.png)
 *Height map corresponding to the original image*
