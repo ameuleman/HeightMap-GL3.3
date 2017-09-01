@@ -21,6 +21,9 @@ For more information, see [`doc/`](doc/).
 An OpenGL 2.0 version including tests and benchmarks is available at [github.com/ameuleman/HeightMap-GL2](https://github.com/ameuleman/HeightMap-GL2)
 
 ## Results
+
+The original image is from [Chris Bobko](http://niotex.blogspot.kr/2011/09/chaos-complete.html#comment-form).
+
 ![raw](/results/city_raw.png)
 *Height map corresponding to the original image*
 
